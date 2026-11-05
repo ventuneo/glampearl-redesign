@@ -55,6 +55,7 @@ das das neue Theme unter dem Namen anzeigt. Die Handles (URLs) bleiben gleich, d
 Alle anderen Produkte behalten ihre bisherige Beschreibung. Das neue Theme gliedert sie nur neu: About, How to use, Details, In the box.
 
 - **thermal gel polish:** Gel polish that shows one colour when your nails are warm and a second one when they cool down. Each bottle holds about 7 ml. Cure it under an LED or UV lamp like any gel colour.
+- **gel polish:** Soak-off gel colour in 50 shades, from nudes and pinks to deep reds, blues, greens and glitter. Each bottle holds 8.5 ml and goes on in one stroke. Cure each thin layer under a UV or LED lamp.
 
 ## Kategorien
 

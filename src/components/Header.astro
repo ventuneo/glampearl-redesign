@@ -8,7 +8,7 @@ const { current = '' } = Astro.props;
 ---
 
 <p class="announce t-xs">
-  <a class="hit" href="#newsletter">Sign up for 10% off your first order</a>
+  <a class="u-grow" href="#newsletter">Sign up for 10% off your first order</a>
 </p>
 <header class="header">
   <div class="header__bar wrap">
@@ -55,11 +55,7 @@ const { current = '' } = Astro.props;
   .announce a {
     text-decoration: none;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .announce a:hover {
-      text-decoration: underline;
-    }
-  }
+
   .header {
     position: sticky;
     top: 0;
@@ -115,6 +111,11 @@ const { current = '' } = Astro.props;
   }
   .header__nav a[aria-current='page']::after {
     transform: scaleX(1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .header__nav a[aria-current='page']:hover::after {
+      transform: scaleY(2);
+    }
   }
   @media (hover: hover) and (pointer: fine) {
     .header__nav a:hover::after {

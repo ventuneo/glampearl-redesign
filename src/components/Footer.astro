@@ -54,9 +54,9 @@ const year = new Date().getFullYear();
   <p class="footer__mark wrap" aria-hidden="true">glampearl</p>
   <div class="footer__legal wrap t-xs muted">
     <span>© {year} GlamPearl</span>
-    <a class="hit" href={`${STORE}/policies/privacy-policy`}>Privacy</a>
-    <a class="hit" href={`${STORE}/policies/terms-of-service`}>Terms</a>
-    <a class="hit" href={`${STORE}/policies/refund-policy`}>Refunds</a>
+    <a class="u-grow" href={`${STORE}/policies/privacy-policy`}>Privacy</a>
+    <a class="u-grow" href={`${STORE}/policies/terms-of-service`}>Terms</a>
+    <a class="u-grow" href={`${STORE}/policies/refund-policy`}>Refunds</a>
     <span>Product names and logos are trademarks of their owners.</span>
   </div>
 </footer>
@@ -161,7 +161,8 @@ const year = new Date().getFullYear();
   .footer__mark {
     margin-top: var(--s8);
     padding-bottom: 0.2em;
-    font-size: clamp(4.5rem, 1rem + 17.5vw, 19rem);
+    /* Critic pass 1: the wordmark spans the full container (its advance is about 4 em). */
+    font-size: calc((100vw - 2 * var(--m)) / 4.05);
     font-weight: 600;
     letter-spacing: -0.06em;
     line-height: 0.78;
@@ -179,9 +180,5 @@ const year = new Date().getFullYear();
   .footer__legal a {
     text-decoration: none;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .footer__legal a:hover {
-      text-decoration: underline;
-    }
-  }
+
 </style>

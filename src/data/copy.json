@@ -1,45 +1,164 @@
 {
-  "13pcs-makeup-brush-set": { "name": "brush set, 13 pieces", "line": "Soft brushes for foundation, powder, blush, eyes, lips and brows." },
-  "16-piece-nail-clipper-set": { "name": "nail tool set, 16 pieces", "line": "Stainless steel tools for manicure and pedicure, in one case." },
-  "2-in-1-rotating-eyebrow-pencil": { "name": "brow pencil", "line": "Twist-up pencil to shape, fill and define. Black, brown or grey." },
-  "afro-kinky-curly-human-hair-wig": { "name": "kinky curly wig", "line": "Human hair in a 4B to 4C texture, with bangs. Glueless." },
-  "big-wave-wig": { "name": "big wave wig", "line": "Long, full waves with straight bangs, in 7 colours." },
-  "blonde-ombre-long-curly-wig": { "name": "blonde ombre curls", "line": "Long curly wig, blonde with dark roots." },
-  "butter-light-protection-cream": { "name": "face and body cream", "line": "Hoygi cream for face and body, 85 g." },
-  "collagen-moisturizing-facial-mask": { "name": "collagen sheet mask", "line": "Hydrating mask in two parts, upper and lower face. Box of 3." },
+  "13pcs-makeup-brush-set": {
+    "name": "brush set, 13 pieces",
+    "line": "Soft brushes for foundation, powder, blush, eyes, lips and brows."
+  },
+  "16-piece-nail-clipper-set": {
+    "name": "nail tool set, 16 pieces",
+    "line": "Stainless steel tools for manicure and pedicure, in one case."
+  },
+  "2-in-1-rotating-eyebrow-pencil": {
+    "name": "brow pencil",
+    "line": "Twist-up pencil to shape, fill and define. Black, brown or grey."
+  },
+  "afro-kinky-curly-human-hair-wig": {
+    "name": "kinky curly wig",
+    "line": "Human hair in a 4B to 4C texture, with bangs. Glueless."
+  },
+  "big-wave-wig": {
+    "name": "big wave wig",
+    "line": "Long, full waves with straight bangs, in 7 colours."
+  },
+  "blonde-ombre-long-curly-wig": {
+    "name": "blonde ombre curls",
+    "line": "Long curly wig, blonde with dark roots."
+  },
+  "butter-light-protection-cream": {
+    "name": "face and body cream",
+    "line": "Hoygi cream for face and body, 85 g."
+  },
+  "collagen-moisturizing-facial-mask": {
+    "name": "collagen sheet mask",
+    "line": "Hydrating mask in two parts, upper and lower face. Box of 3."
+  },
   "color-changing-thermal-gel-nail-polish-winter": {
     "name": "thermal gel polish",
     "line": "Gel colour that changes with temperature. 12 colour pairs.",
     "about": "Gel polish that shows one colour when your nails are warm and a second one when they cool down. Each bottle holds about 7 ml. Cure it under an LED or UV lamp like any gel colour."
   },
-  "cordless-professional-hair-clippers": { "name": "cordless clipper", "line": "Two speeds, 3 to 21 mm, quiet ceramic blade.", "category": "hair" },
-  "diamond-nail-cover": { "name": "diamond nail covers", "line": "Press-on covers that add sparkle, in 12 styles." },
-  "diy-nail-art-stickers": { "name": "gold and silver nail stickers", "line": "Metallic details for natural or gel nails." },
-  "eight-color-blush-makeup": { "name": "blush palette", "line": "Eight shades to wear alone or blend together." },
-  "electric-nail-polish-machine-pen": { "name": "nail drill pen", "line": "USB drill for shaping and buffing, up to 20,000 rpm." },
-  "european-american-womens-long-curly-wigs": { "name": "honey curly wig", "line": "Long, full curls with side-swept bangs." },
-  "eye-care-products": { "name": "eye cream", "line": "Cèlyn eye cream for the delicate skin around the eyes. 30 ml." },
-  "eye-shadow": { "name": "eye shadow palette", "line": "Buildable, blendable shadow in 8 palettes." },
-  "facial-skin-care-compound-moisturizing-oil": { "name": "face oil", "line": "Moisturising oil for soft, smooth skin, in 5 plant extracts. 60 g." },
-  "fiber-bulider-nail-gel-quick-building-repair-broken-nails-soak-off-uv-gel": { "name": "fiber builder gel", "line": "Soak-off gel to build, strengthen and repair nails." },
-  "flat-head-foundation-brush": { "name": "foundation brush", "line": "Angled flat brush for liquid and cream foundation." },
-  "hair-care-essential-oil": { "name": "hair and scalp oil", "line": "Light oil that conditions scalp and lengths. 30 ml.", "category": "hair" },
-  "hair-growth-liquid": { "name": "scalp treatment", "line": "Daily scalp liquid for fuller-looking hair.", "category": "hair" },
-  "japanese-style-nail-beauty-gel-stickers-semi-curing-french-gel": { "name": "french gel strips", "line": "Semi-cured gel stickers, 20 a pack, in 16 designs." },
-  "light-golden-long-straight-lace-wig": { "name": "golden lace front wig", "line": "Long and straight, 28 inch, with a 13x4 lace front." },
-  "lipstick-lip-gloss-moisturizing-lip-gloss-lipstick": { "name": "glossy lipstick", "line": "Moisturising colour with shine, in 10 shades." },
-  "long-curly-wig-with-bangs": { "name": "long curls with bangs", "line": "Voluminous curly wig with face-framing bangs." },
-  "long-straight-wig": { "name": "pink straight wig", "line": "Sleek, long and straight, 75 cm, in pink." },
-  "makeup-set-for-makeup-artist": { "name": "complete makeup kit", "line": "Eyes, lips, face, nails and brushes in one case." },
-  "micro-roll-womens-wig-headgear": { "name": "micro roll hairpiece", "line": "Short brown hairpiece for a neat, secure style." },
-  "nail-polish-nude-neutrals-soak-off-gel-polish": { "name": "gel polish", "line": "Soak-off gel colour in 50 shades, from nudes to deep reds." },
-  "non-greasy-sunscreen-spf50-moisturizer": { "name": "spf50 sun cream", "line": "Light, non-greasy sun protection for face and body. 55 ml." },
-  "portable-6w-usb-led-nail-light": { "name": "usb led nail lamp", "line": "Pocket-size 6 W lamp that cures gel." },
-  "portable-waterproof-electric-shaver": { "name": "mini shaver", "line": "Waterproof rotary shaver, USB-C, up to 1.5 hours a charge.", "category": "hair" },
-  "short-hair-wig-black-highlights-wine-red": { "name": "wine red pixie wig", "line": "Short wig, black with wine-red highlights." },
-  "turmeric-exfoliating-cleansing-pads": { "name": "turmeric cleansing pads", "line": "Pads that cleanse and gently exfoliate. Also as sets." },
-  "waterproof-eyeliner-stamp-pen": { "name": "eyeliner stamp pen", "line": "Stamp the wing, then draw the line. Waterproof." },
-  "waterproof-lip-liner": { "name": "lip liner", "line": "Waterproof liner in 9 shades, from rose to mocha." },
-  "waterproof-smudge-proof-eyeliner-cream": { "name": "cream eyeliner", "line": "Smudge-proof liner in silver, grey, coffee or black." },
-  "womens-love-sweet-fake-nails": { "name": "heart press-on nails", "line": "Press-on nails with a love-heart design." }
+  "cordless-professional-hair-clippers": {
+    "name": "cordless clipper",
+    "line": "Two speeds, 3 to 21 mm, quiet ceramic blade.",
+    "category": "hair"
+  },
+  "diamond-nail-cover": {
+    "name": "diamond nail covers",
+    "line": "Press-on covers that add sparkle, in 12 styles."
+  },
+  "diy-nail-art-stickers": {
+    "name": "gold and silver nail stickers",
+    "line": "Metallic details for natural or gel nails."
+  },
+  "eight-color-blush-makeup": {
+    "name": "blush palette",
+    "line": "Eight shades to wear alone or blend together."
+  },
+  "electric-nail-polish-machine-pen": {
+    "name": "nail drill pen",
+    "line": "USB drill for shaping and buffing, up to 20,000 rpm."
+  },
+  "european-american-womens-long-curly-wigs": {
+    "name": "honey curly wig",
+    "line": "Long, full curls with side-swept bangs."
+  },
+  "eye-care-products": {
+    "name": "eye cream",
+    "line": "Cèlyn eye cream for the delicate skin around the eyes. 30 ml."
+  },
+  "eye-shadow": {
+    "name": "eye shadow palette",
+    "line": "Buildable, blendable shadow in 8 palettes."
+  },
+  "facial-skin-care-compound-moisturizing-oil": {
+    "name": "face oil",
+    "line": "Moisturising oil for soft, smooth skin, in 5 plant extracts. 60 g."
+  },
+  "fiber-bulider-nail-gel-quick-building-repair-broken-nails-soak-off-uv-gel": {
+    "name": "fiber builder gel",
+    "line": "Soak-off gel to build, strengthen and repair nails."
+  },
+  "flat-head-foundation-brush": {
+    "name": "foundation brush",
+    "line": "Angled flat brush for liquid and cream foundation."
+  },
+  "hair-care-essential-oil": {
+    "name": "hair and scalp oil",
+    "line": "Light oil that conditions scalp and lengths. 30 ml.",
+    "category": "hair"
+  },
+  "hair-growth-liquid": {
+    "name": "scalp treatment",
+    "line": "Daily scalp liquid for fuller-looking hair.",
+    "category": "hair"
+  },
+  "japanese-style-nail-beauty-gel-stickers-semi-curing-french-gel": {
+    "name": "french gel strips",
+    "line": "Semi-cured gel stickers, 20 a pack, in 16 designs."
+  },
+  "light-golden-long-straight-lace-wig": {
+    "name": "golden lace front wig",
+    "line": "Long and straight, 28 inch, with a 13x4 lace front."
+  },
+  "lipstick-lip-gloss-moisturizing-lip-gloss-lipstick": {
+    "name": "glossy lipstick",
+    "line": "Moisturising colour with shine, in 10 shades."
+  },
+  "long-curly-wig-with-bangs": {
+    "name": "long curls with bangs",
+    "line": "Voluminous curly wig with face-framing bangs."
+  },
+  "long-straight-wig": {
+    "name": "pink straight wig",
+    "line": "Sleek, long and straight, 75 cm, in pink."
+  },
+  "makeup-set-for-makeup-artist": {
+    "name": "complete makeup kit",
+    "line": "Eyes, lips, face, nails and brushes in one case."
+  },
+  "micro-roll-womens-wig-headgear": {
+    "name": "micro roll hairpiece",
+    "line": "Short brown hairpiece for a neat, secure style."
+  },
+  "nail-polish-nude-neutrals-soak-off-gel-polish": {
+    "name": "gel polish",
+    "line": "Soak-off gel colour in 50 shades, from nudes to deep reds.",
+    "about": "Soak-off gel colour in 50 shades, from nudes and pinks to deep reds, blues, greens and glitter. Each bottle holds 8.5 ml and goes on in one stroke. Cure each thin layer under a UV or LED lamp."
+  },
+  "non-greasy-sunscreen-spf50-moisturizer": {
+    "name": "spf50 sun cream",
+    "line": "Light, non-greasy sun protection for face and body. 55 ml."
+  },
+  "portable-6w-usb-led-nail-light": {
+    "name": "usb led nail lamp",
+    "line": "Pocket-size 6 W lamp that cures gel."
+  },
+  "portable-waterproof-electric-shaver": {
+    "name": "mini shaver",
+    "line": "Waterproof rotary shaver, USB-C, up to 1.5 hours a charge.",
+    "category": "hair"
+  },
+  "short-hair-wig-black-highlights-wine-red": {
+    "name": "wine red pixie wig",
+    "line": "Short wig, black with wine-red highlights."
+  },
+  "turmeric-exfoliating-cleansing-pads": {
+    "name": "turmeric cleansing pads",
+    "line": "Pads that cleanse and gently exfoliate. Also as sets."
+  },
+  "waterproof-eyeliner-stamp-pen": {
+    "name": "eyeliner stamp pen",
+    "line": "Stamp the wing, then draw the line. Waterproof."
+  },
+  "waterproof-lip-liner": {
+    "name": "lip liner",
+    "line": "Waterproof liner in 9 shades, from rose to mocha."
+  },
+  "waterproof-smudge-proof-eyeliner-cream": {
+    "name": "cream eyeliner",
+    "line": "Smudge-proof liner in silver, grey, coffee or black."
+  },
+  "womens-love-sweet-fake-nails": {
+    "name": "heart press-on nails",
+    "line": "Press-on nails with a love-heart design."
+  }
 }

@@ -90,7 +90,7 @@ const jsonLd = {
     <div class="pdp__info">
       <div class="pdp__sticky">
         <nav class="pdp__crumbs t-xs muted" aria-label="Breadcrumb">
-          <a href="/shop">shop</a> <span aria-hidden="true">/</span> <a href={`/shop/${category.slug}`}>{category.name}</a>
+          <a class="u-grow" href="/shop">shop</a> <span aria-hidden="true">/</span> <a class="u-grow" href={`/shop/${category.slug}`}>{category.name}</a>
         </nav>
         <h1 class="t-l pdp__name">{p.name}</h1>
         {p.line && <p class="pdp__line">{p.line}</p>}
@@ -262,11 +262,17 @@ const jsonLd = {
       column-gap: var(--gap);
       padding-top: var(--s5);
     }
+    /* Critic pass 1: the left half sat empty once the photograph scrolled away. Both columns stick now,
+       and the info column starts one track earlier. */
     .pdp__media {
       grid-column: 1 / 8;
+      position: sticky;
+      top: calc(var(--header-h) + var(--s5));
+      align-self: start;
     }
     .pdp__info {
-      grid-column: 9 / 13;
+      grid-column: 8 / 13;
+      padding-left: var(--s6);
     }
     .pdp__sticky {
       position: sticky;
@@ -351,6 +357,14 @@ const jsonLd = {
     opacity: 1;
     box-shadow: 0 2px 0 0 var(--ink);
   }
+  .pdp__thumb :global(.field) {
+    overflow: hidden;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pdp__thumb:hover :global(img) {
+      transform: scale(1.06);
+    }
+  }
   @media (hover: hover) and (pointer: fine) {
     .pdp__thumb:hover {
       opacity: 1;
@@ -360,14 +374,6 @@ const jsonLd = {
     display: grid;
     gap: var(--s3);
     align-content: start;
-  }
-  .pdp__crumbs a {
-    text-decoration: none;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .pdp__crumbs a:hover {
-      text-decoration: underline;
-    }
   }
   .pdp__name {
     margin-top: var(--s2);

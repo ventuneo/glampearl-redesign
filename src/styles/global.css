@@ -19,7 +19,7 @@
   /* colour */
   --ground: #ffffff;
   --ink: #34302d;
-  --muted: #716a65;
+  --muted: #665f5a; /* 5.9:1 on ground, 5.0:1 on nacre */
   --line: #e6e1dd;
   --nacre: #f1edea;
   --rose: #8f5b56;
@@ -45,7 +45,8 @@
   --s6: 32px;
   --s7: 48px;
   --s8: 72px;
-  --s9: clamp(72px, 9vw, 128px);
+  /* Critic pass 1: every section sat behind the same ~250px gap. Smaller default, varied per section. */
+  --s9: clamp(56px, 6vw, 96px);
   --header-h: 60px;
 
   /* motion */
@@ -358,17 +359,34 @@ ol[role='list'] {
   position: relative;
   display: inline-block;
   text-decoration: none;
-  padding-bottom: 2px;
+  /* at least 24px tall (WCAG 2.2, 2.5.8) */
+  padding-block: 3px 4px;
 }
-/* Target size: at least 24px tall without changing how the link looks (WCAG 2.2, 2.5.8). */
-.link::before,
-.hit::before {
+
+/* Utility links (breadcrumb, help contents, announcement, legal): the underline grows on hover,
+   like the header navigation. Real padding keeps them 24px tall. */
+.u-grow {
+  position: relative;
+  display: inline-block;
+  padding-block: 4px;
+  text-decoration: none;
+}
+.u-grow::after {
   content: '';
   position: absolute;
-  inset: -6px -2px;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--d-ui) var(--ease-out);
 }
-.hit {
-  position: relative;
+@media (hover: hover) and (pointer: fine) {
+  .u-grow:hover::after {
+    transform: scaleX(1);
+  }
 }
 .link::after {
   content: '';
@@ -509,6 +527,9 @@ ol[role='list'] {
   }
   .tile__rating {
     order: 3;
+  }
+  .tile__line {
+    -webkit-line-clamp: 3;
   }
 }
 @media (hover: hover) and (pointer: fine) {

@@ -5,7 +5,7 @@ import { bestsellers, products } from '../lib/catalog';
 const list = bestsellers(8);
 ---
 
-<section class="section wrap" aria-labelledby="best-title">
+<section class="section wrap best" aria-labelledby="best-title">
   <div class="section-head">
     <div>
       <h2 class="t-l" id="best-title">Best sellers</h2>
@@ -17,3 +17,10 @@ const list = bestsellers(8);
     {list.map((p) => <li><ProductTile product={p} /></li>)}
   </ul>
 </section>
+
+<style>
+  /* Best sellers and categories read as one shop block: tight between them. */
+  .best {
+    padding-bottom: var(--s6);
+  }
+</style>

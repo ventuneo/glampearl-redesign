@@ -56,8 +56,8 @@ const groups = [
     <div class="help__body">
       <nav class="help__toc" aria-label="On this page">
         <ul role="list">
-          {groups.map((g) => <li><a href={`#${g.id}`}>{g.title.toLowerCase()}</a></li>)}
-          <li><a href="#contact">contact</a></li>
+          {groups.map((g) => <li><a class="u-grow" href={`#${g.id}`}>{g.title.toLowerCase()}</a></li>)}
+          <li><a class="u-grow" href="#contact">contact</a></li>
         </ul>
       </nav>
       <div class="help__groups">

@@ -18,7 +18,7 @@ const cards = CATEGORIES.map((c) => {
 }).filter((c) => c.count > 0);
 ---
 
-<section class="section wrap cats" aria-labelledby="cats-title">
+<section class="section wrap cats" aria-labelledby="cats-title" style="padding-top: var(--s6)">
   <div class="section-head">
     <h2 class="t-l" id="cats-title">Shop by category</h2>
   </div>
@@ -30,10 +30,10 @@ const cards = CATEGORIES.map((c) => {
             <Field image={c.image} sizes="(min-width: 1024px) 25vw, 50vw" />
             <span class="tile__meta">
               <span class="cats__name">{c.name}</span>
-              <span class="tile__price">{plural(c.count, 'product')}</span>
-              <span class="tile__line">
-                {c.line} From {money(c.from)}.
+              <span class="tile__price">
+                {plural(c.count, 'product')}, from {money(c.from)}
               </span>
+              <span class="tile__line">{c.line}</span>
             </span>
           </a>
         </li>
