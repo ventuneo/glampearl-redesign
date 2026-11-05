@@ -59,7 +59,7 @@ Verschoben nach **hair**, weil sie im Shop als «skin care» geführt sind:
 | Best sellers | The products with the most reviews right now. |
 | 3 Schritte | Gel nails at home in three steps: Build, Colour, Cure |
 | Fakten | 4.9 out of 5 (440 reviews) · 30 days to return unused items · prices from CHF 11.90 |
-| Newsletter | 10% off your first order. Sign up for new shades and restocks. |
+| Newsletter | 10% off your first order. New shades, restocks and beauty tips by email. No spam, and you can unsubscribe any time. |
 
 ## Zu klären, bevor es live geht
 

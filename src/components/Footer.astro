@@ -7,15 +7,15 @@ const year = new Date().getFullYear();
 <section class="signup wrap" id="newsletter" aria-labelledby="signup-title">
   <div class="signup__text">
     <h2 class="t-l" id="signup-title">10% off your first order</h2>
-    <p class="muted measure">Sign up for new shades and restocks. One email when something new arrives, never more than that.</p>
+    <p class="muted measure">New shades, restocks and beauty tips by email. No spam, and you can unsubscribe any time.</p>
   </div>
   <!-- Posts to the live store's standard Shopify customer form (newsletter tag), as the theme does today. -->
   <form class="signup__form" data-signup method="post" action={`${STORE}/contact#newsletter`} accept-charset="UTF-8" novalidate>
     <input type="hidden" name="form_type" value="customer" />
     <input type="hidden" name="utf8" value="✓" />
     <input type="hidden" name="contact[tags]" value="newsletter" />
-    <label class="visually-hidden" for="signup-email">Email address</label>
-    <input id="signup-email" name="contact[email]" type="email" autocomplete="email" inputmode="email" placeholder="Email address" required />
+    <label class="signup__label t-s" for="signup-email">Email address</label>
+    <input id="signup-email" name="contact[email]" type="email" autocomplete="email" inputmode="email" placeholder="name@example.com" required />
     <button class="btn" type="submit">Sign up</button>
     <p class="signup__msg t-s" data-signup-msg role="status" aria-live="polite"></p>
   </form>
@@ -115,6 +115,9 @@ const year = new Date().getFullYear();
   }
   .signup__form input[aria-invalid='true'] {
     border-color: var(--rose);
+  }
+  .signup__label {
+    grid-column: 1 / -1;
   }
   .signup__msg {
     grid-column: 1 / -1;
