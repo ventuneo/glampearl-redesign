@@ -1,0 +1,88 @@
+---
+// Full-screen menu for phones. Shopify port: part of sections/header.liquid (menu drawer).
+import { CATEGORIES, inCategory } from '../lib/catalog';
+interface Props {
+  current?: string;
+}
+const { current = '' } = Astro.props;
+---
+
+<dialog class="sheet sheet--full" id="menu" aria-label="Menu">
+  <div class="sheet__inner">
+    <div class="sheet__head">
+      <a class="wordmark-sm" href="/">glampearl</a>
+      <button class="sheet__close" type="button" data-close aria-label="Close menu">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      </button>
+    </div>
+    <nav class="menu__nav sheet__body" aria-label="Main">
+      <ul role="list">
+        <li><a href="/shop" aria-current={current === 'shop' ? 'page' : undefined}>shop all</a></li>
+        {
+          CATEGORIES.map((c) => (
+            <li>
+              <a href={`/shop/${c.slug}`} aria-current={current === c.slug ? 'page' : undefined}>
+                {c.name} <span class="muted t-s num">{inCategory(c.slug).length}</span>
+              </a>
+            </li>
+          ))
+        }
+        <li><a href="/help" aria-current={current === 'help' ? 'page' : undefined}>help</a></li>
+      </ul>
+    </nav>
+    <div class="sheet__foot">
+      <a class="t-s" href="mailto:support@glampearl.store">support@glampearl.store</a>
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  .sheet--full {
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    opacity: 0;
+    transition:
+      opacity 160ms ease,
+      overlay 160ms allow-discrete,
+      display 160ms allow-discrete;
+  }
+  .sheet--full[open] {
+    opacity: 1;
+    transition-duration: 220ms;
+  }
+  @starting-style {
+    .sheet--full[open] {
+      opacity: 0;
+    }
+  }
+  .wordmark-sm {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    text-decoration: none;
+  }
+  .menu__nav ul {
+    display: grid;
+    margin: 0;
+  }
+  .menu__nav a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s3);
+    padding-block: 10px;
+    font-size: var(--t-l);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    text-decoration: none;
+    transition: transform var(--d-press) var(--ease-out);
+  }
+  .menu__nav a:active {
+    transform: translateX(4px);
+  }
+  .menu__nav a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.15em;
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+// Product card: the photograph in its field, then name, price, one line, real rating. Shopify port: snippets/product-tile.liquid.
+import Field from './Field.astro';
+import { priceLabel, type Product } from '../lib/catalog';
+
+interface Props {
+  product: Product;
+  eager?: boolean;
+  sizes?: string;
+}
+const { product: p, eager = false, sizes } = Astro.props;
+---
+
+<a class="tile" href={`/products/${p.handle}`}>
+  <Field image={p.images[0]} eager={eager} sizes={sizes} />
+  <span class="tile__meta">
+    <span class="tile__name">{p.name}</span>
+    <span class="tile__price">{priceLabel(p)}</span>
+    {p.line && <span class="tile__line">{p.line}</span>}
+    {
+      p.rating && (
+        <span class="tile__rating num">
+          {p.rating.average.toFixed(1)} out of 5, {p.rating.count} reviews
+        </span>
+      )
+    }
+  </span>
+</a>

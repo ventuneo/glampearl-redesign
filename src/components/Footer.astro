@@ -1,0 +1,184 @@
+---
+// Newsletter and footer. Shopify port: sections/newsletter.liquid + sections/footer.liquid.
+import { CATEGORIES, STORE } from '../lib/catalog';
+const year = new Date().getFullYear();
+---
+
+<section class="signup wrap" id="newsletter" aria-labelledby="signup-title">
+  <div class="signup__text">
+    <h2 class="t-l" id="signup-title">10% off your first order</h2>
+    <p class="muted measure">Sign up for new shades and restocks. One email when something new arrives, never more than that.</p>
+  </div>
+  <!-- Posts to the live store's standard Shopify customer form (newsletter tag), as the theme does today. -->
+  <form class="signup__form" data-signup method="post" action={`${STORE}/contact#newsletter`} accept-charset="UTF-8" novalidate>
+    <input type="hidden" name="form_type" value="customer" />
+    <input type="hidden" name="utf8" value="✓" />
+    <input type="hidden" name="contact[tags]" value="newsletter" />
+    <label class="visually-hidden" for="signup-email">Email address</label>
+    <input id="signup-email" name="contact[email]" type="email" autocomplete="email" inputmode="email" placeholder="Email address" required />
+    <button class="btn" type="submit">Sign up</button>
+    <p class="signup__msg t-s" data-signup-msg role="status" aria-live="polite"></p>
+  </form>
+</section>
+
+<footer class="footer">
+  <div class="footer__grid wrap">
+    <nav aria-label="Shop">
+      <h2 class="footer__h">shop</h2>
+      <ul role="list">
+        <li><a href="/shop">shop all</a></li>
+        {
+          CATEGORIES.map((c) => (
+            <li>
+              <a href={`/shop/${c.slug}`}>{c.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <nav aria-label="Help">
+      <h2 class="footer__h">help</h2>
+      <ul role="list">
+        <li><a href="/help#delivery">delivery</a></li>
+        <li><a href="/help#returns">returns</a></li>
+        <li><a href="/help#payment">payment</a></li>
+        <li><a href="/help#contact">contact</a></li>
+      </ul>
+    </nav>
+    <div>
+      <h2 class="footer__h">write to us</h2>
+      <p class="t-s"><a class="link" href="mailto:support@glampearl.store">support@glampearl.store</a></p>
+      <p class="t-s muted">A person reads and answers every email.</p>
+    </div>
+  </div>
+  <p class="footer__mark wrap" aria-hidden="true">glampearl</p>
+  <div class="footer__legal wrap t-xs muted">
+    <span>© {year} GlamPearl</span>
+    <a href={`${STORE}/policies/privacy-policy`}>Privacy</a>
+    <a href={`${STORE}/policies/terms-of-service`}>Terms</a>
+    <a href={`${STORE}/policies/refund-policy`}>Refunds</a>
+    <span>Product names and logos are trademarks of their owners.</span>
+  </div>
+</footer>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-signup]');
+  const msg = document.querySelector<HTMLElement>('[data-signup-msg]');
+  form?.addEventListener('submit', (e) => {
+    const input = form.querySelector<HTMLInputElement>('input[type="email"]')!;
+    if (!input.checkValidity()) {
+      e.preventDefault();
+      msg!.textContent = 'Enter an email address like name@example.com.';
+      input.setAttribute('aria-invalid', 'true');
+      input.focus();
+      return;
+    }
+    input.removeAttribute('aria-invalid');
+  });
+</script>
+
+<style>
+  .signup {
+    display: grid;
+    gap: var(--s5);
+    padding-block: var(--s8);
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 900px) {
+    .signup {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+    }
+  }
+  .signup__text {
+    display: grid;
+    gap: var(--s3);
+  }
+  .signup__form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s2);
+  }
+  .signup__form input {
+    min-height: 52px;
+    padding: 0 20px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--ground);
+    font-size: 1rem;
+    transition: border-color var(--d-ui) ease;
+  }
+  .signup__form input:focus-visible {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 2px var(--rose);
+  }
+  .signup__form input[aria-invalid='true'] {
+    border-color: var(--rose);
+  }
+  .signup__msg {
+    grid-column: 1 / -1;
+    min-height: 1.5em;
+  }
+  @media (max-width: 480px) {
+    .signup__form {
+      grid-template-columns: 1fr;
+    }
+  }
+  .footer {
+    background: var(--nacre);
+    padding-top: var(--s8);
+    overflow: hidden;
+  }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--s6);
+  }
+  .footer__h {
+    font-size: var(--t-s);
+    font-weight: 500;
+    margin-bottom: var(--s3);
+  }
+  .footer ul {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+  }
+  .footer ul a {
+    display: inline-block;
+    padding-block: 6px;
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .footer ul a:hover {
+      text-decoration: underline;
+    }
+  }
+  .footer__mark {
+    margin-top: var(--s8);
+    padding-bottom: 0.2em;
+    font-size: clamp(4.5rem, 1rem + 17.5vw, 19rem);
+    font-weight: 600;
+    letter-spacing: -0.06em;
+    line-height: 0.78;
+    margin-left: -0.05em;
+    color: var(--ink);
+    user-select: none;
+    white-space: nowrap;
+  }
+  .footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s5);
+    padding-block: var(--s5) calc(var(--s5) + env(safe-area-inset-bottom));
+  }
+  .footer__legal a {
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .footer__legal a:hover {
+      text-decoration: underline;
+    }
+  }
+</style>

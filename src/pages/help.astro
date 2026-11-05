@@ -1,0 +1,194 @@
+---
+// Help: the live shop's FAQ answers, grouped. Shopify port: templates/page.help.json with a FAQ section.
+import Base from '../layouts/Base.astro';
+
+const groups = [
+  {
+    id: 'delivery',
+    title: 'Delivery',
+    items: [
+      {
+        q: 'How long does delivery take?',
+        a: 'Orders are processed within 2 to 5 working days. Standard delivery then takes about 7 to 20 working days, international delivery about 10 to 25. You get a shipping confirmation with tracking as soon as your order leaves.',
+      },
+      { q: 'How much is shipping?', a: 'The exact fee is shown at checkout, before you pay.' },
+    ],
+  },
+  {
+    id: 'returns',
+    title: 'Returns',
+    items: [
+      {
+        q: 'Can I return my order?',
+        a: 'Unused items in their original packaging can be returned within 30 days of delivery. Email support@glampearl.store to start a return. For hygiene reasons, opened personal-care and beauty products cannot be returned.',
+      },
+    ],
+  },
+  {
+    id: 'payment',
+    title: 'Payment',
+    items: [
+      {
+        q: 'Which payment methods do you accept?',
+        a: 'All major cards and the express wallets offered at the secure Shopify checkout, including Apple Pay. Prices are shown in your local currency.',
+      },
+    ],
+  },
+  {
+    id: 'gel',
+    title: 'Gel nails',
+    items: [
+      {
+        q: 'Is gel polish hard to use at home?',
+        a: 'No. Prepare your nails, paint a thin layer, cure it under the LED lamp, and repeat for each layer. The builder gel, a shade and the USB lamp are all you need to start.',
+      },
+    ],
+  },
+];
+---
+
+<Base title="Help" description="Delivery times, shipping costs, returns within 30 days, payment methods and how to reach GlamPearl." current="help">
+  <div class="help wrap">
+    <div class="help__head">
+      <h1 class="t-display">help</h1>
+      <p class="muted measure">Delivery, returns and payment, answered. Anything else: write to us and a person replies.</p>
+    </div>
+    <div class="help__body">
+      <nav class="help__toc" aria-label="On this page">
+        <ul role="list">
+          {groups.map((g) => <li><a href={`#${g.id}`}>{g.title.toLowerCase()}</a></li>)}
+          <li><a href="#contact">contact</a></li>
+        </ul>
+      </nav>
+      <div class="help__groups">
+        {
+          groups.map((g) => (
+            <section id={g.id} aria-labelledby={`${g.id}-title`}>
+              <h2 class="t-m" id={`${g.id}-title`}>
+                {g.title}
+              </h2>
+              {g.items.map((it) => (
+                <details open={g.id === 'delivery'}>
+                  <summary>{it.q}</summary>
+                  <p>{it.a}</p>
+                </details>
+              ))}
+            </section>
+          ))
+        }
+        <section id="contact" aria-labelledby="contact-title" class="help__contact">
+          <h2 class="t-m" id="contact-title">Contact</h2>
+          <p class="muted">Email us about an order, a return or a product. A person reads and answers every email.</p>
+          <a class="btn" href="mailto:support@glampearl.store">Email support@glampearl.store</a>
+        </section>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .help {
+    padding-block: var(--s7) var(--s9);
+  }
+  .help__head {
+    display: grid;
+    gap: var(--s3);
+    margin-bottom: var(--s7);
+  }
+  .help__head h1 {
+    margin-left: -0.04em;
+  }
+  .help__body {
+    display: grid;
+    gap: var(--s6);
+  }
+  @media (min-width: 1024px) {
+    .help__body {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+    }
+    .help__toc {
+      grid-column: 1 / 4;
+    }
+    .help__groups {
+      grid-column: 5 / 12;
+    }
+    .help__toc ul {
+      position: sticky;
+      top: calc(var(--header-h) + var(--s5));
+    }
+  }
+  .help__toc ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s4);
+    margin: 0;
+  }
+  @media (min-width: 1024px) {
+    .help__toc ul {
+      display: grid;
+    }
+  }
+  .help__toc a {
+    display: inline-block;
+    padding-block: 6px;
+  }
+  .help__groups {
+    display: grid;
+    gap: var(--s7);
+  }
+  .help__groups section {
+    display: grid;
+    gap: var(--s2);
+    scroll-margin-top: calc(var(--header-h) + var(--s5));
+  }
+  .help__groups h2 {
+    margin-bottom: var(--s2);
+  }
+  .help details {
+    border-top: 1px solid var(--line);
+  }
+  .help details:last-of-type {
+    border-bottom: 1px solid var(--line);
+  }
+  .help summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s4);
+    min-height: 56px;
+    padding-block: 10px;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 500;
+  }
+  .help summary::-webkit-details-marker {
+    display: none;
+  }
+  .help summary::after {
+    content: '';
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-3px) rotate(45deg);
+    transition: transform var(--d-ui) var(--ease-out);
+  }
+  .help details[open] summary::after {
+    transform: translateY(2px) rotate(-135deg);
+  }
+  .help details p {
+    margin: 0 0 var(--s5);
+    color: var(--muted);
+    max-width: 38rem;
+  }
+  .help__contact {
+    justify-items: start;
+  }
+  .help__contact .btn {
+    white-space: normal;
+    text-align: center;
+    margin-top: var(--s3);
+  }
+</style>

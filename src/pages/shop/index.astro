@@ -1,0 +1,9 @@
+---
+import Base from '../../layouts/Base.astro';
+import ShopGrid from '../../components/ShopGrid.astro';
+import { products } from '../../lib/catalog';
+---
+
+<Base title="Shop all" description="All GlamPearl products: gel nails, skin care, makeup, wigs and hair care, from CHF 11.90." current="shop">
+  <ShopGrid title="shop all" line="Gel nails, skin care, makeup, wigs and hair care." list={products} current="all" />
+</Base>

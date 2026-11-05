@@ -1,0 +1,562 @@
+---
+// Product page. Shopify port: templates/product.json + sections/main-product.liquid + sections/related-products.liquid.
+import Base from '../../layouts/Base.astro';
+import Field from '../../components/Field.astro';
+import ProductTile from '../../components/ProductTile.astro';
+import { CATEGORIES, STORE, clientProduct, money, optionViews, products, related, type Product } from '../../lib/catalog';
+import { inkOn } from '../../lib/colour';
+
+export function getStaticPaths() {
+  return products.map((p) => ({ params: { handle: p.handle }, props: { product: p } }));
+}
+
+const { product: p } = Astro.props as { product: Product };
+const category = CATEGORIES.find((c) => c.slug === p.category)!;
+const options = optionViews(p);
+const start = p.variants[0];
+const variantImages = new Set(p.variants.map((v) => v.image).filter((x) => x != null));
+// Gallery: the photographs that show the product as a whole; variant shots join only when there are few.
+// A shade product (gel polish) keeps its studio photograph large and shows the chosen shade as a colour field
+// beside it, as the home page does; the maker's swatch photograph of that shade becomes a thumbnail.
+const isShade = p.variants.some((v) => v.swatch);
+let gallery = p.images.map((_, i) => i).filter((i) => !variantImages.has(i));
+if (!isShade && gallery.length < 2) gallery = p.images.map((_, i) => i).slice(0, 8);
+if (isShade && start.image != null) gallery = [...gallery.slice(0, 1), start.image];
+const mainIndex = isShade ? (gallery[0] ?? 0) : (start.image ?? gallery[0] ?? 0);
+const main = p.images[mainIndex];
+const more = related(p, 4);
+const hasMany = p.variants.length > 1;
+const title = p.name.charAt(0).toUpperCase() + p.name.slice(1);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: p.name,
+  description: p.line || p.about,
+  image: p.images.slice(0, 4).map((im) => new URL(im.src['960'], STORE).href),
+  brand: { '@type': 'Brand', name: 'GlamPearl' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'CHF',
+    lowPrice: p.priceMin.toFixed(2),
+    highPrice: p.priceMax.toFixed(2),
+    offerCount: p.variants.length,
+  },
+  ...(p.rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: p.rating.average, reviewCount: p.rating.count } } : {}),
+};
+---
+
+<Base title={title} description={`${p.line} ${money(p.priceMin)}. Returns within 30 days on unused items.`} current={p.category} image={main.src['960']}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <div class="pdp wrap" data-product>
+    <div class="pdp__media">
+      <div class:list={['pdp__stage', { 'pdp__stage--pair': isShade }]}>
+        <div class="pdp__main" data-main>
+          <Field image={main} eager alt={p.name} sizes={isShade ? '(min-width: 1024px) 28vw, 50vw' : '(min-width: 1024px) 56vw, 100vw'} />
+        </div>
+        {
+          isShade && start.swatch && (
+            <div class="pdp__shade" data-shade style={`--shade:${start.swatch};--shade-ink:${inkOn(start.swatch)}`}>
+              <span class="pdp__shade-name" data-shade-name>
+                {start.title.toLowerCase()}
+              </span>
+            </div>
+          )
+        }
+      </div>
+      {
+        gallery.length > 1 && (
+          <ul class="pdp__thumbs" role="list" aria-label="More photographs">
+            {gallery.map((i, n) => (
+              <li>
+                <button
+                  class="pdp__thumb"
+                  type="button"
+                  data-thumb={i}
+                  data-variant-thumb={isShade && n === gallery.length - 1 ? '' : undefined}
+                  aria-pressed={i === mainIndex}
+                  aria-label={isShade && n === gallery.length - 1 ? 'Photograph of the chosen shade' : `Photograph ${n + 1} of ${gallery.length}`}
+                >
+                  <Field image={p.images[i]} sizes="96px" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    <div class="pdp__info">
+      <div class="pdp__sticky">
+        <nav class="pdp__crumbs t-xs muted" aria-label="Breadcrumb">
+          <a href="/shop">shop</a> <span aria-hidden="true">/</span> <a href={`/shop/${category.slug}`}>{category.name}</a>
+        </nav>
+        <h1 class="t-l pdp__name">{p.name}</h1>
+        {p.line && <p class="pdp__line">{p.line}</p>}
+        <p class="pdp__price num">
+          <span data-price>{money(start.price)}</span>
+          {start.compareAt && start.compareAt > start.price && <s class="muted" data-compare>{money(start.compareAt)}</s>}
+        </p>
+        {
+          p.rating && (
+            <p class="t-s muted num">
+              {p.rating.average.toFixed(1)} out of 5, {p.rating.count} reviews
+            </p>
+          )
+        }
+
+        <form class="pdp__form" data-form>
+          {
+            options.map((o) => (
+              <fieldset class={`opt opt--${o.kind}`} data-option={o.index}>
+                <legend class="opt__legend t-s">
+                  {o.label}: <span data-option-value={o.index}>{start.options[o.index]?.toLowerCase()}</span>
+                </legend>
+                <div class="opt__values">
+                  {o.values.map((v) => (
+                    <label class="opt__value" title={v.value} style={v.swatch ? `--c:${v.swatch}` : undefined}>
+                      <input class="visually-hidden" type="radio" name={`opt-${o.index}`} value={v.value} checked={start.options[o.index] === v.value} />
+                      {o.kind === 'image' && v.image ? (
+                        <>
+                          <Field image={v.image} sizes="64px" />
+                          <span class="visually-hidden">{v.value}</span>
+                        </>
+                      ) : o.kind === 'swatch' ? (
+                        <span class="visually-hidden">{v.value}</span>
+                      ) : (
+                        <span>{v.value}</span>
+                      )}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ))
+          }
+
+          <div class="pdp__buy" data-buy>
+            <div class="qty" role="group" aria-label="Quantity">
+              <button type="button" data-step="-1" aria-label="One less">−</button>
+              <output data-qty aria-live="polite">1</output>
+              <button type="button" data-step="1" aria-label="One more">+</button>
+            </div>
+            <button class="btn pdp__add" type="submit" data-add>Add to bag</button>
+          </div>
+          <p class="t-xs muted" data-unavailable hidden>This combination does not exist. Pick another option.</p>
+        </form>
+
+        <ul class="pdp__notes t-s muted" role="list">
+          <li>Unused items in their packaging can be returned within 30 days.</li>
+          <li>Delivery takes about 7 to 20 working days. Shipping is shown at checkout.</li>
+        </ul>
+
+        <div class="pdp__more">
+          {
+            p.about && (
+              <details open>
+                <summary>About</summary>
+                <p>{p.about}</p>
+              </details>
+            )
+          }
+          {
+            p.use.length > 0 && (
+              <details>
+                <summary>How to use</summary>
+                {p.use.length > 1 ? (
+                  <ol>
+                    {p.use.map((s) => (
+                      <li>{s}</li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p>{p.use[0]}</p>
+                )}
+              </details>
+            )
+          }
+          {
+            p.details.length > 0 && (
+              <details>
+                <summary>Details</summary>
+                <dl class="pdp__dl">
+                  {p.details.map(([k, v]) => (
+                    <div>
+                      {k && <dt>{k}</dt>}
+                      <dd>{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
+            )
+          }
+          {
+            p.includes.length > 0 && (
+              <details>
+                <summary>In the box</summary>
+                <ul>
+                  {p.includes.map((s) => (
+                    <li>{s}</li>
+                  ))}
+                </ul>
+              </details>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {
+    more.length > 0 && (
+      <section class="section wrap" aria-labelledby="more-title">
+        <div class="section-head">
+          <h2 class="t-l" id="more-title">More {category.name}</h2>
+          <a class="link t-s" href={`/shop/${category.slug}`}>
+            See all {category.name}
+          </a>
+        </div>
+        <ul class="grid grid--4" role="list">
+          {more.map((x) => (
+            <li>
+              <ProductTile product={x} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <div class="buybar" data-buybar aria-hidden="true" inert>
+    <div class="buybar__text">
+      <span class="buybar__name">{p.name}</span>
+      <span class="t-s num" data-bar-price>{money(start.price)}</span>
+    </div>
+    <button class="btn" type="button" data-bar-add tabindex="-1">Add to bag</button>
+  </div>
+
+  <script type="application/json" id="product-data" set:html={JSON.stringify(clientProduct(p))} />
+  <script>
+    import '../../scripts/product.ts';
+  </script>
+</Base>
+
+<style>
+  .pdp {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s6);
+    padding-block: var(--s4) var(--s8);
+  }
+  .pdp > * {
+    min-width: 0;
+  }
+  @media (min-width: 1024px) {
+    .pdp {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+      padding-top: var(--s5);
+    }
+    .pdp__media {
+      grid-column: 1 / 8;
+    }
+    .pdp__info {
+      grid-column: 9 / 13;
+    }
+    .pdp__sticky {
+      position: sticky;
+      top: calc(var(--header-h) + var(--s5));
+    }
+  }
+  @media (max-width: 1023px) {
+    .pdp__media {
+      margin-inline: calc(var(--m) * -1);
+    }
+    .pdp__thumbs {
+      padding-inline: var(--m);
+    }
+  }
+  .pdp__stage--pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+  }
+  .pdp__shade {
+    position: relative;
+    aspect-ratio: 1;
+    background: var(--shade);
+    color: var(--shade-ink);
+    transition:
+      background-color var(--d-field) var(--ease-out),
+      color var(--d-field) var(--ease-out);
+  }
+  .pdp__shade-name {
+    position: absolute;
+    left: var(--s4);
+    bottom: var(--s4);
+    right: var(--s4);
+    font-size: var(--t-l);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    transition:
+      filter 120ms ease,
+      opacity 120ms ease;
+  }
+  .pdp__shade-name.is-swapping {
+    filter: blur(4px);
+    opacity: 0;
+  }
+  @media (max-width: 1023px) {
+    .pdp__stage--pair {
+      padding-inline: var(--m);
+    }
+  }
+  .pdp__thumbs {
+    display: flex;
+    gap: var(--s2);
+    margin: var(--s3) 0 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .pdp__thumbs::-webkit-scrollbar {
+    display: none;
+  }
+  .pdp__thumb {
+    display: block;
+    width: 72px;
+    flex: 0 0 auto;
+    transition: transform var(--d-press) var(--ease-out), opacity var(--d-ui) ease;
+    opacity: 0.72;
+  }
+  .pdp__thumb:active {
+    transform: scale(0.96);
+  }
+  .pdp__thumb[aria-pressed='true'] {
+    opacity: 1;
+    box-shadow: 0 2px 0 0 var(--ink);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pdp__thumb:hover {
+      opacity: 1;
+    }
+  }
+  .pdp__sticky {
+    display: grid;
+    gap: var(--s3);
+    align-content: start;
+  }
+  .pdp__crumbs a {
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pdp__crumbs a:hover {
+      text-decoration: underline;
+    }
+  }
+  .pdp__name {
+    margin-top: var(--s2);
+    overflow-wrap: anywhere;
+  }
+  .pdp__line {
+    font-size: var(--t-m);
+    line-height: 1.35;
+    color: var(--muted);
+  }
+  .pdp__price {
+    display: flex;
+    gap: var(--s3);
+    align-items: baseline;
+    font-size: var(--t-m);
+    font-weight: 500;
+    margin-top: var(--s2);
+  }
+  .pdp__form {
+    display: grid;
+    gap: var(--s5);
+    margin-top: var(--s4);
+  }
+  .opt {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .opt__legend {
+    padding: 0;
+    margin-bottom: var(--s3);
+  }
+  .opt__legend span {
+    color: var(--muted);
+  }
+  .opt__values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2);
+  }
+  .opt__value {
+    position: relative;
+    cursor: pointer;
+    transition: transform var(--d-press) var(--ease-out), box-shadow var(--d-ui) var(--ease-out);
+  }
+  .opt__value:active {
+    transform: scale(0.95);
+  }
+  .opt__value:has(:focus-visible) {
+    outline: 2px solid var(--rose);
+    outline-offset: 4px;
+  }
+  .opt--text .opt__value {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 16px;
+    border-radius: 22px;
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-size: var(--t-s);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+  .opt--text .opt__value:has(:checked) {
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  .opt--swatch .opt__values {
+    gap: 8px;
+  }
+  .opt--swatch .opt__value {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--c);
+    box-shadow: inset 0 0 0 1px rgb(52 48 45 / 0.12);
+  }
+  .opt--swatch .opt__value:has(:checked) {
+    box-shadow:
+      inset 0 0 0 1px rgb(52 48 45 / 0.12),
+      0 0 0 2px var(--ground),
+      0 0 0 3.5px var(--ink);
+  }
+  .opt--image .opt__value {
+    width: 64px;
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  .opt--image .opt__value:has(:checked) {
+    box-shadow: 0 0 0 1.5px var(--ink);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .opt--text .opt__value:hover,
+    .opt--image .opt__value:hover {
+      box-shadow: inset 0 0 0 1px var(--ink);
+    }
+    .opt--swatch .opt__value:hover {
+      transform: scale(1.1);
+    }
+  }
+  .pdp__buy {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s2);
+    align-items: center;
+  }
+  .pdp__buy .qty {
+    min-height: 52px;
+  }
+  .pdp__notes {
+    display: grid;
+    gap: 4px;
+    margin: var(--s2) 0 0;
+  }
+  .pdp__more {
+    margin-top: var(--s4);
+    border-top: 1px solid var(--line);
+  }
+  .pdp__more details {
+    border-bottom: 1px solid var(--line);
+  }
+  .pdp__more summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 52px;
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+  }
+  .pdp__more summary::-webkit-details-marker {
+    display: none;
+  }
+  .pdp__more summary::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-3px) rotate(45deg);
+    transition: transform var(--d-ui) var(--ease-out);
+  }
+  .pdp__more details[open] summary::after {
+    transform: translateY(2px) rotate(-135deg);
+  }
+  .pdp__more details > :not(summary) {
+    margin: 0 0 var(--s5);
+    color: var(--muted);
+    max-width: 38rem;
+  }
+  .pdp__more ol,
+  .pdp__more ul {
+    padding-left: 1.2em;
+    display: grid;
+    gap: 6px;
+  }
+  .pdp__dl {
+    display: grid;
+    gap: 6px;
+  }
+  .pdp__dl div {
+    display: grid;
+    grid-template-columns: minmax(7rem, 40%) 1fr;
+    gap: var(--s3);
+  }
+  .pdp__dl dt {
+    color: var(--ink);
+  }
+  .pdp__dl dd {
+    margin: 0;
+  }
+  .buybar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s3);
+    align-items: center;
+    padding: var(--s3) var(--m) calc(var(--s3) + env(safe-area-inset-bottom, 0px));
+    background: var(--ground);
+    border-top: 1px solid var(--line);
+    transform: translateY(100%);
+    transition: transform 240ms var(--ease-out);
+  }
+  .buybar[data-show] {
+    transform: translateY(0);
+    transition-duration: 320ms;
+    transition-timing-function: var(--ease-drawer);
+  }
+  .buybar__text {
+    display: grid;
+    min-width: 0;
+  }
+  .buybar__name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media (min-width: 1024px) {
+    .buybar {
+      display: none;
+    }
+  }
+</style>

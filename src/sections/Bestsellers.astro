@@ -1,0 +1,19 @@
+---
+// Best sellers grid. Shopify port: sections/featured-collection.liquid.
+import ProductTile from '../components/ProductTile.astro';
+import { bestsellers, products } from '../lib/catalog';
+const list = bestsellers(8);
+---
+
+<section class="section wrap" aria-labelledby="best-title">
+  <div class="section-head">
+    <div>
+      <h2 class="t-l" id="best-title">Best sellers</h2>
+      <p class="muted">The products with the most reviews right now.</p>
+    </div>
+    <a class="link t-s" href="/shop">See all {products.length} products</a>
+  </div>
+  <ul class="grid grid--4" role="list">
+    {list.map((p) => <li><ProductTile product={p} /></li>)}
+  </ul>
+</section>

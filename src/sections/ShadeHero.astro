@@ -1,0 +1,268 @@
+---
+// Hero: the shade card. Pick one of the 50 gel shades and the field turns that colour (DESIGN.md signature).
+// Shopify port: sections/hero-shade-card.liquid with a product setting (the gel polish) and its variants.
+import Field from '../components/Field.astro';
+import { byHandle } from '../lib/catalog';
+import { inkOn } from '../lib/colour';
+
+const gel = byHandle('nail-polish-nude-neutrals-soak-off-gel-polish')!;
+const shades = gel.variants.filter((v) => v.swatch);
+const start = shades.find((v) => v.title === 'Dusty Rose') ?? shades[0];
+const photo = gel.images[0];
+const client = {
+  handle: gel.handle,
+  name: gel.name,
+  price: gel.priceMin,
+  img: photo.src['480'],
+  e1: photo.e1,
+  e2: photo.e2,
+  bands: photo.bands,
+  band: photo.band,
+  shades: shades.map((v) => ({ id: v.id, title: v.title, swatch: v.swatch, ink: inkOn(v.swatch!) })),
+};
+---
+
+<section class="hero wrap" aria-labelledby="hero-title" data-hero>
+  <div class="hero__text">
+    <h1 class="t-display" id="hero-title">At-home gel nails, skin care and wigs</h1>
+    <p class="hero__sub measure">
+      Pick from 50 soak-off gel shades at CHF&nbsp;19.90 each and cure them under a pocket-size USB lamp. Unused items can go back within 30&nbsp;days.
+    </p>
+    <div class="hero__actions">
+      <button class="btn" type="button" data-hero-add>Add to bag</button>
+      <a class="btn btn--ghost" href={`/products/${gel.handle}`}>See all 50 shades</a>
+    </div>
+  </div>
+
+  <div class="hero__card">
+    <a class="hero__photo" href={`/products/${gel.handle}`} aria-label={`${gel.name}, see the product`}>
+      <Field image={photo} eager ratio="4 / 5" sizes="(min-width: 1024px) 28vw, 46vw" />
+    </a>
+    <div class="hero__swatch" style={`--shade:${start.swatch};--shade-ink:${inkOn(start.swatch!)}`} data-hero-swatch>
+      <p class="hero__shade" aria-live="polite">
+        <span class="hero__shade-name" data-hero-name>{start.title.toLowerCase()}</span>
+        <span class="t-s hero__shade-count num" data-hero-count>shade {shades.indexOf(start) + 1} of {shades.length}</span>
+      </p>
+    </div>
+    <fieldset class="hero__chips">
+      <legend class="visually-hidden">Gel shade</legend>
+      {
+        shades.map((v, i) => (
+          <label class="swatch" style={`--c:${v.swatch}`} title={v.title}>
+            <input class="visually-hidden" type="radio" name="hero-shade" value={i} checked={v === start} data-hero-radio />
+            <span class="visually-hidden">{v.title}</span>
+          </label>
+        ))
+      }
+    </fieldset>
+  </div>
+</section>
+<script type="application/json" id="hero-data" set:html={JSON.stringify(client)} />
+
+<script>
+  import { addToBag } from '../scripts/bag';
+  type Shade = { id: number; title: string; swatch: string; ink: string };
+  const root = document.querySelector<HTMLElement>('[data-hero]');
+  const data = JSON.parse(document.getElementById('hero-data')!.textContent!) as {
+    handle: string; name: string; price: number; img: string; e1: string; e2: string; bands: string; band: number; shades: Shade[];
+  };
+  const swatch = root?.querySelector<HTMLElement>('[data-hero-swatch]');
+  const nameEl = root?.querySelector<HTMLElement>('[data-hero-name]');
+  const countEl = root?.querySelector<HTMLElement>('[data-hero-count]');
+  let current = Number(root?.querySelector<HTMLInputElement>('[data-hero-radio]:checked')?.value ?? 0);
+
+  root?.addEventListener('change', (e) => {
+    const input = e.target as HTMLInputElement;
+    if (!input.matches('[data-hero-radio]')) return;
+    current = Number(input.value);
+    const s = data.shades[current];
+    if (!swatch || !nameEl || !countEl) return;
+    swatch.style.setProperty('--shade', s.swatch);
+    swatch.style.setProperty('--shade-ink', s.ink);
+    // Blur bridges the two names so the swap reads as one change (emil-design-eng).
+    nameEl.classList.add('is-swapping');
+    window.setTimeout(() => {
+      nameEl.textContent = s.title.toLowerCase();
+      countEl.textContent = `shade ${current + 1} of ${data.shades.length}`;
+      nameEl.classList.remove('is-swapping');
+    }, 120);
+  });
+
+  root?.querySelector('[data-hero-add]')?.addEventListener('click', () => {
+    const s = data.shades[current];
+    addToBag({ id: s.id, handle: data.handle, name: data.name, variant: s.title, price: data.price, img: data.img, e1: data.e1, e2: data.e2, bands: data.bands, band: data.band });
+  });
+</script>
+
+<style>
+  .hero {
+    display: grid;
+    gap: var(--s6);
+    align-content: center;
+    min-height: calc(100svh - var(--header-h) - 34px);
+    padding-block: var(--s6) var(--s7);
+  }
+  @media (min-width: 1024px) {
+    .hero {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+      align-items: center;
+    }
+    .hero__text {
+      grid-column: 1 / 6;
+    }
+    .hero__card {
+      grid-column: 6 / 13;
+    }
+  }
+  .hero__text {
+    display: grid;
+    gap: var(--s5);
+    align-content: center;
+  }
+  .hero__text h1 {
+    margin-left: -0.04em;
+  }
+  .hero__sub {
+    color: var(--muted);
+    font-size: var(--t-m);
+    line-height: 1.4;
+    font-weight: 400;
+    max-width: 30rem;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2);
+    margin-top: var(--s2);
+  }
+  @media (max-width: 480px) {
+    .hero__actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+  .hero__card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+  }
+  .hero__photo {
+    display: block;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hero__photo:hover :global(img) {
+      transform: scale(1.03);
+    }
+  }
+  .hero__swatch {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background: var(--shade);
+    color: var(--shade-ink);
+    transition:
+      background-color var(--d-field) var(--ease-out),
+      color var(--d-field) var(--ease-out);
+  }
+  .hero__shade {
+    position: absolute;
+    inset: auto var(--s4) var(--s4) var(--s4);
+    display: grid;
+    gap: 2px;
+  }
+  .hero__shade-name {
+    font-size: var(--t-l);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    transition:
+      filter 120ms ease,
+      opacity 120ms ease;
+  }
+  .hero__shade-name.is-swapping {
+    filter: blur(4px);
+    opacity: 0;
+  }
+  .hero__shade-count {
+    opacity: 0.8;
+  }
+  .hero__chips {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: var(--s2) 0 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  @media (max-width: 767px) {
+    .hero__chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      margin-inline: calc(var(--m) * -1);
+      padding: 4px var(--m) 8px;
+      scrollbar-width: none;
+    }
+    .hero__chips::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  @media (min-width: 768px) {
+    .hero__chips {
+      display: grid;
+      grid-template-columns: repeat(17, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .hero__chips .swatch {
+      width: auto;
+      height: auto;
+      aspect-ratio: 1;
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero__chips {
+      grid-template-columns: repeat(25, minmax(0, 1fr));
+      gap: 6px;
+    }
+  }
+  .swatch {
+    position: relative;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--c);
+    box-shadow:
+      inset 0 0 0 1px rgb(52 48 45 / 0.12),
+      0 0 0 0 var(--ink);
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition:
+      transform var(--d-press) var(--ease-out),
+      box-shadow var(--d-ui) var(--ease-out);
+  }
+  .swatch:active {
+    transform: scale(0.9);
+  }
+  .swatch:has(:checked) {
+    box-shadow:
+      inset 0 0 0 1px rgb(52 48 45 / 0.12),
+      0 0 0 2px var(--ground),
+      0 0 0 3.5px var(--ink);
+  }
+  .swatch:has(:focus-visible) {
+    outline: 2px solid var(--rose);
+    outline-offset: 5px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .swatch:hover {
+      transform: scale(1.12);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__shade-name.is-swapping {
+      filter: none;
+    }
+  }
+</style>

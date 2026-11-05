@@ -1,0 +1,133 @@
+---
+// Search over the 39 products, client-side. Shopify port: predictive search (/search/suggest.json) in the same dialog.
+import { CATEGORIES, searchIndex } from '../lib/catalog';
+const index = searchIndex();
+---
+
+<dialog class="sheet sheet--top" id="search" aria-label="Search">
+  <div class="sheet__inner search">
+    <form class="search__bar wrap" role="search" data-search-form>
+      <label class="visually-hidden" for="search-input">Search products</label>
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.5"></circle><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      <input id="search-input" type="search" name="q" placeholder="Search gel, wigs, eyeliner…" autocomplete="off" enterkeyhint="search" data-search-input />
+      <button class="sheet__close" type="button" data-close aria-label="Close search">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      </button>
+    </form>
+    <div class="search__body wrap">
+      <div data-search-start>
+        <p class="t-s muted">Categories</p>
+        <ul class="search__cats" role="list">
+          {CATEGORIES.map((c) => <li><a class="chip" href={`/shop/${c.slug}`}>{c.name}</a></li>)}
+        </ul>
+      </div>
+      <p class="t-s muted" data-search-count role="status" aria-live="polite"></p>
+      <ul class="search__results" role="list" data-search-results></ul>
+    </div>
+  </div>
+</dialog>
+<script type="application/json" id="search-index" set:html={JSON.stringify(index)} />
+
+<style is:global>
+  .sheet--top {
+    inset: 0 0 auto 0;
+    width: 100%;
+    max-height: min(86dvh, 760px);
+    opacity: 0;
+    transform: translateY(-12px);
+    transition:
+      opacity 160ms ease,
+      transform 160ms var(--ease-out),
+      overlay 160ms allow-discrete,
+      display 160ms allow-discrete;
+  }
+  .sheet--top[open] {
+    opacity: 1;
+    transform: none;
+    transition-duration: 220ms;
+  }
+  @starting-style {
+    .sheet--top[open] {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+  .search {
+    grid-template-rows: auto 1fr;
+  }
+  .search__bar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--s3);
+    min-height: 72px;
+    border-bottom: 1px solid var(--line);
+  }
+  .search__bar input {
+    border: 0;
+    background: transparent;
+    min-height: 52px;
+    font-size: max(16px, var(--t-m));
+    outline: none;
+  }
+  .search__bar input::-webkit-search-cancel-button {
+    display: none;
+  }
+  .search__bar:has(input:focus-visible) {
+    box-shadow: inset 0 -2px 0 var(--ink);
+  }
+  .search__body {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-block: var(--s5) calc(var(--s6) + env(safe-area-inset-bottom, 0px));
+    display: grid;
+    gap: var(--s4);
+    align-content: start;
+  }
+  .search__cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2);
+    margin: var(--s3) 0 0;
+  }
+  .search__results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--s3) var(--s5);
+    margin: 0;
+  }
+  .result {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: var(--s3);
+    align-items: center;
+    padding: 6px;
+    margin: -6px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color var(--d-ui) ease;
+  }
+  .result .field {
+    width: 56px;
+  }
+  .result__name {
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .result__line {
+    font-size: var(--t-xs);
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .result[aria-selected='true'] {
+    background: var(--nacre);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .result:hover {
+      background: var(--nacre);
+    }
+  }
+</style>

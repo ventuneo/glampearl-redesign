@@ -1,0 +1,61 @@
+---
+// The four categories as four fields. Shopify port: sections/collection-list.liquid.
+// Covers are products that are not among the best sellers, so no photograph shows twice on the home page.
+import Field from '../components/Field.astro';
+import { CATEGORIES, byHandle, inCategory, money } from '../lib/catalog';
+
+const COVER: Record<string, string> = {
+  nails: 'japanese-style-nail-beauty-gel-stickers-semi-curing-french-gel',
+  skin: 'non-greasy-sunscreen-spf50-moisturizer',
+  makeup: 'lipstick-lip-gloss-moisturizing-lip-gloss-lipstick',
+  hair: 'light-golden-long-straight-lace-wig',
+};
+const cards = CATEGORIES.map((c) => {
+  const items = inCategory(c.slug);
+  return { ...c, count: items.length, from: Math.min(...items.map((p) => p.priceMin)), image: byHandle(COVER[c.slug])!.images[0] };
+});
+---
+
+<section class="section wrap cats" aria-labelledby="cats-title">
+  <div class="section-head">
+    <h2 class="t-l" id="cats-title">Shop by category</h2>
+  </div>
+  <ul class="cats__grid" role="list">
+    {
+      cards.map((c) => (
+        <li>
+          <a class="tile" href={`/shop/${c.slug}`}>
+            <Field image={c.image} sizes="(min-width: 1024px) 25vw, 50vw" />
+            <span class="tile__meta">
+              <span class="cats__name">{c.name}</span>
+              <span class="tile__price">{c.count} products</span>
+              <span class="tile__line">
+                {c.line} From {money(c.from)}.
+              </span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .cats__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s6) var(--gap);
+    margin: 0;
+  }
+  @media (min-width: 1024px) {
+    .cats__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .cats__name {
+    font-size: var(--t-l);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+</style>

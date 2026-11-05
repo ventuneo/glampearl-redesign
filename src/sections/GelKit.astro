@@ -1,0 +1,136 @@
+---
+// Gel nails at home: the three products in the order you use them. A real sequence, so it is numbered.
+// Shopify port: sections/product-bundle.liquid (three product settings, one add-all button posting to /cart/add.js).
+import Field from '../components/Field.astro';
+import { byHandle, money } from '../lib/catalog';
+import { inkOn } from '../lib/colour';
+
+const steps = [
+  { handle: 'fiber-bulider-nail-gel-quick-building-repair-broken-nails-soak-off-uv-gel', verb: 'Build', text: 'Shape your nails, then strengthen or repair them with builder gel.' },
+  { handle: 'nail-polish-nude-neutrals-soak-off-gel-polish', verb: 'Colour', text: 'Paint thin layers of your shade. 50 to choose from.' },
+  { handle: 'portable-6w-usb-led-nail-light', verb: 'Cure', text: 'Set each layer under the USB lamp. No salon visit needed.' },
+].map((s) => {
+  const p = byHandle(s.handle)!;
+  const v = p.variants.find((x) => x.title === 'Dusty Rose') ?? p.variants[0];
+  const img = p.images[0];
+  return { ...s, p, v, img };
+});
+const total = steps.reduce((sum, s) => sum + s.v.price, 0);
+const client = steps.map((s) => ({
+  id: s.v.id,
+  handle: s.p.handle,
+  name: s.p.name,
+  variant: s.v.title,
+  price: s.v.price,
+  img: s.img.src['480'],
+  e1: s.img.e1,
+  e2: s.img.e2,
+  bands: s.img.bands,
+  band: s.img.band,
+}));
+---
+
+<section class="section wrap kit" aria-labelledby="kit-title">
+  <div class="section-head">
+    <div>
+      <h2 class="t-l" id="kit-title">Gel nails at home in three steps</h2>
+      <p class="muted">Builder gel, a shade and the lamp. All three together cost {money(total)}.</p>
+    </div>
+    <button class="btn" type="button" data-kit-add>Add all three to bag</button>
+  </div>
+  <ol class="kit__steps" role="list">
+    {
+      steps.map((s, i) => (
+        <li>
+          <a class="tile" href={`/products/${s.p.handle}`}>
+            {s.v.swatch ? (
+              <span class="field kit__shade" data-bands="none" style={`--e1:${s.v.swatch};color:${inkOn(s.v.swatch)}`}>
+                <span class="kit__shade-name">{s.v.title.toLowerCase()}</span>
+              </span>
+            ) : (
+              <Field image={s.img} sizes="(min-width: 768px) 33vw, 100vw" />
+            )}
+            <span class="tile__meta">
+              <span class="tile__name">
+                <span class="kit__n num">{i + 1}</span> {s.verb}
+              </span>
+              <span class="tile__price">{money(s.v.price)}</span>
+              <span class="tile__line kit__line">{s.text}</span>
+              <span class="tile__rating">
+                {s.p.name}
+                {s.v.title !== 'Default Title' && s.p.variants.length > 1 ? `, ${s.v.title.toLowerCase()}` : ''}
+              </span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+<script type="application/json" id="kit-data" set:html={JSON.stringify(client)} />
+
+<script>
+  import { addToBag } from '../scripts/bag';
+  const items = JSON.parse(document.getElementById('kit-data')!.textContent!);
+  document.querySelector('[data-kit-add]')?.addEventListener('click', () => {
+    for (const item of items) addToBag(item);
+  });
+</script>
+
+<style>
+  .kit__steps {
+    display: grid;
+    gap: var(--s6) var(--gap);
+    margin: 0;
+  }
+  @media (min-width: 768px) {
+    .kit__steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 767px) {
+    .kit__steps {
+      grid-template-columns: repeat(3, minmax(72vw, 1fr));
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(var(--m) * -1);
+      padding-inline: var(--m);
+      scroll-padding-inline: var(--m);
+      scrollbar-width: none;
+    }
+    .kit__steps::-webkit-scrollbar {
+      display: none;
+    }
+    .kit__steps > li {
+      scroll-snap-align: start;
+    }
+  }
+  .kit__n {
+    display: inline-grid;
+    place-items: center;
+    width: 1.6em;
+    height: 1.6em;
+    margin-right: 6px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--ink);
+    font-size: 0.75em;
+    vertical-align: 0.12em;
+  }
+  .kit__line {
+    -webkit-line-clamp: 3;
+  }
+  .kit__shade-name {
+    position: absolute;
+    left: var(--s4);
+    bottom: var(--s4);
+    font-size: var(--t-l);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+  @media (max-width: 767px) {
+    .kit .section-head {
+      flex-direction: column;
+      align-items: start;
+    }
+  }
+</style>

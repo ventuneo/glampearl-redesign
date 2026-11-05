@@ -1,0 +1,141 @@
+---
+// Collection page body: heading, category chips, sort, grid. Shopify port: sections/main-collection.liquid.
+import ProductTile from './ProductTile.astro';
+import { CATEGORIES, products, type CategorySlug, type Product } from '../lib/catalog';
+
+interface Props {
+  title: string;
+  line: string;
+  list: Product[];
+  current?: CategorySlug | 'all';
+}
+const { title, line, list, current = 'all' } = Astro.props;
+---
+
+<section class="shop wrap" aria-labelledby="shop-title">
+  <div class="shop__head">
+    <h1 class="t-display" id="shop-title">{title}</h1>
+    <p class="muted shop__line">{line} <span class="num">{list.length} products.</span></p>
+  </div>
+  <div class="shop__bar">
+    <nav class="shop__cats" aria-label="Categories">
+      <a class="chip" href="/shop" aria-current={current === 'all' ? 'page' : undefined}>all <span class="muted num">{products.length}</span></a>
+      {
+        CATEGORIES.map((c) => (
+          <a class="chip" href={`/shop/${c.slug}`} aria-current={current === c.slug ? 'page' : undefined}>
+            {c.name} <span class="muted num">{products.filter((p) => p.category === c.slug).length}</span>
+          </a>
+        ))
+      }
+    </nav>
+    <label class="shop__sort t-s">
+      <span>Sort by</span>
+      <select data-sort>
+        <option value="reviews">most reviewed</option>
+        <option value="price-asc">price, low to high</option>
+        <option value="price-desc">price, high to low</option>
+        <option value="name">name, a to z</option>
+      </select>
+    </label>
+  </div>
+  <ul class="grid grid--4" role="list" data-shop-grid>
+    {
+      list.map((p, i) => (
+        <li data-price={p.priceMin} data-reviews={p.rating?.count ?? 0} data-rating={p.rating?.average ?? 0} data-name={p.name}>
+          <ProductTile product={p} eager={i < 4} />
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<script>
+  const grid = document.querySelector<HTMLUListElement>('[data-shop-grid]');
+  const select = document.querySelector<HTMLSelectElement>('[data-sort]');
+  const sorters: Record<string, (a: DOMStringMap, b: DOMStringMap) => number> = {
+    reviews: (a, b) => Number(b.reviews) - Number(a.reviews) || Number(b.rating) - Number(a.rating),
+    'price-asc': (a, b) => Number(a.price) - Number(b.price),
+    'price-desc': (a, b) => Number(b.price) - Number(a.price),
+    name: (a, b) => a.name!.localeCompare(b.name!),
+  };
+  function sort(by: string) {
+    if (!grid || !sorters[by]) return;
+    const items = [...grid.children] as HTMLElement[];
+    items.sort((a, b) => sorters[by](a.dataset, b.dataset)).forEach((li) => grid.appendChild(li));
+  }
+  select?.addEventListener('change', () => {
+    sort(select.value);
+    try {
+      sessionStorage.setItem('gp-sort', select.value);
+    } catch {}
+  });
+  try {
+    const saved = sessionStorage.getItem('gp-sort');
+    if (saved && select && saved !== select.value) {
+      select.value = saved;
+      sort(saved);
+    }
+  } catch {}
+  sort(select?.value ?? 'reviews');
+</script>
+
+<style>
+  .shop {
+    padding-block: var(--s7) var(--s9);
+  }
+  .shop__head {
+    display: grid;
+    gap: var(--s3);
+    margin-bottom: var(--s6);
+  }
+  .shop__head h1 {
+    margin-left: -0.04em;
+  }
+  .shop__line {
+    max-width: 34rem;
+  }
+  .shop__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s4);
+    margin-bottom: var(--s6);
+    padding-bottom: var(--s4);
+    border-bottom: 1px solid var(--line);
+  }
+  .shop__cats {
+    display: flex;
+    gap: var(--s2);
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(var(--m) * -1);
+    padding-inline: var(--m);
+  }
+  .shop__cats::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .shop__cats {
+      margin-inline: 0;
+      padding-inline: 0;
+      flex-wrap: wrap;
+    }
+  }
+  .shop__sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+  }
+  .shop__sort select {
+    min-height: 44px;
+    padding: 0 36px 0 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--ground)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='m1 1 4 4 4-4' stroke='%2334302d' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")
+      no-repeat right 14px center;
+    appearance: none;
+    cursor: pointer;
+  }
+</style>

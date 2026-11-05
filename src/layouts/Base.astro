@@ -1,0 +1,57 @@
+---
+// Page shell. Shopify port: layout/theme.liquid.
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BagDrawer from '../components/BagDrawer.astro';
+import SearchDialog from '../components/SearchDialog.astro';
+import MenuSheet from '../components/MenuSheet.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  current?: string;
+  image?: string;
+}
+const { title, description, current = '', image = '/og.jpg' } = Astro.props;
+const fullTitle = title === 'GlamPearl' ? 'GlamPearl, beauty for nails, skin and hair' : `${title} | GlamPearl`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://glampearl.store').href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="page-type" content="product" />
+    <meta name="site-kind" content="other" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site ?? 'https://glampearl.store').href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/familjen-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header current={current} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <BagDrawer />
+    <SearchDialog />
+    <MenuSheet current={current} />
+    <script>
+      import '../scripts/bag.ts';
+      import '../scripts/search.ts';
+      import '../scripts/menu.ts';
+    </script>
+  </body>
+</html>

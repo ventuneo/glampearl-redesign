@@ -1,0 +1,170 @@
+---
+// Announcement line and header. Shopify port: sections/announcement-bar.liquid + sections/header.liquid.
+import { CATEGORIES } from '../lib/catalog';
+interface Props {
+  current?: string;
+}
+const { current = '' } = Astro.props;
+---
+
+<p class="announce t-xs">
+  <a href="#newsletter">Sign up for 10% off your first order</a>
+</p>
+<header class="header">
+  <div class="header__bar wrap">
+    <a class="wordmark" href="/" aria-label="GlamPearl, home">glampearl</a>
+    <nav class="header__nav" aria-label="Main">
+      <ul role="list">
+        <li><a href="/shop" aria-current={current === 'shop' ? 'page' : undefined}>shop all</a></li>
+        {
+          CATEGORIES.map((c) => (
+            <li>
+              <a href={`/shop/${c.slug}`} aria-current={current === c.slug ? 'page' : undefined}>
+                {c.name}
+              </a>
+            </li>
+          ))
+        }
+        <li><a href="/help" aria-current={current === 'help' ? 'page' : undefined}>help</a></li>
+      </ul>
+    </nav>
+    <div class="header__actions">
+      <button class="header__btn" type="button" data-open-search aria-haspopup="dialog">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.5"></circle><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        <span class="header__label">search</span>
+      </button>
+      <button class="header__btn" type="button" data-open-bag aria-haspopup="dialog">
+        <span class="header__label header__label--always">bag</span>
+        <span class="bag-count num" data-bag-count aria-label="0 items">0</span>
+      </button>
+      <button class="header__btn header__menu" type="button" data-open-menu aria-haspopup="dialog">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 7h14M3 13h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        <span class="visually-hidden">Menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .announce {
+    margin: 0;
+    padding: 8px var(--m);
+    background: var(--nacre);
+    text-align: center;
+  }
+  .announce a {
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .announce a:hover {
+      text-decoration: underline;
+    }
+  }
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--ground);
+    border-bottom: 1px solid var(--line);
+  }
+  .header__bar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--s5);
+    height: var(--header-h);
+  }
+  .wordmark {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    text-decoration: none;
+    padding-block: 8px;
+  }
+  .header__nav ul {
+    display: flex;
+    gap: var(--s5);
+    justify-content: center;
+    margin: 0;
+  }
+  .header__nav a {
+    display: inline-block;
+    padding-block: 10px;
+    text-decoration: none;
+    font-size: var(--t-s);
+    background: linear-gradient(currentColor, currentColor) 0 calc(100% - 6px) / 0% 1px no-repeat;
+    transition: background-size var(--d-ui) var(--ease-out);
+  }
+  .header__nav a[aria-current='page'] {
+    background-size: 100% 1px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .header__nav a:hover {
+      background-size: 100% 1px;
+    }
+  }
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    justify-self: end;
+  }
+  .header__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: var(--t-s);
+    transition: background-color var(--d-ui) ease, transform var(--d-press) var(--ease-out);
+  }
+  .header__btn:active {
+    transform: scale(0.96);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .header__btn:hover {
+      background: var(--nacre);
+    }
+  }
+  .bag-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--ground);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  .bag-count[data-empty] {
+    background: var(--nacre);
+    color: var(--muted);
+  }
+  .header__menu {
+    display: none;
+  }
+  @media (max-width: 899px) {
+    .header__nav {
+      display: none;
+    }
+    .header__menu {
+      display: inline-flex;
+    }
+    .header__label:not(.header__label--always) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    .header__bar {
+      grid-template-columns: 1fr auto;
+    }
+  }
+</style>

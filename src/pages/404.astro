@@ -1,0 +1,77 @@
+---
+// Not found: an empty shade on the card. Shopify port: templates/404.json.
+import Base from '../layouts/Base.astro';
+import { CATEGORIES } from '../lib/catalog';
+---
+
+<Base title="Page not found" description="This page does not exist. Find gel nails, skin care, makeup and wigs in the shop.">
+  <div class="nf wrap">
+    <div class="nf__shade" aria-hidden="true">
+      <span class="nf__name">no shade</span>
+      <span class="t-s">404</span>
+    </div>
+    <div class="nf__text">
+      <h1 class="t-l">This page is not in the shop</h1>
+      <p class="muted">The link may be old or mistyped. Pick a category or search for a product.</p>
+      <ul class="nf__cats" role="list">
+        {CATEGORIES.map((c) => <li><a class="chip" href={`/shop/${c.slug}`}>{c.name}</a></li>)}
+      </ul>
+      <button class="btn" type="button" data-open-search>Search products</button>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    gap: var(--s6);
+    padding-block: var(--s7) var(--s9);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .nf {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+    }
+    .nf__shade {
+      grid-column: 1 / 6;
+    }
+    .nf__text {
+      grid-column: 7 / 12;
+    }
+  }
+  .nf__shade {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    max-height: 70svh;
+  }
+  @media (max-width: 899px) {
+    .nf__shade {
+      aspect-ratio: 3 / 2;
+    }
+  }
+  .nf__shade {
+    background:
+      repeating-linear-gradient(135deg, transparent 0 14px, rgb(52 48 45 / 0.06) 14px 15px),
+      var(--nacre);
+    display: grid;
+    align-content: end;
+    padding: var(--s4);
+  }
+  .nf__name {
+    font-size: var(--t-l);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+  .nf__text {
+    display: grid;
+    gap: var(--s4);
+    justify-items: start;
+  }
+  .nf__cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2);
+    margin: 0;
+  }
+</style>
