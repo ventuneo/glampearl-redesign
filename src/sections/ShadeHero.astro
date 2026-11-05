@@ -39,9 +39,9 @@ const client = {
       <Field image={photo} eager ratio="4 / 5" sizes="(min-width: 1024px) 28vw, 46vw" />
     </a>
     <div class="hero__swatch" style={`--shade:${start.swatch};--shade-ink:${inkOn(start.swatch!)}`} data-hero-swatch>
+      <!-- Only the large name sits on the shade: large text keeps 3:1 on all 50 shades, small text would not. -->
       <p class="hero__shade" aria-live="polite">
         <span class="hero__shade-name" data-hero-name>{start.title.toLowerCase()}</span>
-        <span class="t-s hero__shade-count num" data-hero-count>shade {shades.indexOf(start) + 1} of {shades.length}</span>
       </p>
     </div>
     <fieldset class="hero__chips">
@@ -68,7 +68,6 @@ const client = {
   };
   const swatch = root?.querySelector<HTMLElement>('[data-hero-swatch]');
   const nameEl = root?.querySelector<HTMLElement>('[data-hero-name]');
-  const countEl = root?.querySelector<HTMLElement>('[data-hero-count]');
   let current = Number(root?.querySelector<HTMLInputElement>('[data-hero-radio]:checked')?.value ?? 0);
 
   root?.addEventListener('change', (e) => {
@@ -76,14 +75,13 @@ const client = {
     if (!input.matches('[data-hero-radio]')) return;
     current = Number(input.value);
     const s = data.shades[current];
-    if (!swatch || !nameEl || !countEl) return;
+    if (!swatch || !nameEl) return;
     swatch.style.setProperty('--shade', s.swatch);
     swatch.style.setProperty('--shade-ink', s.ink);
     // Blur bridges the two names so the swap reads as one change (emil-design-eng).
     nameEl.classList.add('is-swapping');
     window.setTimeout(() => {
       nameEl.textContent = s.title.toLowerCase();
-      countEl.textContent = `shade ${current + 1} of ${data.shades.length}`;
       nameEl.classList.remove('is-swapping');
     }, 120);
   });
@@ -181,9 +179,6 @@ const client = {
   .hero__shade-name.is-swapping {
     filter: blur(4px);
     opacity: 0;
-  }
-  .hero__shade-count {
-    opacity: 0.8;
   }
   .hero__chips {
     grid-column: 1 / -1;

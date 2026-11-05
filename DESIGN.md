@@ -66,7 +66,11 @@ product, so the photograph bleeds into its tile with no visible edge.
 
 - 12-column grid, outer margin `clamp(16px, 3vw, 40px)`, gutter 12px (tight, like Rhode's fields).
 - Radius: 0 on photographs and fields (they are printed swatches), 999px on chips and buttons.
-- Product tiles 4:5, always. One aspect family.
+- Product tiles are square, always. Changed from 4:5 after the first screenshots: 234 of 254 photographs
+  are square, so a square tile needs no band at all, and the 20 portrait wig shots get side bands in their
+  own sampled wall colour. The hero photograph and swatch keep 4:5 and crop the photograph to fill.
+- Shade products (the gel polish) show the studio photograph and the chosen shade as a colour field side by
+  side, on the home page and on the product page. The maker's swatch photograph is a thumbnail.
 - Every section starts with its heading on the left edge; nothing centred except the empty bag.
 
 ### Motion
@@ -77,6 +81,10 @@ product, so the photograph bleeds into its tile with no visible edge.
 - Bag drawer slides from the right (clip of 100% to 0), scrim fades; Esc and scrim close it.
 - Shade change: field colour and photograph crossfade together (the signature).
 - Under reduced motion: no scale, no slide, instant colour.
+- **Still at rest, by decision.** Nothing moves while the visitor does nothing: a shop is read and compared,
+  Rhode is still, and the taste rules forbid loops and scroll reveals on a product site. The life is in the
+  answers: the shade field, hover inversion, press, drawers, the image crossfade and the accordions.
+- Primary buttons invert on hover (fill gives way to an ink ring); utility links only underline.
 
 ## Principles
 

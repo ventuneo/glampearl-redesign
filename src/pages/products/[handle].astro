@@ -281,6 +281,16 @@ const jsonLd = {
       padding-inline: var(--m);
     }
   }
+  .pdp__main {
+    view-transition-name: pdp-main;
+  }
+  :global(::view-transition-group(pdp-main)) {
+    animation-duration: 200ms;
+    animation-timing-function: ease;
+  }
+  :global(::view-transition-group(root)) {
+    animation: none;
+  }
   .pdp__stage--pair {
     display: grid;
     grid-template-columns: 1fr 1fr;

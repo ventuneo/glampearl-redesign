@@ -1,43 +1,43 @@
-# Astro Starter Kit: Minimal
+# GlamPearl redesign (prototype)
 
-```sh
-npm create astro@latest -- --template minimal
+A complete redesign of glampearl.store as a clickable prototype outside Shopify, built with Astro.
+Real products, prices, variants, photographs and Judge.me ratings come from the live shop. Checkout goes
+to the live Shopify checkout through a cart link, so the flow can be clicked through to the payment page.
+
+Design record: [`DESIGN.md`](DESIGN.md). Text changes for Shopify: [`TEXTE.md`](TEXTE.md).
+
+## Run
+
+```bash
+npm install
+npx playwright install chromium   # only for the checks below
+npm run build
+npx astro preview --host 127.0.0.1 --port 4321
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Open http://127.0.0.1:4321.
 
-## 🚀 Project Structure
+## Data
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+node scripts/fetch-products.mjs data-raw/handles.txt   # products and ratings from the live shop (slow on purpose)
+node scripts/build-catalog.mjs                         # photographs, colour fields, gel shades -> src/data/catalog.json
+node scripts/texte.mjs                                 # TEXTE.md from src/data/copy.json
+node scripts/make-og.mjs                               # share image and favicons (preview server running)
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+New names and one-line descriptions live in `src/data/copy.json`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Checks
 
-Any static assets, like images, can be placed in the `public/` directory.
+```bash
+node scripts/e2e.mjs                 # 18 interaction checks (bag, shade card, variants, search, phone)
+node scripts/shot.mjs / .shots/home  # screenshots at 1440 and 390
+```
 
-## 🧞 Commands
+`npx astro dev` adds a worst-case data harness at `/dev/break-ui` (never part of a build).
 
-All commands are run from the root of the project, from a terminal:
+## Shopify port
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Each component names its future Shopify file in its first comment, e.g. `sections/ShadeHero.astro` →
+`sections/hero-shade-card.liquid`. Design tokens in `src/styles/global.css` carry over unchanged.

@@ -132,6 +132,13 @@ const groups = [
   .help__toc a {
     display: inline-block;
     padding-block: 6px;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--d-ui) ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .help__toc a:hover {
+      text-decoration-color: currentColor;
+    }
   }
   .help__groups {
     display: grid;

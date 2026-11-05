@@ -63,12 +63,27 @@ function showShade(v: Variant) {
 let current: Variant | undefined = data.variants[0];
 let shownImage = -1;
 
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
 function showImage(index: number) {
   if (!main || !mainImg || index === shownImage) return;
   const im = data.images[index];
   if (!im) return;
   shownImage = index;
-  setFieldImage(main, mainImg, im);
+  // Crossfade instead of a hard cut (find-animation-opportunities #1). The next photograph is decoded first,
+  // so the transition never fades to an empty frame. Browsers without view transitions swap instantly.
+  const swap = () => setFieldImage(main, mainImg, im);
+  const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+  if (doc.startViewTransition && !reduceMotion.matches) {
+    const pre = new Image();
+    pre.src = im.src['960'];
+    pre
+      .decode()
+      .catch(() => undefined)
+      .then(() => {
+        if (shownImage === index) doc.startViewTransition!(swap);
+      });
+  } else swap();
   root.querySelectorAll<HTMLButtonElement>('[data-thumb]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.thumb) === index)));
 }
 

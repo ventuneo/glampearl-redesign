@@ -8,7 +8,7 @@ const { current = '' } = Astro.props;
 ---
 
 <p class="announce t-xs">
-  <a href="#newsletter">Sign up for 10% off your first order</a>
+  <a class="hit" href="#newsletter">Sign up for 10% off your first order</a>
 </p>
 <header class="header">
   <div class="header__bar wrap">
@@ -80,7 +80,12 @@ const { current = '' } = Astro.props;
     letter-spacing: -0.045em;
     line-height: 1;
     text-decoration: none;
-    padding-block: 8px;
+    padding-block: 8px;    transition: opacity var(--d-ui) ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .wordmark:hover {
+      opacity: 0.6;
+    }
   }
   .header__nav ul {
     display: flex;
@@ -89,19 +94,31 @@ const { current = '' } = Astro.props;
     margin: 0;
   }
   .header__nav a {
+    position: relative;
     display: inline-block;
-    padding-block: 10px;
+    padding: 10px 2px;
     text-decoration: none;
     font-size: var(--t-s);
-    background: linear-gradient(currentColor, currentColor) 0 calc(100% - 6px) / 0% 1px no-repeat;
-    transition: background-size var(--d-ui) var(--ease-out);
   }
-  .header__nav a[aria-current='page'] {
-    background-size: 100% 1px;
+  /* Underline drawn with transform (composite only), see animation-performance. */
+  .header__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--d-ui) var(--ease-out);
+  }
+  .header__nav a[aria-current='page']::after {
+    transform: scaleX(1);
   }
   @media (hover: hover) and (pointer: fine) {
-    .header__nav a:hover {
-      background-size: 100% 1px;
+    .header__nav a:hover::after {
+      transform: scaleX(1);
     }
   }
   .header__actions {

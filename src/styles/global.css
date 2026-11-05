@@ -304,8 +304,11 @@ ol[role='list'] {
   width: 100%;
 }
 @media (hover: hover) and (pointer: fine) {
+  /* Primary buttons invert on hover: the fill gives way to an ink ring (a full treatment, not a tint). */
   .btn:hover {
-    --btn-bg: #1f1c1a;
+    --btn-bg: var(--ground);
+    --btn-fg: var(--ink);
+    box-shadow: inset 0 0 0 1.5px var(--ink);
   }
   .btn--ghost:hover {
     --btn-bg: var(--ink);
@@ -348,17 +351,40 @@ ol[role='list'] {
   }
 }
 
-/* link with a drawn underline: primary text links */
+/* link with a drawn underline: primary text links.
+   animation-performance: the line is a pseudo-element scaled with transform (composite only),
+   not an animated background-size (a repaint every frame). */
 .link {
+  position: relative;
+  display: inline-block;
   text-decoration: none;
-  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
   padding-bottom: 2px;
-  transition: background-size var(--d-ui) var(--ease-out);
+}
+/* Target size: at least 24px tall without changing how the link looks (WCAG 2.2, 2.5.8). */
+.link::before,
+.hit::before {
+  content: '';
+  position: absolute;
+  inset: -6px -2px;
+}
+.hit {
+  position: relative;
+}
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left;
+  transition: transform var(--d-ui) var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
-  .link:hover {
-    background-size: 0% 1px;
-    background-position: 100% 100%;
+  .link:hover::after {
+    transform: scaleX(0);
+    transform-origin: right;
   }
 }
 
@@ -488,6 +514,25 @@ ol[role='list'] {
 @media (hover: hover) and (pointer: fine) {
   .tile:hover .field > img {
     transform: scale(1.03);
+  }
+}
+
+/* ---------- accordions ---------- */
+/* find-animation-opportunities #2: <details> open with a short height transition where the browser can
+   interpolate to auto; elsewhere they open instantly as before. */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  details::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      block-size 240ms var(--ease-out),
+      content-visibility 240ms allow-discrete;
+  }
+  details[open]::details-content {
+    block-size: auto;
   }
 }
 
