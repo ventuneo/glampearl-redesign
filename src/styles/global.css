@@ -445,6 +445,11 @@ ol[role='list'] {
   letter-spacing: -0.015em;
   line-height: 1.2;
   overflow-wrap: anywhere;
+  /* break-ui: a supplier title pasted as a name ran to 6 lines; the full name is on the product page. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .tile__price {
   font-size: var(--t-s);

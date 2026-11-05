@@ -1,0 +1,54 @@
+---
+// break-ui harness, dev server only: Demo data / Worst case / Empty / One, for tiles and the bag.
+// The toggle is chrome, not part of the design under test. ?data=worst|empty|one keeps the state on reload.
+import Base from '../../layouts/Base.astro';
+import ProductTile from '../../components/ProductTile.astro';
+import { products } from '../../lib/catalog';
+import { worstBag } from '../../data/worst-case';
+
+export function getStaticPaths() {
+  // Dynamic route on purpose: with no paths in a build, the harness never ships.
+  return import.meta.env.DEV ? [{ params: { harness: 'break-ui' } }] : [];
+}
+const demo = products.filter((p) => !p.handle.startsWith('worst-')).slice(0, 4);
+const worst = products.filter((p) => p.handle.startsWith('worst-'));
+const demoBag = demo.slice(0, 2).map((p) => ({ id: p.variants[0].id, handle: p.handle, name: p.name, variant: '', price: p.variants[0].price, qty: 1, img: p.images[0].src['480'], e1: p.images[0].e1, e2: p.images[0].e2, bands: p.images[0].bands, band: p.images[0].band }));
+---
+
+<Base title="break-ui" description="Dev harness">
+  <meta slot="head" name="robots" content="noindex" />
+  <section class="section wrap">
+    <h1 class="t-l">break-ui harness</h1>
+    <p class="muted">Tiles at their real width (4 columns), then open the bag. Worst-case product pages: <a href="/products/worst-long-title">long title</a>, <a href="/products/worst-short">short, no photo</a>.</p>
+    <div data-state="demo"><ul class="grid grid--4" role="list">{demo.map((p) => <li><ProductTile product={p} /></li>)}</ul></div>
+    <div data-state="worst" hidden><ul class="grid grid--4" role="list">{worst.map((p) => <li><ProductTile product={p} /></li>)}{demo.slice(0, 2).map((p) => <li><ProductTile product={p} /></li>)}</ul></div>
+    <div data-state="empty" hidden><ul class="grid grid--4" role="list"></ul></div>
+    <div data-state="one" hidden><ul class="grid grid--4" role="list"><li><ProductTile product={demo[0]} /></li></ul></div>
+  </section>
+  <div class="bu-toggle" role="radiogroup" aria-label="Data">
+    {['demo', 'worst', 'empty', 'one'].map((s) => <button type="button" data-set={s}>{s === 'demo' ? 'Demo data' : s === 'worst' ? 'Worst case' : s === 'empty' ? 'Empty' : 'One'}</button>)}
+  </div>
+  <script type="application/json" id="bu-bags" set:html={JSON.stringify({ demo: demoBag, worst: worstBag, empty: [], one: demoBag.slice(0, 1) })} />
+  <script is:inline>
+    const bags = JSON.parse(document.getElementById('bu-bags').textContent);
+    const set = (s, reload) => {
+      document.querySelectorAll('[data-state]').forEach((el) => (el.hidden = el.dataset.state !== s));
+      document.querySelectorAll('[data-set]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.set === s)));
+      const url = new URL(location.href);
+      url.searchParams.set('data', s);
+      history.replaceState(null, '', url);
+      const next = JSON.stringify(bags[s]);
+      if (localStorage.getItem('gp-bag-v1') !== next) {
+        localStorage.setItem('gp-bag-v1', next);
+        if (reload) location.reload();
+      }
+    };
+    document.querySelectorAll('[data-set]').forEach((b) => b.addEventListener('click', () => set(b.dataset.set, true)));
+    set(new URL(location.href).searchParams.get('data') || 'demo', true);
+  </script>
+  <style is:global>
+    .bu-toggle { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 99; display: flex; gap: 2px; padding: 3px; background: #e5e5e5; border-radius: 999px; font: 13px system-ui, sans-serif; }
+    .bu-toggle button { padding: 6px 12px; border-radius: 999px; color: #333; }
+    .bu-toggle button[aria-checked='true'] { background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.15); }
+  </style>
+</Base>

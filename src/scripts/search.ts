@@ -35,7 +35,7 @@ function run(q: string) {
   results.innerHTML = hits
     .map(
       (e, i) => `<li><a class="result" href="/products/${esc(e.handle)}" ${i === 0 ? 'aria-selected="true"' : ''}>
-        <span class="field" data-bands="none" style="--e1:${esc(e.e1)}"><img src="${esc(e.img)}" alt="" width="56" height="56" loading="lazy" decoding="async" /></span>
+        <span class="field" data-bands="none" style="--e1:${esc(e.e1)}">${e.img ? `<img src="${esc(e.img)}" alt="" width="56" height="56" loading="lazy" decoding="async" />` : ""}</span>
         <span><span class="result__name">${esc(e.name)}</span><span class="result__line">${esc(e.line)}</span></span>
         <span class="t-s num">${esc(e.price)}</span>
       </a></li>`,

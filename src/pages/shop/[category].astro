@@ -1,17 +1,18 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ShopGrid from '../../components/ShopGrid.astro';
-import { CATEGORIES, inCategory, money } from '../../lib/catalog';
+import { CATEGORIES, inCategory, money, plural } from '../../lib/catalog';
 
 export function getStaticPaths() {
   return CATEGORIES.map((c) => ({ params: { category: c.slug }, props: { category: c } }));
 }
 const { category: c } = Astro.props;
 const list = inCategory(c.slug);
-const from = Math.min(...list.map((p) => p.priceMin));
+const from = list.length ? Math.min(...list.map((p) => p.priceMin)) : null;
 const title = c.name.charAt(0).toUpperCase() + c.name.slice(1);
+const description = `${c.line} ${plural(list.length, 'product')}${from != null ? ` from ${money(from)}` : ''}.`;
 ---
 
-<Base title={title} description={`${c.line} ${list.length} products from ${money(from)}.`} current={c.slug}>
+<Base title={title} description={description} current={c.slug}>
   <ShopGrid title={c.name} line={c.line} list={list} current={c.slug} />
 </Base>

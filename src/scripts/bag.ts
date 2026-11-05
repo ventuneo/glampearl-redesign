@@ -20,7 +20,8 @@ const KEY = 'gp-bag-v1';
 const STORE = 'https://glampearl.store';
 const MAX_QTY = 20;
 
-const money = (n: number) => `CHF ${n.toFixed(2)}`;
+const CHF = new Intl.NumberFormat('en-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money = (n: number) => `CHF ${CHF.format(n).replace(/'/g, '’')}`;
 
 function load(): BagItem[] {
   try {
@@ -72,7 +73,7 @@ function render() {
     <li class="bag-item" data-id="${i.id}">
       <a href="/products/${esc(i.handle)}" tabindex="-1" aria-hidden="true">
         <span class="field" data-bands="${esc(i.bands)}" style="--e1:${esc(i.e1)};--e2:${esc(i.e2)};--band:${i.band}">
-          <img src="${esc(i.img)}" alt="" width="76" height="76" loading="lazy" decoding="async" />
+          ${i.img ? `<img src="${esc(i.img)}" alt="" width="76" height="76" loading="lazy" decoding="async" />` : ""}
         </span>
       </a>
       <div>

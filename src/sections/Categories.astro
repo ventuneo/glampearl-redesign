@@ -2,7 +2,7 @@
 // The four categories as four fields. Shopify port: sections/collection-list.liquid.
 // Covers are products that are not among the best sellers, so no photograph shows twice on the home page.
 import Field from '../components/Field.astro';
-import { CATEGORIES, byHandle, inCategory, money } from '../lib/catalog';
+import { CATEGORIES, byHandle, inCategory, money, plural } from '../lib/catalog';
 
 const COVER: Record<string, string> = {
   nails: 'japanese-style-nail-beauty-gel-stickers-semi-curing-french-gel',
@@ -10,10 +10,12 @@ const COVER: Record<string, string> = {
   makeup: 'lipstick-lip-gloss-moisturizing-lip-gloss-lipstick',
   hair: 'light-golden-long-straight-lace-wig',
 };
+// break-ui: an empty category is left out instead of showing "From CHF Infinity".
 const cards = CATEGORIES.map((c) => {
   const items = inCategory(c.slug);
-  return { ...c, count: items.length, from: Math.min(...items.map((p) => p.priceMin)), image: byHandle(COVER[c.slug])!.images[0] };
-});
+  const cover = byHandle(COVER[c.slug]) ?? items.find((p) => p.images.length);
+  return { ...c, count: items.length, from: Math.min(...items.map((p) => p.priceMin)), image: cover?.images[0] };
+}).filter((c) => c.count > 0);
 ---
 
 <section class="section wrap cats" aria-labelledby="cats-title">
@@ -28,7 +30,7 @@ const cards = CATEGORIES.map((c) => {
             <Field image={c.image} sizes="(min-width: 1024px) 25vw, 50vw" />
             <span class="tile__meta">
               <span class="cats__name">{c.name}</span>
-              <span class="tile__price">{c.count} products</span>
+              <span class="tile__price">{plural(c.count, 'product')}</span>
               <span class="tile__line">
                 {c.line} From {money(c.from)}.
               </span>

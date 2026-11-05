@@ -1,9 +1,10 @@
 ---
 // A photograph inside its own colour field (DESIGN.md, concept A). Shopify port: snippets/field.liquid.
+// Without a photograph (Shopify allows that) it renders an empty nacre field instead of failing.
 import type { Img } from '../lib/catalog';
 
 interface Props {
-  image: Img;
+  image?: Img;
   alt?: string;
   sizes?: string;
   eager?: boolean;
@@ -12,19 +13,25 @@ interface Props {
   ratio?: string;
 }
 const { image, alt = '', sizes = '(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw', eager = false, class: cls = '', ratio } = Astro.props;
-const style = `--e1:${image.e1};--e2:${image.e2};--band:${image.band}${ratio ? `;aspect-ratio:${ratio}` : ''}`;
+const style = image ? `--e1:${image.e1};--e2:${image.e2};--band:${image.band}${ratio ? `;aspect-ratio:${ratio}` : ''}` : ratio ? `aspect-ratio:${ratio}` : undefined;
 ---
 
-<span class:list={['field', cls]} data-bands={ratio ? 'none' : image.bands} data-fit={ratio ? 'cover' : undefined} style={style}>
-  <img
-    src={image.src['960']}
-    srcset={`${image.src['480']} 480w, ${image.src['960']} 960w`}
-    sizes={sizes}
-    width={image.width}
-    height={image.height}
-    alt={alt}
-    loading={eager ? 'eager' : 'lazy'}
-    fetchpriority={eager ? 'high' : 'auto'}
-    decoding="async"
-  />
-</span>
+{
+  image ? (
+    <span class:list={['field', cls]} data-bands={ratio ? 'none' : image.bands} data-fit={ratio ? 'cover' : undefined} style={style}>
+      <img
+        src={image.src['960']}
+        srcset={`${image.src['480']} 480w, ${image.src['960']} 960w`}
+        sizes={sizes}
+        width={image.width}
+        height={image.height}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+        decoding="async"
+      />
+    </span>
+  ) : (
+    <span class:list={['field', 'field--empty', cls]} style={style} role={alt ? 'img' : undefined} aria-label={alt || undefined} />
+  )
+}

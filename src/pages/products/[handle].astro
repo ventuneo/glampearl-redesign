@@ -3,7 +3,7 @@
 import Base from '../../layouts/Base.astro';
 import Field from '../../components/Field.astro';
 import ProductTile from '../../components/ProductTile.astro';
-import { CATEGORIES, STORE, clientProduct, money, optionViews, products, related, type Product } from '../../lib/catalog';
+import { CATEGORIES, STORE, clientProduct, money, optionViews, plural, products, related, type Product } from '../../lib/catalog';
 import { inkOn } from '../../lib/colour';
 
 export function getStaticPaths() {
@@ -46,7 +46,7 @@ const jsonLd = {
 };
 ---
 
-<Base title={title} description={`${p.line} ${money(p.priceMin)}. Returns within 30 days on unused items.`} current={p.category} image={main.src['960']}>
+<Base title={title} description={`${p.line} ${money(p.priceMin)}. Returns within 30 days on unused items.`} current={p.category} image={main?.src['960']}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <div class="pdp wrap" data-product>
@@ -101,7 +101,7 @@ const jsonLd = {
         {
           p.rating && (
             <p class="t-s muted num">
-              {p.rating.average.toFixed(1)} out of 5, {p.rating.count} reviews
+              {p.rating.average.toFixed(1)} out of 5, {plural(p.rating.count, 'review')}
             </p>
           )
         }
@@ -111,7 +111,12 @@ const jsonLd = {
             options.map((o) => (
               <fieldset class={`opt opt--${o.kind}`} data-option={o.index}>
                 <legend class="opt__legend t-s">
-                  {o.label}: <span data-option-value={o.index}>{start.options[o.index]?.toLowerCase()}</span>
+                  {o.label}
+                  {o.kind !== 'text' && (
+                    <>
+                      : <span data-option-value={o.index}>{start.options[o.index]?.toLowerCase()}</span>
+                    </>
+                  )}
                 </legend>
                 <div class="opt__values">
                   {o.values.map((v) => (
@@ -229,7 +234,7 @@ const jsonLd = {
 
   <div class="buybar" data-buybar aria-hidden="true" inert>
     <div class="buybar__text">
-      <span class="buybar__name">{p.name}</span>
+      <span class="buybar__name" title={p.name}>{p.name}</span>
       <span class="t-s num" data-bar-price>{money(start.price)}</span>
     </div>
     <button class="btn" type="button" data-bar-add tabindex="-1">Add to bag</button>

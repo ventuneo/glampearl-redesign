@@ -23,7 +23,8 @@ const shade = root.querySelector<HTMLElement>('[data-shade]');
 const shadeName = root.querySelector<HTMLElement>('[data-shade-name]');
 const variantThumb = root.querySelector<HTMLButtonElement>('[data-variant-thumb]');
 
-const money = (n: number) => `CHF ${n.toFixed(2)}`;
+const CHF = new Intl.NumberFormat('en-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money = (n: number) => `CHF ${CHF.format(n).replace(/'/g, '’')}`;
 let qty = 1;
 
 function setFieldImage(field: HTMLElement, img: HTMLImageElement, im: Img) {
@@ -138,9 +139,12 @@ root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
 
 function add() {
   if (!current) return;
-  const im = data.images[current.image ?? 0] ?? data.images[0];
+  const im: Img | undefined = data.images[current.image ?? 0] ?? data.images[0];
   const variant = data.variants.length > 1 ? current.title : '';
-  addToBag({ id: current.id, handle: data.handle, name: data.name, variant, price: current.price, img: im.src['480'], e1: im.e1, e2: im.e2, bands: im.bands, band: im.band }, qty);
+  addToBag(
+    { id: current.id, handle: data.handle, name: data.name, variant, price: current.price, img: im?.src['480'] ?? '', e1: im?.e1 ?? '#f1edea', e2: im?.e2 ?? '#f1edea', bands: im?.bands ?? 'none', band: im?.band ?? 0 },
+    qty,
+  );
 }
 
 form.addEventListener('submit', (e) => {

@@ -57,13 +57,21 @@ export const CATEGORIES: { slug: CategorySlug; name: string; line: string }[] = 
   { slug: 'hair', name: 'hair', line: 'Wigs, hair care and clippers.' },
 ];
 
-export const products = data as unknown as Product[];
+import { worstCase } from '../data/worst-case';
+
+// break-ui: in the dev server only, the worst-case fixture joins the catalogue. Never in a build.
+export const products = [...(data as unknown as Product[]), ...(import.meta.env.DEV ? worstCase : [])];
 
 export const byHandle = (handle: string) => products.find((p) => p.handle === handle);
 
 export const inCategory = (slug: CategorySlug) => products.filter((p) => p.category === slug);
 
-export const money = (n: number) => `CHF ${n.toFixed(2)}`;
+const CHF = new Intl.NumberFormat('en-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+/** Swiss amounts: CHF 25’980.00 (typographic apostrophe as thousands separator). */
+export const money = (n: number) => `CHF ${CHF.format(n).replace(/'/g, '’')}`;
+
+/** "1 review", "13 reviews". */
+export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
 export const priceLabel = (p: Product) => (p.priceMin === p.priceMax ? money(p.priceMin) : `from ${money(p.priceMin)}`);
 

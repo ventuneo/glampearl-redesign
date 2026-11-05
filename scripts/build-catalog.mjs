@@ -89,7 +89,8 @@ async function edges(file) {
 }
 
 // Where the maker's swatch photographs show the painted nail (fractions of width/height).
-// Used to read each shade's real colour for the shade card. Verified by eye on the contact sheet.
+// Used to read each shade's real colour for the shade card. Checked by eye on a contact sheet of 12 of the
+// 50 shades (pinks, black, white, reds, browns, glitter, pale cream): all matched the painted nail.
 const SWATCH_BOX = {
   'nail-polish-nude-neutrals-soak-off-gel-polish': { x0: 0.57, x1: 0.65, y0: 0.4, y1: 0.56 },
 };
@@ -115,6 +116,9 @@ const decode = (s) =>
     .replace(/&#39;|&rsquo;/g, '’')
     .replace(/&quot;/g, '"')
     .replace(/&times;/g, '×')
+    .replace(/&ndash;|&mdash;/g, '–')
+    // Ranges read "3 to 21 mm", not "3–21 mm" (no dashes in visible text).
+    .replace(/(\w)\s*[–—]\s*(\w)/g, '$1 to $2')
     .replace(/\s+/g, ' ')
     .trim();
 const strip = (s) => decode(s.replace(/<[^>]+>/g, ' '));
