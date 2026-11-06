@@ -58,10 +58,22 @@ function esc(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 }
 
+// Micro-interactions: lines added within one moment (e.g. "add all three") get data-new and a stagger index.
+const fresh = new Map<number, number>();
+let freshTimer = 0;
+let lastCount = -1;
+
 function render() {
   const n = count();
+  const grew = lastCount >= 0 && n > lastCount;
+  lastCount = n;
   document.querySelectorAll<HTMLElement>('[data-bag-count]').forEach((el) => {
     el.textContent = String(n);
+    if (grew) {
+      el.classList.remove('is-bump');
+      void el.offsetWidth; // restart the bump if it is still running
+      el.classList.add('is-bump');
+    }
     el.setAttribute('aria-label', `${n} ${n === 1 ? 'item' : 'items'}`);
     el.toggleAttribute('data-empty', n === 0);
   });
@@ -71,7 +83,7 @@ function render() {
   list.innerHTML = items
     .map(
       (i) => `
-    <li class="bag-item" data-id="${i.id}">
+    <li class="bag-item" data-id="${i.id}"${fresh.has(i.id) ? ` data-new style="--n:${fresh.get(i.id)}"` : ''}>
       <a href="${esc(pageHref(`/products/${i.handle}`))}" tabindex="-1" aria-hidden="true">
         <span class="field" data-bands="${esc(i.bands)}" style="--e1:${esc(i.e1)};--e2:${esc(i.e2)};--band:${i.band}">
           ${i.img ? `<img src="${esc(assetSrc(i.img))}" alt="" width="76" height="76" loading="lazy" decoding="async" />` : ""}
@@ -101,7 +113,19 @@ function render() {
   if (checkout) checkout.href = isEmpty ? `${STORE}/cart` : `${STORE}/cart/${items.map((i) => `${i.id}:${i.qty}`).join(',')}`;
 }
 
+/** Brief "Added" on the button that was pressed (CSS: .btn[data-added]). */
+export function confirmAdded(btn: HTMLElement | null | undefined) {
+  if (!btn) return;
+  btn.setAttribute('data-added', '');
+  window.clearTimeout(Number(btn.dataset.addedTimer || 0));
+  btn.dataset.addedTimer = String(window.setTimeout(() => btn.removeAttribute('data-added'), 1400));
+}
+
 export function addToBag(item: Omit<BagItem, 'qty'>, qty = 1) {
+  // Only lines that are new slide in; a line whose quantity grows stays put (the count bump says enough).
+  if (!items.some((i) => i.id === item.id)) fresh.set(item.id, fresh.size);
+  window.clearTimeout(freshTimer);
+  freshTimer = window.setTimeout(() => fresh.clear(), 700);
   const existing = items.find((i) => i.id === item.id);
   if (existing) existing.qty = Math.min(MAX_QTY, existing.qty + qty);
   else items.push({ ...item, qty: Math.min(MAX_QTY, qty) });

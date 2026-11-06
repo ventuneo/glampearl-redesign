@@ -70,10 +70,11 @@ const client = steps.map((s) => ({
 <script type="application/json" id="kit-data" set:html={JSON.stringify(client)} />
 
 <script>
-  import { addToBag } from '../scripts/bag';
+  import { addToBag, confirmAdded } from '../scripts/bag';
   const items = JSON.parse(document.getElementById('kit-data')!.textContent!);
-  document.querySelector('[data-kit-add]')?.addEventListener('click', () => {
+  document.querySelector('[data-kit-add]')?.addEventListener('click', (e) => {
     for (const item of items) addToBag(item);
+    confirmAdded(e.currentTarget as HTMLElement);
   });
 </script>
 

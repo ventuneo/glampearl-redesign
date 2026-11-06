@@ -578,6 +578,99 @@ body[data-buybar-open] .footer__legal {
   padding-bottom: calc(var(--s5) + 76px + env(safe-area-inset-bottom, 0px));
 }
 
+/* ---------- micro-interactions ---------- */
+/* Small, one-off feedback (ui-ux-pro-max §7: cause and effect, 30–50 ms stagger, transform/opacity only,
+   exit faster than enter). Everything here is off under reduced motion, see the block at the end. */
+@keyframes gp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes gp-settle {
+  from {
+    transform: scale(1.025);
+  }
+}
+@keyframes gp-bump {
+  40% {
+    transform: scale(1.22);
+  }
+}
+@keyframes gp-snap {
+  from {
+    transform: scale(0.82);
+  }
+}
+
+/* 1. One load moment on the home page: the hero text rises in, the photographs settle (no fade on the
+      photographs, so the largest image paints at once). */
+.hero__text > * {
+  animation: gp-rise 560ms var(--ease-out) both;
+}
+.hero__text > :nth-child(2) {
+  animation-delay: 70ms;
+}
+.hero__text > :nth-child(3) {
+  animation-delay: 140ms;
+}
+.hero__card > :is(.hero__photo, .hero__swatch) {
+  animation: gp-settle 900ms var(--ease-out) both;
+}
+.hero__chips {
+  animation: gp-rise 560ms var(--ease-out) 220ms both;
+}
+
+/* 2. "Added" confirmation on the button that was pressed. */
+.btn {
+  position: relative;
+}
+.btn::after {
+  content: 'Added \2713';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms var(--ease-out);
+  pointer-events: none;
+}
+.btn[data-added] {
+  color: transparent;
+}
+.btn[data-added]::after {
+  color: var(--btn-fg);
+  opacity: 1;
+  transform: none;
+  transition-duration: 220ms;
+}
+
+/* 3. The bag count answers when it changes. */
+.bag-count.is-bump {
+  animation: gp-bump 320ms var(--ease-out);
+}
+
+/* 4. New lines in the bag slide in; several at once follow each other by 45 ms. */
+.bag-item[data-new] {
+  animation: gp-rise 320ms var(--ease-out) both;
+  animation-delay: calc(var(--n, 0) * 45ms + 120ms);
+}
+
+/* 5. A picked shade snaps into its ring. */
+.swatch:has(:checked),
+.opt--swatch .opt__value:has(:checked) {
+  animation: gp-snap 260ms var(--ease-out);
+}
+
+/* 6. Phone menu: links follow each other in. */
+.sheet--full[open] .menu__nav li {
+  animation: gp-rise 380ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 40ms + 60ms);
+}
+
 /* ---------- accordions ---------- */
 /* find-animation-opportunities #2: <details> open with a short height transition where the browser can
    interpolate to auto; elsewhere they open instantly as before. */
@@ -609,5 +702,16 @@ body[data-buybar-open] .footer__legal {
   }
   .tile:hover .field > img {
     transform: none;
+  }
+  /* micro-interactions: no movement at all, and nothing waits on a delay */
+  .hero__text > *,
+  .hero__card > *,
+  .hero__chips,
+  .bag-item[data-new],
+  .bag-count.is-bump,
+  .swatch:has(:checked),
+  .opt--swatch .opt__value:has(:checked),
+  .sheet--full[open] .menu__nav li {
+    animation: none !important;
   }
 }

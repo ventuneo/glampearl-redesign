@@ -17,17 +17,17 @@ const { current = '' } = Astro.props;
     </div>
     <nav class="menu__nav sheet__body" aria-label="Main">
       <ul role="list">
-        <li><a href="/shop" aria-current={current === 'shop' ? 'page' : undefined}>shop all</a></li>
+        <li style="--i:0"><a href="/shop" aria-current={current === 'shop' ? 'page' : undefined}>shop all</a></li>
         {
-          CATEGORIES.map((c) => (
-            <li>
+          CATEGORIES.map((c, i) => (
+            <li style={`--i:${i + 1}`}>
               <a href={`/shop/${c.slug}`} aria-current={current === c.slug ? 'page' : undefined}>
                 {c.name} <span class="muted t-s num">{inCategory(c.slug).length}</span>
               </a>
             </li>
           ))
         }
-        <li><a href="/help" aria-current={current === 'help' ? 'page' : undefined}>help</a></li>
+        <li style={`--i:${CATEGORIES.length + 1}`}><a href="/help" aria-current={current === 'help' ? 'page' : undefined}>help</a></li>
       </ul>
     </nav>
     <div class="sheet__foot">

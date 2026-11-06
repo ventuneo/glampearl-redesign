@@ -1,6 +1,6 @@
 // Product page: variant picking, gallery, quantity, add to bag, phone buy bar.
 // Shopify port: the same logic reading product.variants from the section's JSON.
-import { addToBag } from './bag';
+import { addToBag, confirmAdded } from './bag';
 
 type Img = { src: Record<string, string>; bands: string; band: number; e1: string; e2: string; width: number; height: number };
 type Variant = { id: number; title: string; options: string[]; price: number; compareAt: number | null; image: number | null; swatch: string | null; ink: string | null };
@@ -158,7 +158,7 @@ root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
   }),
 );
 
-function add() {
+function add(btn?: HTMLElement | null) {
   if (!current) return;
   const im: Img | undefined = data.images[current.image ?? 0] ?? data.images[0];
   const variant = data.variants.length > 1 ? current.title : '';
@@ -166,13 +166,14 @@ function add() {
     { id: current.id, handle: data.handle, name: data.name, variant, price: current.price, img: im?.src['480'] ?? '', e1: im?.e1 ?? '#f1edea', e2: im?.e2 ?? '#f1edea', bands: im?.bands ?? 'none', band: im?.band ?? 0 },
     qty,
   );
+  confirmAdded(btn);
 }
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  add();
+  add(addBtn);
 });
-barAdd?.addEventListener('click', add);
+barAdd?.addEventListener('click', () => add(barAdd));
 
 // Phone buy bar: visible whenever the real Add to bag button is off screen, above or below.
 // Critic pass 2: on the gel page the button starts below the first screen, behind 50 swatches.

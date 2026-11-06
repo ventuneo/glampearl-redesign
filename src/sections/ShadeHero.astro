@@ -61,7 +61,7 @@ const client = {
 <script type="application/json" id="hero-data" set:html={JSON.stringify(client)} />
 
 <script>
-  import { addToBag } from '../scripts/bag';
+  import { addToBag, confirmAdded } from '../scripts/bag';
   type Shade = { id: number; title: string; swatch: string; ink: string };
   const root = document.querySelector<HTMLElement>('[data-hero]');
   const data = JSON.parse(document.getElementById('hero-data')!.textContent!) as {
@@ -87,9 +87,10 @@ const client = {
     }, 120);
   });
 
-  root?.querySelector('[data-hero-add]')?.addEventListener('click', () => {
+  root?.querySelector('[data-hero-add]')?.addEventListener('click', (e) => {
     const s = data.shades[current];
     addToBag({ id: s.id, handle: data.handle, name: data.name, variant: s.title, price: data.price, img: data.img, e1: data.e1, e2: data.e2, bands: data.bands, band: data.band });
+    confirmAdded(e.currentTarget as HTMLElement);
   });
 </script>
 
