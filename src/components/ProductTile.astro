@@ -12,7 +12,7 @@ const { product: p, eager = false, sizes } = Astro.props;
 ---
 
 <a class="tile" href={`/products/${p.handle}`}>
-  <Field image={p.images[0]} eager={eager} sizes={sizes} />
+  <span class="tile__photo" style={`view-transition-name: p-${p.handle}`}><Field image={p.images[0]} eager={eager} sizes={sizes} /></span>
   <span class="tile__meta">
     <span class="tile__name" title={p.name.length > 48 ? p.name : undefined}>{p.name}</span>
     <span class="tile__price">{priceLabel(p)}</span>

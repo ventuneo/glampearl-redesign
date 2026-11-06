@@ -36,7 +36,8 @@ const client = {
 
   <div class="hero__card">
     <a class="hero__photo" href={`/products/${gel.handle}`} aria-label={`${gel.name}, see the product`}>
-      <Field image={photo} eager ratio="4 / 5" sizes="(min-width: 1024px) 28vw, 46vw" />
+      <!-- cropped to 4:5, so the photograph must cover the frame height: ask for the larger file -->
+      <Field image={photo} eager ratio="4 / 5" sizes="(min-width: 1024px) 36vw, 60vw" />
     </a>
     <div class="hero__swatch" style={`--shade:${start.swatch};--shade-ink:${inkOn(start.swatch!)}`} data-hero-swatch>
       <!-- Only the large name sits on the shade: large text keeps 3:1 on all 50 shades, small text would not. -->

@@ -21,7 +21,9 @@ const variantImages = new Set(p.variants.map((v) => v.image).filter((x) => x != 
 const isShade = p.variants.some((v) => v.swatch);
 let gallery = p.images.map((_, i) => i).filter((i) => !variantImages.has(i));
 if (!isShade && gallery.length < 2) gallery = p.images.map((_, i) => i).slice(0, 8);
-if (isShade && start.image != null) gallery = [...gallery.slice(0, 1), start.image];
+// Critic pass 2: the maker's swatch photograph (grey diagonal, printed labels) looked off next to the studio shot.
+// The colour field already shows the shade, so shade products keep only their studio photograph.
+if (isShade) gallery = gallery.slice(0, 1);
 const mainIndex = isShade ? (gallery[0] ?? 0) : (start.image ?? gallery[0] ?? 0);
 const main = p.images[mainIndex];
 const more = related(p, 4);
@@ -52,7 +54,7 @@ const jsonLd = {
   <div class="pdp wrap" data-product>
     <div class="pdp__media">
       <div class:list={['pdp__stage', { 'pdp__stage--pair': isShade }]}>
-        <div class="pdp__main" data-main>
+        <div class="pdp__main" data-main style={`view-transition-name: p-${p.handle}`}>
           <Field image={main} eager alt={p.name} sizes={isShade ? '(min-width: 1024px) 28vw, 50vw' : '(min-width: 1024px) 56vw, 100vw'} />
         </div>
         {
@@ -101,7 +103,10 @@ const jsonLd = {
         {
           p.rating && (
             <p class="t-s muted num">
-              {p.rating.average.toFixed(1)} out of 5, {plural(p.rating.count, 'review')}
+              {p.rating.average.toFixed(1)} out of 5,{' '}
+              <a class="u-grow" href={`${STORE}/products/${p.handle}#judgeme_product_reviews`}>
+                read the {plural(p.rating.count, 'review')}
+              </a>
             </p>
           )
         }
@@ -286,16 +291,6 @@ const jsonLd = {
     .pdp__thumbs {
       padding-inline: var(--m);
     }
-  }
-  .pdp__main {
-    view-transition-name: pdp-main;
-  }
-  :global(::view-transition-group(pdp-main)) {
-    animation-duration: 200ms;
-    animation-timing-function: ease;
-  }
-  :global(::view-transition-group(root)) {
-    animation: none;
   }
   .pdp__stage--pair {
     display: grid;

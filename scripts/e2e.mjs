@@ -109,11 +109,21 @@ await p2.waitForSelector('#menu[open]');
 check('phone: menu opens', true);
 await p2.click('#menu [data-close]');
 await p2.waitForTimeout(300);
-const barHiddenAtTop = await p2.$eval('[data-buybar]', (el) => !el.hasAttribute('data-show'));
-await p2.evaluate(() => window.scrollTo(0, document.body.scrollHeight * 0.6));
-await p2.waitForTimeout(500);
-const barShown = await p2.$eval('[data-buybar]', (el) => el.hasAttribute('data-show'));
-check('phone: buy bar hidden at top, shown after scrolling past the button', barHiddenAtTop && barShown);
+// The bar shows exactly when the real Add to bag button is off screen (above or below).
+const barMatches = () =>
+  p2.evaluate(() => {
+    const r = document.querySelector('[data-add]').getBoundingClientRect();
+    const visible = r.bottom > 0 && r.top < innerHeight;
+    return document.querySelector('[data-buybar]').hasAttribute('data-show') === !visible;
+  });
+const atTop = await barMatches();
+await p2.evaluate(() => document.querySelector('[data-add]').scrollIntoView({ block: 'center' }));
+await p2.waitForTimeout(400);
+const atButton = await barMatches();
+await p2.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+await p2.waitForTimeout(400);
+const atEnd = await barMatches();
+check('phone: buy bar shows exactly while the Add to bag button is off screen', atTop && atButton && atEnd, `top ${atTop}, button ${atButton}, end ${atEnd}`);
 
 check('no script errors', errors.length === 0, errors.join(' | '));
 await browser.close();

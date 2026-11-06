@@ -168,9 +168,8 @@ form.addEventListener('submit', (e) => {
 });
 barAdd?.addEventListener('click', add);
 
-// Phone buy bar: shows once the real button is above the screen, hides again when it comes back.
-// The root reaches far below the screen, so "not intersecting" means "above it", even after a fast fling
-// that jumps straight past the button.
+// Phone buy bar: visible whenever the real Add to bag button is off screen, above or below.
+// Critic pass 2: on the gel page the button starts below the first screen, behind 50 swatches.
 if (bar && 'IntersectionObserver' in window) {
   const io = new IntersectionObserver(
     ([entry]) => {
@@ -179,8 +178,9 @@ if (bar && 'IntersectionObserver' in window) {
       bar.toggleAttribute('inert', !passed);
       bar.setAttribute('aria-hidden', String(!passed));
       barAdd?.setAttribute('tabindex', passed ? '0' : '-1');
+      document.body.toggleAttribute('data-buybar-open', passed);
     },
-    { threshold: 0, rootMargin: '0px 0px 100000px 0px' },
+    { threshold: 0 },
   );
   io.observe(addBtn);
 }

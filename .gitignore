@@ -27,3 +27,7 @@ pnpm-debug.log*
 data-raw/images/
 .shots/
 .jury/
+
+# jury evidence (screenshots), keep only score cards
+.jury/*/shots/
+.jury/*/shoot.log

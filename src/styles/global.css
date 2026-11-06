@@ -306,10 +306,9 @@ ol[role='list'] {
 }
 @media (hover: hover) and (pointer: fine) {
   /* Primary buttons invert on hover: the fill gives way to an ink ring (a full treatment, not a tint). */
+  /* Primary buttons flood with the accent on hover and keep their weight (critic pass 2). */
   .btn:hover {
-    --btn-bg: var(--ground);
-    --btn-fg: var(--ink);
-    box-shadow: inset 0 0 0 1.5px var(--ink);
+    --btn-bg: var(--rose);
   }
   .btn--ghost:hover {
     --btn-bg: var(--ink);
@@ -348,6 +347,7 @@ ol[role='list'] {
 }
 @media (hover: hover) and (pointer: fine) {
   .chip:hover {
+    background: var(--nacre);
     box-shadow: inset 0 0 0 1px var(--ink);
   }
 }
@@ -536,6 +536,46 @@ ol[role='list'] {
   .tile:hover .field > img {
     transform: scale(1.03);
   }
+}
+
+/* ---------- page transitions ---------- */
+/* Critic passes 1 and 2: navigation was a hard cut. A short crossfade between pages, and the product
+   photograph moves from its tile into the product page (shared view-transition-name p-<handle>).
+   Kept short so clicking through the shop never waits on it; off under reduced motion. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-group(root) {
+  animation-duration: 160ms;
+}
+::view-transition-group(*) {
+  animation-duration: 280ms;
+  animation-timing-function: var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+.tile__photo {
+  display: block;
+}
+
+/* ---------- text ---------- */
+p,
+dd,
+li {
+  text-wrap: pretty;
+}
+
+/* The phone buy bar must not cover the last row of the footer. */
+body[data-buybar-open] .footer__legal {
+  padding-bottom: calc(var(--s5) + 76px + env(safe-area-inset-bottom, 0px));
 }
 
 /* ---------- accordions ---------- */

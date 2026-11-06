@@ -15,8 +15,8 @@ Reference for attitude (not for copying): rhodeskin.com.
 - **Language:** English, as the live shop.
 - **Kind (taste skill):** product (physical goods sold online, nothing happens at a door).
   Consequence: photographs lead, flat grounds, no shader effects, no scroll reveals, no violet.
-- **Theatre (awwwards):** a shop earns the craft in type, layout and motion, but no loader, no
-  WebGL, no page transitions. Speed is part of the luxury.
+- **Theatre (awwwards):** a shop earns the craft in type, layout and motion, but no loader and no
+  WebGL. Speed is part of the luxury. Page transitions only as a short crossfade (see Motion).
 
 ## Concepts
 
@@ -84,7 +84,10 @@ product, so the photograph bleeds into its tile with no visible edge.
 - **Still at rest, by decision.** Nothing moves while the visitor does nothing: a shop is read and compared,
   Rhode is still, and the taste rules forbid loops and scroll reveals on a product site. The life is in the
   answers: the shade field, hover inversion, press, drawers, the image crossfade and the accordions.
-- Primary buttons invert on hover (fill gives way to an ink ring); utility links only underline.
+- Primary buttons flood with the rose accent on hover and keep their weight; utility links draw an underline.
+- Page transitions (added after critic passes 1 and 2, both ranked the hard cut first): 160 ms crossfade
+  between pages, and the product photograph moves from its tile into the product page (280 ms, shared
+  `view-transition-name: p-<handle>`). Never blocks a click; off under reduced motion.
 
 ## Principles
 
