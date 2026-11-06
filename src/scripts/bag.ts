@@ -1,6 +1,7 @@
 // Bag: state in localStorage, drawer UI, checkout through the live store's cart permalink.
 // Shopify port: replace storage with /cart/add.js and /cart.js; the markup and drawer stay.
 import { openSheet } from './sheet';
+import { assetSrc, pageHref } from './url';
 
 export type BagItem = {
   id: number;
@@ -71,13 +72,13 @@ function render() {
     .map(
       (i) => `
     <li class="bag-item" data-id="${i.id}">
-      <a href="/products/${esc(i.handle)}" tabindex="-1" aria-hidden="true">
+      <a href="${esc(pageHref(`/products/${i.handle}`))}" tabindex="-1" aria-hidden="true">
         <span class="field" data-bands="${esc(i.bands)}" style="--e1:${esc(i.e1)};--e2:${esc(i.e2)};--band:${i.band}">
-          ${i.img ? `<img src="${esc(i.img)}" alt="" width="76" height="76" loading="lazy" decoding="async" />` : ""}
+          ${i.img ? `<img src="${esc(assetSrc(i.img))}" alt="" width="76" height="76" loading="lazy" decoding="async" />` : ""}
         </span>
       </a>
       <div>
-        <a class="bag-item__name" href="/products/${esc(i.handle)}">${esc(i.name)}</a>
+        <a class="bag-item__name" href="${esc(pageHref(`/products/${i.handle}`))}">${esc(i.name)}</a>
         ${i.variant ? `<p class="bag-item__variant">${esc(i.variant)}</p>` : ''}
         <p class="t-s num">${money(i.price * i.qty)}</p>
         <div class="bag-item__row">

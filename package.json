@@ -9,13 +9,15 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "export": "astro build && node scripts/export-offline.mjs"
   },
   "dependencies": {
     "astro": "^7.4.7"
   },
   "devDependencies": {
     "axe-core": "^4.14.0",
+    "esbuild": "^0.28.2",
     "playwright": "^1.65.0",
     "sharp": "^0.35.5"
   }

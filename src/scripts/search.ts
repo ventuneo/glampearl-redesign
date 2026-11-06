@@ -1,5 +1,6 @@
 // Client-side product search in the search dialog.
 import { openSheet } from './sheet';
+import { assetSrc, pageHref } from './url';
 
 type Entry = { handle: string; name: string; line: string; category: string; price: string; img: string; e1: string; terms: string };
 
@@ -34,8 +35,8 @@ function run(q: string) {
     : `Nothing matches “${q.trim()}”. Try gel, wig, lip or cream.`;
   results.innerHTML = hits
     .map(
-      (e, i) => `<li><a class="result" href="/products/${esc(e.handle)}" ${i === 0 ? 'aria-selected="true"' : ''}>
-        <span class="field" data-bands="none" style="--e1:${esc(e.e1)}">${e.img ? `<img src="${esc(e.img)}" alt="" width="56" height="56" loading="lazy" decoding="async" />` : ""}</span>
+      (e, i) => `<li><a class="result" href="${esc(pageHref(`/products/${e.handle}`))}" ${i === 0 ? 'aria-selected="true"' : ''}>
+        <span class="field" data-bands="none" style="--e1:${esc(e.e1)}">${e.img ? `<img src="${esc(assetSrc(e.img))}" alt="" width="56" height="56" loading="lazy" decoding="async" />` : ""}</span>
         <span><span class="result__name">${esc(e.name)}</span><span class="result__line">${esc(e.line)}</span></span>
         <span class="t-s num">${esc(e.price)}</span>
       </a></li>`,

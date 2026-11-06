@@ -31,3 +31,6 @@ data-raw/images/
 # jury evidence (screenshots), keep only score cards
 .jury/*/shots/
 .jury/*/shoot.log
+
+# offline export for clients
+export/

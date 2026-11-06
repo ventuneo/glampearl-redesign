@@ -65,7 +65,7 @@ let shownImage = -1;
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-function showImage(index: number) {
+function showImage(index: number, animate = true) {
   if (!main || !mainImg || index === shownImage) return;
   const im = data.images[index];
   if (!im) return;
@@ -73,15 +73,21 @@ function showImage(index: number) {
   // Crossfade instead of a hard cut (find-animation-opportunities #1). The next photograph is decoded first,
   // so the transition never fades to an empty frame. Browsers without view transitions swap instantly.
   const swap = () => setFieldImage(main, mainImg, im);
-  const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
-  if (doc.startViewTransition && !reduceMotion.matches) {
+  type VT = { ready: Promise<void>; finished: Promise<void> };
+  const doc = document as Document & { startViewTransition?: (cb: () => void) => VT };
+  // No crossfade on load: it would collide with the page transition that is still running.
+  if (animate && doc.startViewTransition && !reduceMotion.matches) {
     const pre = new Image();
     pre.src = im.src['960'];
     pre
       .decode()
       .catch(() => undefined)
       .then(() => {
-        if (shownImage === index) doc.startViewTransition!(swap);
+        if (shownImage !== index) return;
+        // A transition can be skipped (another one is running); the swap still happens, so ignore that.
+        const t = doc.startViewTransition!(swap);
+        t.ready.catch(() => undefined);
+        t.finished.catch(() => undefined);
       });
   } else swap();
   root.querySelectorAll<HTMLButtonElement>('[data-thumb]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.thumb) === index)));
@@ -114,7 +120,7 @@ function update(fromUrl = false) {
   if (priceEl) priceEl.textContent = money(current.price);
   if (barPrice) barPrice.textContent = money(current.price);
   if (shade) showShade(current);
-  else if (current.image != null) showImage(current.image);
+  else if (current.image != null) showImage(current.image, !fromUrl);
   if (!fromUrl && data.variants.length > 1) {
     const url = new URL(location.href);
     url.searchParams.set('variant', String(current.id));
