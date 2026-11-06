@@ -99,5 +99,46 @@ for (const file of pages) {
   count++;
 }
 
+// --publish: variant for a private claude.ai link (Artifact). Its rules: the entry page is wrapped in a
+// skeleton (no doctype/html/head/body of its own), forms must not post to another site, at most 511 files.
+if (process.argv.includes('--publish')) {
+  const all = walk(OUT).map((f) => path.relative(OUT, f).split(path.sep).join('/'));
+  const used = new Set();
+  for (const rel of all) {
+    let html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+    // Large files only for each product's first photograph (the one tiles and the hero show big).
+    html = html.replace(/products\/([^/"\s,]+)\/([1-9]\d*)-960\.webp/g, 'products/$1/$2-480.webp');
+    // Newsletter: no post to the live shop from the preview; say so plainly instead.
+    html = html.replace(/<form class="signup__form" data-signup method="post" action="[^"]*"/, '<form class="signup__form" data-signup');
+    html = html.replace(
+      '</body>',
+      () =>
+        `<script>(function(){var f=document.querySelector('[data-signup]');if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();var i=f.querySelector('input[type="email"]'),m=f.querySelector('[data-signup-msg]');if(i&&i.checkValidity()&&m){m.textContent='This preview does not send your address. In the live shop the same form signs you up.';}});})();</script>` +
+        `<style>.header{top:env(safe-area-inset-top,0px)}body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:41;background:#fff}</style></body>`,
+    );
+    for (const m of html.matchAll(/(?:products|fonts)\/[A-Za-z0-9._\/-]+\.(?:webp|woff2)/g)) used.add(m[0]);
+    if (rel === 'index.html') {
+      html = html
+        .replace(/<!doctype html>/i, '')
+        .replace(/<html[^>]*>/, '')
+        .replace(/<\/html>\s*$/, '')
+        .replace(/<\/?head>/g, '')
+        .replace(/<\/?body>/g, '')
+        .replace(/<title>[^<]*<\/title>/, '<title>GlamPearl Redesign</title>');
+    }
+    fs.writeFileSync(path.join(OUT, rel), html);
+  }
+  // Drop every image no page refers to any more.
+  const assets = (dir) =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? assets(path.join(dir, e.name)) : [path.join(dir, e.name)]));
+  for (const f of assets(path.join(OUT, 'products'))) {
+    const rel = path.relative(OUT, f).split(path.sep).join('/');
+    if (f.endsWith('.webp') && !used.has(rel)) fs.rmSync(f);
+  }
+  const files = assets(OUT).map((f) => path.relative(OUT, f).split(path.sep).join('/'));
+  fs.writeFileSync(path.join(path.dirname(OUT), 'publish-files.json'), JSON.stringify(files.filter((f) => f !== 'index.html'), null, 0));
+  console.log(`publish variant: ${files.length} files`);
+}
+
 const size = (dir) => fs.readdirSync(dir, { withFileTypes: true }).reduce((s, e) => s + (e.isDirectory() ? size(path.join(dir, e.name)) : fs.statSync(path.join(dir, e.name)).size), 0);
 console.log(`${count} pages exported to ${path.relative(process.cwd(), OUT)} (${(size(OUT) / 1e6).toFixed(1)} MB)`);
