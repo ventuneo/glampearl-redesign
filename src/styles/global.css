@@ -43,7 +43,7 @@
   --mint: #cfe9df;
   --signal: #f3a9c2; /* the accent as a flat colour (tags, focus on images) */
   --signal-fill: linear-gradient(120deg, #f7b7cc 0%, #f6c6d6 45%, #f9d1bd 100%); /* buttons, marks */
-  --signal-ink: #a3456e; /* the accent as text (5.4:1 on pearl, 4.8:1 on haze) */
+  --signal-ink: #8f3a62; /* the accent as text, 4.5:1 or more over every glow */
 
   /* gradient light: soft glows laid over each ground */
   --glow-pearl:
@@ -72,7 +72,7 @@
   /* sizes from the taste skill: h1 72/38, h2 48/30, h3 28/24, card titles 20/18, body 16, small 14, labels 13 */
   --t-display: clamp(2.375rem, 1.66rem + 2.95vw, 4.5rem);
   --t-l: clamp(1.875rem, 1.48rem + 1.65vw, 3rem);
-  --t-h3: clamp(1.5rem, 1.42rem + 0.35vw, 1.75rem);
+  --t-h3: clamp(1.375rem, 1.26rem + 0.5vw, 1.75rem);
   --t-m: clamp(1.125rem, 1.08rem + 0.18vw, 1.25rem);
   --t-body: 1rem;
   --t-s: 0.875rem;

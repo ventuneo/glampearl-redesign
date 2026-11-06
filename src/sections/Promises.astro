@@ -20,7 +20,7 @@ const items = [
     {
       items.map((it, i) => (
         <li>
-          <h3 class="prom__t label">
+          <h3 class="prom__t">
             {i === 0 && <span class="mark" aria-hidden="true" />}
             {it.t}
           </h3>
@@ -65,14 +65,20 @@ const items = [
   .prom__t {
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 10px;
     padding-bottom: var(--s3);
     border-bottom: 1px solid var(--line);
-    font-weight: 500;
+    font-family: var(--display);
+    font-size: var(--t-h3);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
   }
   .prom__t .mark {
-    width: 7px;
-    height: 7px;
+    width: 10px;
+    height: 10px;
+    flex: 0 0 auto;
+    align-self: center;
   }
   .prom__grid p {
     max-width: 22rem;
