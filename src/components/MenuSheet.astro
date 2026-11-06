@@ -22,7 +22,7 @@ const features = [
 ];
 ---
 
-<dialog class="menu" id="menu" aria-label="Menu" data-theme="dark">
+<dialog class="menu" id="menu" aria-label="Menu" data-theme="pearl">
   <div class="menu__inner">
     <div class="menu__bar">
       <a class="bar__mark" href="/" aria-label="GlamPearl, home"><Wordmark /></a>
@@ -114,7 +114,7 @@ const features = [
     }
   }
   .menu::backdrop {
-    background: rgb(20 20 20 / 0.35);
+    background: rgb(58 46 57 / 0.14);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
@@ -125,20 +125,24 @@ const features = [
     min-height: 0;
   }
   .menu__bar {
-    --bar-bg: #262626;
+    --bar-bg: rgb(255 255 255 / 0.8);
+    --bar-fg: var(--plum);
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     height: var(--bar-h);
-    padding: 0 4px 0 16px;
-    background: #262626;
-    color: #ededed;
+    padding: 0 4px 0 20px;
+    border-radius: 999px;
+    background: var(--bar-bg);
+    color: var(--bar-fg);
   }
   .menu__panel {
     display: grid;
     gap: var(--s7) var(--s6);
     padding: var(--s7) var(--s6) var(--s6);
-    background: #262626;
+    border-radius: 28px;
+    background: var(--glow-haze), rgb(251 248 246 / 0.94);
+    box-shadow: 0 30px 80px rgb(163 69 110 / 0.12);
     clip-path: inset(0 0 0 0);
     transition: clip-path 520ms var(--ease-out);
   }
@@ -178,7 +182,7 @@ const features = [
       margin-right 320ms var(--ease-out);
   }
   .menu__nav a[aria-current='page'] {
-    color: var(--signal);
+    color: var(--rose);
   }
   .menu__nav a[aria-current='page'] .mark,
   .menu__nav a:focus-visible .mark {
@@ -187,7 +191,7 @@ const features = [
   }
   @media (hover: hover) and (pointer: fine) {
     .menu__nav a:hover {
-      color: var(--signal);
+      color: var(--rose);
     }
     .menu__nav a:hover .mark {
       width: 0.5em;
@@ -247,6 +251,7 @@ const features = [
     display: block;
     aspect-ratio: 3 / 4;
     overflow: hidden;
+    border-radius: var(--radius);
   }
   .menu__img img {
     width: 100%;

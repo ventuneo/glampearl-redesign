@@ -11,7 +11,7 @@ import * as esbuild from 'esbuild';
 
 const DIST = path.resolve('dist');
 const OUT = path.resolve(process.argv[2] || 'export/GlamPearl-Redesign');
-const COPY = ['products', 'fonts', 'favicon.svg', 'favicon-48.png', 'apple-touch-icon.png', 'og.jpg'];
+const COPY = ['products', 'art', 'fonts', 'favicon.svg', 'favicon-48.png', 'apple-touch-icon.png', 'og.jpg'];
 
 const walk = (dir) =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {

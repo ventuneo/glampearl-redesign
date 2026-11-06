@@ -18,14 +18,15 @@ never its content, logo, copy or artwork. The earlier "shade card" version stays
 ## Concept card
 
 ```
-Idea:        A beauty shop set like a studio site: dark and light grounds in turn, one coral-red signal,
-             and the products drawn in glyphs.
-Metaphor:    a print shop's proof sheet: photographs turned into type, labels in a typewriter voice.
-Signature:   the hero portrait (the lace front wig in profile) as a glyph field that flickers at rest,
-             scans once when it appears and scrambles under the pointer (scripts/ascii.ts).
-Emotion:     confident and quick; a studio, not a pharmacy shelf.
-Motion verb: snap like a shutter: things trade places, clip open and settle; nothing bounces.
-Screenshot:  the first screen: headline left, the glyph profile right, the orange block button.
+Idea:        A beauty shop set like a studio site, softened: pastel grounds under gradient light, a
+             blush accent, and the products drawn in glitter.
+Metaphor:    glitter gel and pearl: flakes that catch the light, nacre that shifts from pink to lilac.
+Signature:   the hero portrait (the lace front wig in profile) made of pastel glitter flakes; flakes
+             sparkle at rest, a sweep of light crosses it once, the pointer makes flakes flash
+             (scripts/glitter.mjs builds the flakes, scripts/glitter.ts draws the sparkles).
+Emotion:     soft, light and a little magical; still confident.
+Motion verb: glide and settle: blocks trade places, glows drift, sparkles rise and fade.
+Screenshot:  the first screen: headline left, the glitter profile right in a blush and lilac glow.
 ```
 
 Anchors that make it GlamPearl's and not the reference's: the hero and footer art are the shop's own
@@ -34,51 +35,52 @@ the numbers are the shop's (4.9 from 440 reviews, 50 shades, 30 days); the steps
 
 ## System
 
-### Colour
+### Colour (06.11.2026, second pass: "pastel, softer, with gradient light")
 
 | Role | Hex | Use |
 |---|---|---|
-| day | `#EFEFEF` | light ground |
-| card | `#F8F8F8` | cards on day |
-| night | `#141414` | dark ground |
-| night-2 | `#222222` | inputs, panels on night |
-| signal | `#FF4D2E` | fills, squares, small text on night (5.6:1); a coral-red lacquer |
-| signal-ink | `#C0331A` | the accent as text on day (4.8:1) |
-| ink / muted | `#141414` / `#626262` on day, `#EDEDED` / `#8F8F8F` on night | text |
+| pearl | `#FBF8F6` | main ground |
+| haze | `#F4EDF5` | second ground, a lilac haze |
+| card | white at 72% | cards over the glow |
+| plum | `#3A2E39` | ink; never black |
+| muted | `#6E5C68` | meta (5.8:1 on pearl, 5.1:1 on haze) |
+| blush to peach | `#F7B7CC` to `#F9D1BD` | the accent as a gradient fill: buttons, marks, tags |
+| rose ink | `#A3456E` | the accent as text (5.4:1 on pearl) |
+| glows | blush, lilac, peach, mint radials | gradient light over every ground |
 
-Sections declare `data-theme="dark|light"`; role tokens swap there. The floating bar takes the theme of the
-section under it (scripts/ui.ts).
+Sections declare `data-theme="pearl|haze"`. The bar is frosted white in both.
 
 ### Type
 
-- **Geist** (Google, OFL) for headings and text; **Geist Mono** for labels, buttons, meta and the glyph fields.
+- **Geist** for headings and text; **Geist Mono** for labels, buttons and meta.
 - Headings sentence case and end with a full stop, tracking -0.04 to -0.05 em, weight 500.
-- Mono labels uppercase, 12 px, +0.01 em. They carry facts (prices, counts), never decoration.
+- Mono labels uppercase, 12 px. They carry facts (prices, counts), never decoration.
 - Slash labels (`// CHF 50.80 for all three`) only beside a heading and only with a fact.
 
 ### Layout and shape
 
 - 12 columns, margin `clamp(16px, 2.2vw, 32px)`, gutter 12 px.
-- Radius 0 everywhere except the gel shade swatches (they are round, like pearls).
-- Buttons: a signal block with a mono label plus a square block (`.cta`). On hover the two trade places.
-- Section families, one each: hero (text over glyph field), numbers (photo + three cards), sequence (sticky
+- Soft shapes: photographs and cards 18 px radius, small images 12 px, buttons and the bar are pills,
+  marks and the plus button are circles (pearls).
+- Buttons: a blush pill with a mono label plus a round plus button (`.cta`). On hover the two trade places.
+- Section families, one each: hero (text over glitter), numbers (photo + three cards), sequence (sticky
   photo + numbered steps), index (sticky thumbnails + large photos), list (category rows), ruled grid
-  (promises), accordion (FAQ), split (contact), footer (form + nav + glyph field + dot wordmark).
+  (promises), accordion (FAQ), split (contact), footer (form + nav + glitter + pearl wordmark).
 
 ### Motion
 
 - One ease: `cubic-bezier(0.23, 1, 0.32, 1)`. One clock for frame work: `gsap.ticker`.
-- Hover answers: label scramble (mono), block swap (.cta), orange square slides in (lists, menu), image
+- Hover answers: label scramble (mono), block swap (.cta), blush circle slides in (lists, menu), image
   scale 1.035, view tag trails the pointer (best sellers).
-- Glyph fields: idle flicker (5 glyphs every 90 ms), one scan when first visible, pointer scramble. Paused off
-  screen, off under reduced motion.
+- Glitter: about 18 sparkles a second at rest, one diagonal sweep when first visible, flashes under the
+  pointer. Paused off screen. The hero glow drifts over 14 s. All off under reduced motion; the still
+  glitter image stays.
 - Steps and best sellers: the item crossing the middle of the screen becomes current (IntersectionObserver).
 - Page transitions: 160 ms crossfade, product photograph shared into the product page.
-- Reduced motion: no flicker, no scan, no swaps, everything visible.
 
 ## Genericness test
 
 - A generic "studio" copy would reuse the reference's portrait, logo and words. Changed to: our own photographs
   as glyphs, a pearl dot wordmark, GlamPearl's real numbers and FAQ.
-- A generic beauty shop would be cream and serif. Kept the reference's night and day grounds and the signal
-  accent, tuned the accent towards a nail lacquer red.
+- A generic pastel shop would be a flat pink page with a serif. Kept the studio structure, the mono voice and
+  the block swap; the softness comes from light (glows) and the product colours (glitter), not from blur alone.

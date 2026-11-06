@@ -7,7 +7,7 @@ const list = bestsellers(6);
 const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name ?? slug;
 ---
 
-<section class="best wrap" data-theme="dark" aria-labelledby="best-title">
+<section class="best wrap" data-theme="pearl" aria-labelledby="best-title">
   <div class="best__side">
     <div class="best__intro">
       <h2 class="t-l" id="best-title">Best sellers.</h2>
@@ -152,6 +152,7 @@ const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name 
     width: 64px;
     aspect-ratio: 5 / 4;
     overflow: hidden;
+    border-radius: 8px;
     opacity: 0.45;
     transition: opacity 260ms ease;
   }
@@ -198,6 +199,7 @@ const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name 
     place-items: center;
     aspect-ratio: 16 / 10;
     overflow: hidden;
+    border-radius: var(--radius);
   }
   /* The square photograph sits whole in a frame of its own studio colour; its side edges fade into it. */
   .best__frame img {
@@ -215,8 +217,9 @@ const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name 
     top: 50%;
     margin: -14px 0 0 -52px;
     padding: 6px 10px;
-    background: var(--signal);
-    color: #141414;
+    background: var(--signal-fill);
+    color: var(--plum);
+    border-radius: 999px;
     opacity: 0;
     scale: 0.9;
     pointer-events: none;

@@ -3,7 +3,7 @@
 // Shopify port: sections/footer.liquid (newsletter form + menus + the two decorative snippets).
 import { CATEGORIES, STORE } from '../lib/catalog';
 import Wordmark from './Wordmark.astro';
-import Ascii from './Ascii.astro';
+import Glitter from './Glitter.astro';
 import Cta from './Cta.astro';
 const year = new Date().getFullYear();
 const nav = [
@@ -14,7 +14,7 @@ const nav = [
 ];
 ---
 
-<footer class="foot" data-theme="dark">
+<footer class="foot" data-theme="pearl">
   <div class="foot__top wrap">
     <section class="foot__signup" id="newsletter" aria-labelledby="signup-title">
       <h2 class="foot__h" id="signup-title">10% off your first order, and new shades by email.</h2>
@@ -54,7 +54,7 @@ const nav = [
   </div>
 
   <div class="foot__art">
-    <Ascii name="footer" class="foot__ascii" />
+    <Glitter name="footer" class="foot__ascii" sizes="100vw" />
     <div class="foot__status mono">
       <p><span class="mark" aria-hidden="true"></span> Tracked delivery</p>
       <p><span class="mark" aria-hidden="true"></span> Card and Apple Pay at checkout</p>
@@ -118,20 +118,21 @@ const nav = [
     min-height: 44px;
     padding: 0 14px;
     border: 0;
-    border-radius: 0;
-    background: var(--night-2);
+    background: #ffffff;
+    border-radius: 999px;
     color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line);
     transition: box-shadow var(--d-ui) ease;
   }
   .signup__form input::placeholder {
-    color: #8f8f8f;
+    color: var(--muted);
   }
   .signup__form input:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 1px var(--signal);
+    box-shadow: inset 0 0 0 2px var(--rose);
   }
   .signup__form input[aria-invalid='true'] {
-    box-shadow: inset 0 0 0 1px var(--signal);
+    box-shadow: inset 0 0 0 2px var(--rose);
   }
   .signup__msg {
     grid-column: 1 / -1;
@@ -156,7 +157,7 @@ const nav = [
   }
   @media (hover: hover) and (pointer: fine) {
     .foot__nav a:hover {
-      color: var(--signal);
+      color: var(--rose);
     }
   }
   .foot__contact {
@@ -188,8 +189,8 @@ const nav = [
   }
   .foot :global(.foot__ascii) {
     position: relative;
-    width: 100%;
-    opacity: 0.9;
+    width: min(100%, 68rem);
+    margin-inline: auto;
   }
   .foot__status {
     position: absolute;
@@ -216,10 +217,13 @@ const nav = [
     max-width: calc(100% - 2 * var(--m));
     text-align: center;
     padding: 8px 12px;
-    background: rgb(20 20 20 / 0.7);
+    background: rgb(255 255 255 / 0.7);
+    border-radius: 999px;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
   .foot__mark {
-    color: #262626;
+    color: #efd7e3;
     padding-bottom: calc(var(--s4) + env(safe-area-inset-bottom, 0px));
   }
   .foot__mark :global(.wordmark-dots) {

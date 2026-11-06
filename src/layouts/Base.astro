@@ -26,7 +26,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://glampearl.s
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#141414" />
+    <meta name="theme-color" content="#fbf8f6" />
     <meta name="page-type" content="product" />
     <meta name="site-kind" content="other" />
     <meta property="og:type" content="website" />
@@ -50,10 +50,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://glampearl.s
     </script>
     <slot name="head" />
   </head>
-  <body data-theme="light">
+  <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <Header />
-    <main id="main" tabindex="-1" data-theme="light">
+    <main id="main" tabindex="-1" data-theme="pearl">
       <slot />
     </main>
     <Footer />
@@ -65,7 +65,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://glampearl.s
       import '../scripts/search.ts';
       import '../scripts/menu.ts';
       import '../scripts/ui.ts';
-      import '../scripts/ascii.ts';
+      import '../scripts/glitter.ts';
     </script>
   </body>
 </html>

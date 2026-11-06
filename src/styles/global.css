@@ -30,23 +30,39 @@
 }
 
 :root {
-  /* colour: two grounds that alternate by section, one signal accent */
-  --day: #efefef; /* light ground */
-  --card: #f8f8f8; /* cards and fields on the light ground */
-  --night: #141414; /* dark ground */
-  --night-2: #222222; /* cards, inputs and the bar on the dark ground */
-  --signal: #ff4d2e; /* the accent: a coral-red lacquer. Fills, squares, small text on night only */
-  --signal-ink: #c0331a; /* the accent as text on the light ground (4.8:1) */
+  /* colour: pastel grounds under soft gradient light; the pinks, lilacs and peaches of the products */
+  --pearl: #fbf8f6; /* the main ground */
+  --haze: #f4edf5; /* the second ground, a lilac haze */
+  --card: rgb(255 255 255 / 0.72); /* cards and fields over the light */
+  --plum: #3a2e39; /* ink: a soft plum, never black */
+  --blush: #f6bfd1;
+  --peach: #f9d3bf;
+  --lilac: #d9c9f0;
+  --mint: #cfe9df;
+  --signal: #f3a9c2; /* the accent as a flat colour (tags, focus on images) */
+  --signal-fill: linear-gradient(120deg, #f7b7cc 0%, #f6c6d6 45%, #f9d1bd 100%); /* buttons, marks */
+  --signal-ink: #a3456e; /* the accent as text (5.4:1 on pearl, 4.8:1 on haze) */
 
-  /* role tokens, light by default; [data-theme='dark'] swaps them */
-  --ground: var(--day);
-  --ink: #141414;
-  --muted: #626262; /* 5.1:1 on day */
-  --line: #d2d2d2;
+  /* gradient light: soft glows laid over each ground */
+  --glow-pearl:
+    radial-gradient(60% 45% at 92% 0%, rgb(249 211 191 / 0.55), transparent 70%),
+    radial-gradient(55% 50% at 0% 100%, rgb(217 201 240 / 0.45), transparent 70%);
+  --glow-haze:
+    radial-gradient(55% 55% at 85% 15%, rgb(246 191 209 / 0.6), transparent 70%),
+    radial-gradient(60% 50% at 5% 85%, rgb(207 233 223 / 0.55), transparent 70%),
+    radial-gradient(45% 40% at 45% 50%, rgb(249 211 191 / 0.35), transparent 70%);
+
+  /* role tokens */
+  --ground: var(--pearl);
+  --ink: var(--plum);
+  --muted: #6e5c68; /* 5.8:1 on pearl, 5.1:1 on haze */
+  --line: #e6dbe3;
   --nacre: var(--card);
   --rose: var(--signal-ink);
-  --focus: #141414;
-  --scrim: rgb(20 20 20 / 0.4);
+  --focus: var(--plum);
+  --scrim: rgb(58 46 57 / 0.22);
+  --radius: 18px;
+  --radius-s: 12px;
 
   /* type */
   --font: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
@@ -75,7 +91,7 @@
   --bar-top: 12px;
   --header-h: calc(var(--bar-h) + var(--bar-top));
 
-  /* motion: one family, a strong ease-out; things snap into place like a shutter */
+  /* motion: one family, a strong ease-out; things glide into place and settle softly */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
@@ -84,19 +100,14 @@
   --d-field: 420ms;
 }
 
-[data-theme='dark'] {
-  --ground: var(--night);
-  --ink: #ededed;
-  --muted: #8f8f8f; /* 5.9:1 on night */
-  --line: #333333;
-  --nacre: var(--night-2);
-  --rose: var(--signal);
-  --focus: var(--signal);
-  background: var(--ground);
+[data-theme='haze'] {
+  --ground: var(--haze);
+  background: var(--glow-haze), var(--haze);
   color: var(--ink);
 }
-[data-theme='light'] {
-  background: var(--ground);
+[data-theme='pearl'] {
+  --ground: var(--pearl);
+  background: var(--glow-pearl), var(--pearl);
   color: var(--ink);
 }
 
@@ -110,7 +121,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-padding-top: calc(var(--header-h) + 16px);
-  background: var(--night);
+  background: var(--pearl);
 }
 body {
   margin: 0;
@@ -190,8 +201,8 @@ ol[role='list'] {
   padding: 0;
 }
 ::selection {
-  background: var(--signal);
-  color: #141414;
+  background: var(--blush);
+  color: var(--plum);
 }
 :focus-visible {
   outline: 2px solid var(--focus);
@@ -214,8 +225,9 @@ ol[role='list'] {
   top: 8px;
   z-index: 100;
   padding: 10px 16px;
-  background: var(--signal);
-  color: #141414;
+  border-radius: 999px;
+  background: var(--signal-fill);
+  color: var(--plum);
   font-family: var(--mono);
   font-size: var(--t-mono);
   text-transform: uppercase;
@@ -279,7 +291,9 @@ ol[role='list'] {
   display: inline-block;
   width: 0.62em;
   height: 0.62em;
-  background: var(--signal);
+  border-radius: 50%;
+  background: var(--signal-fill);
+  box-shadow: 0 0 0 1px rgb(163 69 110 / 0.18) inset;
   flex: 0 0 auto;
 }
 /* Right-aligned slash label beside a heading: carries a real fact, never decoration. */
@@ -330,16 +344,16 @@ ol[role='list'] {
 /* ---------- buttons ---------- */
 /* .btn: a flat signal block with a mono label. Square corners, like everything here. */
 .btn {
-  --btn-bg: var(--signal);
-  --btn-fg: #141414;
+  --btn-bg: var(--signal-fill);
+  --btn-fg: var(--plum);
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--s2);
   min-height: 44px;
-  padding: 0 18px;
-  border-radius: 0;
+  padding: 0 20px;
+  border-radius: 999px;
   background: var(--btn-bg);
   color: var(--btn-fg);
   font-family: var(--mono);
@@ -374,8 +388,8 @@ ol[role='list'] {
   --btn-fg: var(--ground);
 }
 .btn--light {
-  --btn-bg: #ededed;
-  --btn-fg: #141414;
+  --btn-bg: #ffffff;
+  --btn-fg: var(--plum);
 }
 .btn--block {
   width: 100%;
@@ -388,8 +402,8 @@ ol[role='list'] {
   .btn--ink:hover,
   .btn--ghost:hover,
   .btn--light:hover {
-    --btn-bg: var(--signal);
-    --btn-fg: #141414;
+    --btn-bg: var(--signal-fill);
+    --btn-fg: var(--plum);
     box-shadow: none;
   }
   .btn[disabled]:hover {
@@ -402,8 +416,8 @@ ol[role='list'] {
 .cta {
   --lw: 0px;
   --sw: 44px;
-  --cta-bg: var(--signal);
-  --cta-fg: #141414;
+  --cta-bg: var(--signal-fill);
+  --cta-fg: var(--plum);
   position: relative;
   display: inline-flex;
   align-items: stretch;
@@ -424,8 +438,8 @@ ol[role='list'] {
   --cta-fg: var(--ground);
 }
 .cta--light {
-  --cta-bg: #ededed;
-  --cta-fg: #141414;
+  --cta-bg: #ffffff;
+  --cta-fg: var(--plum);
 }
 .cta__label,
 .cta__sq {
@@ -437,11 +451,13 @@ ol[role='list'] {
     background-color var(--d-ui) ease;
 }
 .cta__label {
-  padding: 0 16px;
+  padding: 0 20px;
+  border-radius: 999px;
 }
 .cta__sq {
   width: 44px;
   min-width: 44px;
+  border-radius: 50%;
 }
 .cta__sq svg {
   transition: rotate 420ms var(--ease-out);
@@ -490,8 +506,8 @@ ol[role='list'] {
   align-items: center;
   gap: var(--s2);
   min-height: 40px;
-  padding: 0 14px;
-  border-radius: 0;
+  padding: 0 16px;
+  border-radius: 999px;
   box-shadow: inset 0 0 0 1px var(--line);
   font-family: var(--mono);
   font-size: var(--t-mono);
@@ -583,6 +599,7 @@ ol[role='list'] {
   position: relative;
   display: block;
   overflow: hidden;
+  border-radius: var(--radius);
   aspect-ratio: 1;
   background: var(--field, var(--nacre));
   isolation: isolate;

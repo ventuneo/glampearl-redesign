@@ -5,7 +5,7 @@ import { groups } from '../data/faq';
 const items = groups.flatMap((g) => g.items);
 ---
 
-<section class="faq wrap" data-theme="dark" aria-labelledby="faq-title">
+<section class="faq wrap" data-theme="pearl" aria-labelledby="faq-title">
   <h2 class="t-l faq__title" id="faq-title">Common questions.</h2>
   <div class="faq__list">
     {
@@ -65,11 +65,11 @@ const items = groups.flatMap((g) => g.items);
   }
   .faq__list details[open] summary svg {
     rotate: 45deg;
-    color: var(--signal);
+    color: var(--rose);
   }
   @media (hover: hover) and (pointer: fine) {
     .faq__list summary:hover {
-      color: var(--signal);
+      color: var(--rose);
     }
   }
   .faq__list details p {
@@ -85,7 +85,7 @@ const items = groups.flatMap((g) => g.items);
   }
   @media (hover: hover) and (pointer: fine) {
     .faq__more:hover {
-      color: var(--signal);
+      color: var(--rose);
     }
   }
 </style>

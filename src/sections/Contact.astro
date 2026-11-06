@@ -6,7 +6,7 @@ const mask = byHandle('collagen-moisturizing-facial-mask')!;
 const photo = mask.images[1] ?? mask.images[0];
 ---
 
-<section class="contact wrap" data-theme="light" aria-labelledby="contact-title">
+<section class="contact wrap" data-theme="haze" aria-labelledby="contact-title">
   <h2 class="t-l contact__title" id="contact-title">Write to us.</h2>
   <p class="contact__lead">Questions about an order, a return or the right shade? A person reads every message.</p>
   <a class="contact__photo" href={`/products/${mask.handle}`} style={`background:${photo.e1}`}>
@@ -60,6 +60,7 @@ const photo = mask.images[1] ?? mask.images[0];
     display: block;
     aspect-ratio: 5 / 4;
     overflow: hidden;
+    border-radius: var(--radius);
   }
   .contact__photo img {
     width: 100%;

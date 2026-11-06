@@ -16,7 +16,7 @@ const rows = CATEGORIES.map((c) => {
 }).filter((c) => c.count > 0);
 ---
 
-<section class="cats wrap" data-theme="dark" aria-labelledby="cats-title">
+<section class="cats wrap" data-theme="pearl" aria-labelledby="cats-title">
   <div class="cats__head">
     <h2 class="t-l" id="cats-title">Shop by category.</h2>
     <p class="mono slash">{products.length} products in 4 categories</p>
@@ -98,6 +98,7 @@ const rows = CATEGORIES.map((c) => {
     width: 96px;
     aspect-ratio: 1;
     overflow: hidden;
+    border-radius: var(--radius-s);
     clip-path: inset(0 0 0 100%);
     transition: clip-path 420ms var(--ease-out);
   }
@@ -108,7 +109,7 @@ const rows = CATEGORIES.map((c) => {
   }
   @media (hover: hover) and (pointer: fine) {
     .cats__row:hover .cats__name {
-      color: var(--signal);
+      color: var(--rose);
     }
     .cats__row:hover .cats__name .mark {
       width: 0.42em;

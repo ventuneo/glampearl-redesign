@@ -28,7 +28,7 @@ const client = steps.map((s) => ({
 }));
 ---
 
-<section class="steps wrap" data-theme="light" aria-labelledby="steps-title">
+<section class="steps wrap" data-theme="haze" aria-labelledby="steps-title">
   <div class="steps__head">
     <h2 class="t-l" id="steps-title">Gel nails in three steps.</h2>
     <p class="mono slash">{money(total)} for all three</p>
@@ -200,6 +200,7 @@ const client = steps.map((s) => ({
     display: grid;
     aspect-ratio: 4 / 5;
     overflow: hidden;
+    border-radius: var(--radius);
   }
   .steps__img {
     grid-area: 1 / 1;

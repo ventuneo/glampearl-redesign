@@ -1,7 +1,7 @@
 ---
 // Hero on the dark ground: the promise, two ways in, and a wig photograph from the shop as a glyph field.
 // Shopify port: sections/hero-glyphs.liquid (heading, text, two links, the glyph snippet, a featured product).
-import Ascii from '../components/Ascii.astro';
+import Glitter from '../components/Glitter.astro';
 import Cta from '../components/Cta.astro';
 import { CATEGORIES, inCategory, products, byHandle, money } from '../lib/catalog';
 
@@ -11,8 +11,8 @@ const gel = byHandle('nail-polish-nude-neutrals-soak-off-gel-polish')!;
 const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nails-soak-off-uv-gel')!;
 ---
 
-<section class="hero" data-theme="dark" aria-labelledby="hero-title">
-  <Ascii name="hero" class="hero__art" />
+<section class="hero" data-theme="pearl" aria-labelledby="hero-title">
+  <Glitter name="hero" class="hero__art" eager sizes="(min-width: 900px) 46vw, 92vw" />
   <div class="hero__text wrap">
     <h1 class="t-display" id="hero-title">Salon results, done at home.</h1>
     <p class="hero__sub">
@@ -49,6 +49,29 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
 </section>
 
 <style>
+  /* gradient light: a soft glow behind the portrait that drifts slowly at rest */
+  .hero::before {
+    content: '';
+    position: absolute;
+    z-index: -2;
+    right: -10vw;
+    top: -10vh;
+    width: 75vw;
+    height: 110%;
+    background:
+      radial-gradient(closest-side at 55% 45%, rgb(246 191 209 / 0.75), transparent),
+      radial-gradient(closest-side at 30% 70%, rgb(217 201 240 / 0.7), transparent),
+      radial-gradient(closest-side at 75% 80%, rgb(249 211 191 / 0.6), transparent);
+    filter: blur(20px);
+    animation: hero-drift 14s var(--ease-in-out) infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes hero-drift {
+    to {
+      translate: -4vw 3vh;
+      scale: 1.06;
+    }
+  }
   .hero {
     position: relative;
     display: grid;
@@ -63,8 +86,8 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
     z-index: -1;
     right: max(var(--m), 2vw);
     top: calc(var(--header-h) + 8px);
-    /* the field is 66 x 78 em: keep it inside one screen */
-    width: min(50vw, calc((100svh - var(--header-h) - 24px) * 66 / 78));
+    /* the glitter is 120 x 141 cells: keep it inside one screen */
+    width: min(46vw, calc((100svh - var(--header-h) - 24px) * 120 / 141));
   }
   .hero__text {
     align-self: center;
@@ -79,7 +102,7 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
   }
   .hero__sub {
     max-width: 31rem;
-    color: #b8b8b8;
+    color: var(--muted);
     font-size: var(--t-body);
   }
   .hero__actions {
@@ -97,7 +120,7 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
   }
   @media (hover: hover) and (pointer: fine) {
     .hero__link:hover {
-      color: var(--signal);
+      color: var(--rose);
     }
   }
   .hero__foot {
@@ -125,7 +148,7 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
     font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
     font-weight: 600;
     letter-spacing: -0.04em;
-    color: #9c9c9c;
+    color: var(--muted);
     transition: color 200ms ease;
   }
   @media (hover: hover) and (pointer: fine) {
@@ -147,6 +170,7 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
     width: 88px;
     aspect-ratio: 1;
     overflow: hidden;
+    border-radius: var(--radius-s);
   }
   .hero__new-img img {
     width: 100%;
@@ -204,7 +228,8 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .hero__text > * {
+    .hero__text > *,
+    .hero::before {
       animation: none;
     }
   }
