@@ -9,7 +9,7 @@ const year = new Date().getFullYear();
 const nav = [
   { href: '/', label: 'Home' },
   { href: '/shop', label: 'Shop all' },
-  ...CATEGORIES.map((c) => ({ href: `/shop/${c.slug}`, label: c.name })),
+  ...CATEGORIES.map((c) => ({ href: `/shop/${c.slug}`, label: c.name[0].toUpperCase() + c.name.slice(1) })),
   { href: '/help', label: 'Help' },
 ];
 ---
@@ -26,7 +26,7 @@ const nav = [
         <label class="visually-hidden" for="signup-email">Email address</label>
         <input id="signup-email" name="contact[email]" type="email" autocomplete="email" inputmode="email" placeholder="Email address" required />
         <Cta type="submit" variant="light">Sign up</Cta>
-        <p class="signup__msg mono muted" data-signup-msg role="status" aria-live="polite">No spam. Unsubscribe any time.</p>
+        <p class="signup__msg label muted" data-signup-msg role="status" aria-live="polite">No spam. Unsubscribe any time.</p>
       </form>
     </section>
     <nav class="foot__nav" aria-label="Footer">
@@ -34,7 +34,7 @@ const nav = [
         {
           nav.map((l) => (
             <li>
-              <a class="mono" href={l.href} data-scramble>
+              <a class="label" href={l.href}>
                 {l.label}
               </a>
             </li>
@@ -55,7 +55,7 @@ const nav = [
 
   <div class="foot__art">
     <Glitter name="footer" class="foot__ascii" sizes="100vw" />
-    <div class="foot__status mono">
+    <div class="foot__status label">
       <p><span class="mark" aria-hidden="true"></span> Tracked delivery</p>
       <p><span class="mark" aria-hidden="true"></span> Card and Apple Pay at checkout</p>
     </div>
@@ -101,9 +101,10 @@ const nav = [
     }
   }
   .foot__h {
-    font-size: var(--t-m);
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-family: var(--display);
+    font-size: var(--t-h3);
+    font-weight: 400;
+    letter-spacing: -0.015em;
     line-height: 1.25;
     max-width: 22rem;
     margin-bottom: var(--s4);

@@ -31,21 +31,21 @@ const client = steps.map((s) => ({
 <section class="steps wrap" data-theme="haze" aria-labelledby="steps-title">
   <div class="steps__head">
     <h2 class="t-l" id="steps-title">Gel nails in three steps.</h2>
-    <p class="mono slash">{money(total)} for all three</p>
+    <p class="label slash">{money(total)} for all three</p>
   </div>
   <div class="steps__body">
     <ol class="steps__list" role="list" data-steps>
       {
         steps.map((s, i) => (
           <li class="steps__item" data-step={i} aria-current={i === 0 ? 'step' : undefined}>
-            <span class="steps__n mono num">
+            <span class="steps__n label num">
               <span class="mark" aria-hidden="true" />
               0{i + 1}
             </span>
             <div class="steps__copy">
               <h3 class="steps__verb">{s.verb}</h3>
               <p>{s.text}</p>
-              <a class="steps__product mono" href={`/products/${s.p.handle}`}>
+              <a class="steps__product label" href={`/products/${s.p.handle}`}>
                 {s.p.name}
                 {s.v.title !== 'Default Title' && s.p.variants.length > 1 ? `, ${s.v.title}` : ''}, {money(s.v.price)}
               </a>
@@ -170,14 +170,14 @@ const client = steps.map((s) => ({
     max-width: 26rem;
   }
   .steps__verb {
-    font-size: var(--t-m);
-    font-weight: 500;
-    letter-spacing: -0.03em;
-    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem);
-    line-height: 1.1;
+    font-family: var(--display);
+    font-size: var(--t-h3);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
   }
   .steps__copy p {
-    font-size: var(--t-s);
+    font-size: var(--t-body);
   }
   .steps__product {
     justify-self: start;

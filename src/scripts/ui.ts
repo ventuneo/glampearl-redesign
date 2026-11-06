@@ -1,48 +1,5 @@
-// Shared studio interactions: mono labels scramble on hover, .cta blocks trade places (widths measured
-// here), and the floating bar takes the colour of the section under it.
-import { gsap } from 'gsap';
-
-const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-const fine = matchMedia('(hover: hover) and (pointer: fine)');
-const NOISE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&*+=<>/?'.split('');
-
-/* ---------- scramble: letters run through noise and settle left to right in 360 ms ---------- */
-const running = new WeakMap<HTMLElement, gsap.core.Tween>();
-function scramble(el: HTMLElement) {
-  const text = (el.dataset.text ??= el.textContent ?? '');
-  running.get(el)?.kill();
-  const state = { p: 0 };
-  const tween = gsap.to(state, {
-    p: 1,
-    duration: 0.36,
-    ease: 'none',
-    onUpdate() {
-      const settled = Math.floor(state.p * text.length);
-      let out = '';
-      for (let i = 0; i < text.length; i++) {
-        const c = text[i];
-        out += i < settled || c === ' ' ? c : NOISE[(Math.random() * NOISE.length) | 0];
-      }
-      el.textContent = out;
-    },
-    onComplete() {
-      el.textContent = text;
-    },
-  });
-  running.set(el, tween);
-}
-document.addEventListener(
-  'pointerover',
-  (e) => {
-    if (reduce.matches || !fine.matches) return;
-    const host = (e.target as HTMLElement).closest<HTMLElement>('a, button, summary');
-    if (!host || host.contains(e.relatedTarget as Node)) return;
-    const targets = host.matches('[data-scramble]') ? [host] : [...host.querySelectorAll<HTMLElement>('[data-scramble]')];
-    targets.forEach(scramble);
-  },
-  { passive: true },
-);
-
+// Shared interactions: .cta blocks trade places on hover (widths measured here), and the floating bar
+// notes which ground is under it.
 /* ---------- .cta: measure the two blocks so hover can swap them with transforms ---------- */
 const ro = new ResizeObserver((entries) => {
   for (const { target } of entries) {

@@ -18,14 +18,14 @@ const stats = [
   <h2 class="visually-hidden" id="stats-title">GlamPearl in numbers</h2>
   <a class="stats__photo" href={`/products/${wig.handle}`} style={`background:${photo.e1}`}>
     <img src={photo.src['960']} srcset={`${photo.src['480']} 480w, ${photo.src['960']} 960w`} sizes="(min-width: 900px) 24vw, 100vw" width="960" height="960" alt={`${wig.name}, ${wig.line}`} loading="lazy" decoding="async" />
-    <span class="stats__tag mono">{wig.name}</span>
+    <span class="stats__tag label">{wig.name}</span>
   </a>
   <dl class="stats__list">
     {
       stats.map((s, i) => (
         <div class="stats__card">
           <dt class="stats__n num">{s.n}</dt>
-          <dd class="mono">
+          <dd class="label">
             {i === 0 && <span class="mark" aria-hidden="true" />}
             {s.label}
           </dd>
@@ -102,9 +102,10 @@ const stats = [
     box-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 12px 40px rgb(163 69 110 / 0.06);
   }
   .stats__n {
-    font-size: clamp(3.25rem, 2rem + 3.6vw, 6rem);
+    font-family: var(--display);
+    font-size: clamp(3rem, 2rem + 3.2vw, 5.5rem);
     font-weight: 400;
-    letter-spacing: -0.06em;
+    letter-spacing: -0.03em;
     line-height: 0.9;
     margin-left: -0.04em;
   }

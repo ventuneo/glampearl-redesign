@@ -9,17 +9,17 @@ import Wordmark from './Wordmark.astro';
     <a class="bar__mark" href="/" aria-label="GlamPearl, home">
       <Wordmark />
     </a>
-    <button class="bar__menu mono" type="button" data-open-menu aria-haspopup="dialog" aria-controls="menu">
-      <span data-scramble>Menu</span>
+    <button class="bar__menu label" type="button" data-open-menu aria-haspopup="dialog" aria-controls="menu">
+      <span>Menu</span>
       <svg aria-hidden="true" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M0 2.5h14M0 7.5h14" stroke="currentColor" stroke-width="1.4"></path></svg>
     </button>
     <div class="bar__actions">
-      <button class="bar__search mono" type="button" data-open-search aria-haspopup="dialog">
+      <button class="bar__search label" type="button" data-open-search aria-haspopup="dialog">
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.8"></circle><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="1.8"></path></svg>
-        <span class="bar__search-label" data-scramble>Search</span>
+        <span class="bar__search-label">Search</span>
       </button>
       <button class="cta bar__bag" type="button" data-open-bag aria-haspopup="dialog">
-        <span class="cta__label" data-scramble>Bag</span>
+        <span class="cta__label">Bag</span>
         <span class="cta__sq bar__count num" data-bag-count aria-label="0 items">0</span>
       </button>
     </div>
@@ -120,7 +120,6 @@ import Wordmark from './Wordmark.astro';
     min-height: 44px;
   }
   .bar__count {
-    font-family: var(--mono);
   }
   .bar__count[data-empty] {
     background: #fbe3ec;

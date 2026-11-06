@@ -1,3 +1,9 @@
+## Design rules for this project
+
+- Read `DESIGN.md` before changing anything visual.
+- Typography is fixed: Besley for headings, Albert Sans for text (self-hosted in `public/fonts`). Never switch
+  to Geist, Inter, Space Grotesk, a mono face or other default faces without the owner's word.
+
 ## Development
 
 When starting the dev server, use background mode:

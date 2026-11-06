@@ -11,7 +11,7 @@ const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name 
   <div class="best__side">
     <div class="best__intro">
       <h2 class="t-l" id="best-title">Best sellers.</h2>
-      <p class="muted t-s">The six products with the most reviews in the shop right now.</p>
+      <p class="muted">The six products with the most reviews in the shop right now.</p>
     </div>
     <ol class="best__index" role="list" aria-label="Jump to a product" data-best-index>
       {
@@ -49,14 +49,14 @@ const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name 
                   decoding="async"
                   style={`view-transition-name: p-${p.handle}`}
                 />
-                <span class="best__tag mono" aria-hidden="true" data-follow-tag>
+                <span class="best__tag label" aria-hidden="true" data-follow-tag>
                   View product
                 </span>
               </span>
               <span class="best__meta">
-                <span class="best__name mono">{p.name}</span>
-                <span class="best__facts mono muted">
-                  [{catName(p.category)}] [{priceLabel(p)}]{p.rating && ` [${p.rating.average.toFixed(1)} from ${p.rating.count}]`}
+                <span class="best__name label">{p.name}</span>
+                <span class="best__facts label muted">
+                  {catName(p.category)[0].toUpperCase() + catName(p.category).slice(1)}, {priceLabel(p)}{p.rating && `, ${p.rating.average.toFixed(1)} from ${p.rating.count} reviews`}
                 </span>
               </span>
             </a>
@@ -247,7 +247,7 @@ const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name 
     gap: 4px var(--s4);
   }
   .best__name {
-    font-size: var(--t-s);
+    font-size: var(--t-m);
   }
   @media (max-width: 899px) {
     .best__index {

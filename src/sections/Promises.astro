@@ -14,17 +14,17 @@ const items = [
 <section class="prom wrap" data-theme="haze" aria-labelledby="prom-title">
   <div class="prom__head">
     <h2 class="t-l" id="prom-title">With every order.</h2>
-    <p class="mono slash">Same for all 39 products</p>
+    <p class="label slash">Same for all 39 products</p>
   </div>
   <ul class="prom__grid" role="list">
     {
       items.map((it, i) => (
         <li>
-          <h3 class="prom__t mono">
+          <h3 class="prom__t label">
             {i === 0 && <span class="mark" aria-hidden="true" />}
             {it.t}
           </h3>
-          <p class="t-s muted">{it.d}</p>
+          <p class="muted">{it.d}</p>
         </li>
       ))
     }

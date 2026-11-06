@@ -34,3 +34,7 @@ data-raw/images/
 
 # offline export for clients
 export/
+
+# taste skill working files
+.taste-skill/profile/
+.taste-skill/consistency.txt

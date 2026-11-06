@@ -18,7 +18,7 @@ const Tag = href ? 'a' : 'button';
   type={href ? undefined : type}
   {...rest}
 >
-  <span class="cta__label" data-scramble><slot /></span>
+  <span class="cta__label"><slot /></span>
   <span class="cta__sq" aria-hidden="true">
     {
       icon === 'plus' && (

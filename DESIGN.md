@@ -50,12 +50,20 @@ the numbers are the shop's (4.9 from 440 reviews, 50 shades, 30 days); the steps
 
 Sections declare `data-theme="pearl|haze"`. The bar is frosted white in both.
 
-### Type
+### Type (fixed for all future work on this project; owner, 06.11.2026)
 
-- **Geist** for headings and text; **Geist Mono** for labels, buttons and meta.
-- Headings sentence case and end with a full stop, tracking -0.04 to -0.05 em, weight 500.
-- Mono labels uppercase, 12 px. They carry facts (prices, counts), never decoration.
-- Slash labels (`// CHF 50.80 for all three`) only beside a heading and only with a fact.
+- **Besley** (Google, OFL) for headings, big names, numbers and the menu; weight 400 only.
+- **Albert Sans** (Google, OFL) for everything else: text 400, labels and buttons 500.
+- Chosen with the taste skill (`start.mjs deal --page product`, three deals, seven pairings): Besley / Albert
+  Sans because a warm serif reads like a cosmetics label and neither face is a default of generated sites.
+  Turned down: Fraunces, Bricolage Grotesque and Instrument Serif (the usual faces of generated sites),
+  Archivo (hardware), Hanken Grotesk and Figtree (too plain for a beauty brand).
+- **Never** Geist, Inter, Space Grotesk, Manrope, Poppins, Montserrat, DM Sans, Plus Jakarta Sans, any mono face
+  or the system look. A change of face needs the owner's word.
+- Sizes (skill): h1 72/38, h2 48/30, h3 28/24, card titles 20/18, body 16, small 14, labels 13 at 500.
+  Sentence case everywhere, no tracked capitals. Headings end with a full stop. Display tracking
+  -2.6% at h1, -2% at h2, -1.5% at h3.
+- At most four font files (both faces, latin and latin-ext).
 
 ### Layout and shape
 
@@ -70,7 +78,7 @@ Sections declare `data-theme="pearl|haze"`. The bar is frosted white in both.
 ### Motion
 
 - One ease: `cubic-bezier(0.23, 1, 0.32, 1)`. One clock for frame work: `gsap.ticker`.
-- Hover answers: label scramble (mono), block swap (.cta), blush circle slides in (lists, menu), image
+- Hover answers: block swap (.cta), blush circle slides in (lists, menu), image
   scale 1.035, view tag trails the pointer (best sellers).
 - Glitter: about 18 sparkles a second at rest, one diagonal sweep when first visible, flashes under the
   pointer. Paused off screen. The hero glow drifts over 14 s. All off under reduced motion; the still

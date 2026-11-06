@@ -30,7 +30,7 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
           <li>
             <a href={`/shop/${c.slug}`}>
               <span class="hero__cat">{c.name}</span>
-              <span class="mono num muted">{inCategory(c.slug).length}</span>
+              <span class="label num muted">{inCategory(c.slug).length}</span>
             </a>
           </li>
         ))
@@ -41,7 +41,7 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
         <img src={newest.images[0].src['480']} alt="" width="480" height="480" decoding="async" />
       </span>
       <span class="hero__new-text">
-        <span class="mono muted">Newest in the shop</span>
+        <span class="label muted">Newest in the shop</span>
         <span class="t-s">{newest.name}</span>
       </span>
     </a>
@@ -97,7 +97,7 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
     padding-block: var(--s6);
   }
   .hero__text h1 {
-    margin-left: -0.05em;
+    margin-left: -0.03em;
     max-width: 11ch;
   }
   .hero__sub {
@@ -145,9 +145,10 @@ const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nai
     text-decoration: none;
   }
   .hero__cat {
+    font-family: var(--display);
     font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
-    font-weight: 600;
-    letter-spacing: -0.04em;
+    font-weight: 400;
+    letter-spacing: -0.015em;
     color: var(--muted);
     transition: color 200ms ease;
   }
