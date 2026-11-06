@@ -1,8 +1,7 @@
 ---
-// The four categories as four fields. Shopify port: sections/collection-list.liquid.
+// The four categories as an index: big names, count and starting price. Shopify port: sections/collection-list.liquid.
 // Covers are products that are not among the best sellers, so no photograph shows twice on the home page.
-import Field from '../components/Field.astro';
-import { CATEGORIES, byHandle, inCategory, money, plural } from '../lib/catalog';
+import { CATEGORIES, byHandle, inCategory, money, plural, products } from '../lib/catalog';
 
 const COVER: Record<string, string> = {
   nails: 'japanese-style-nail-beauty-gel-stickers-semi-curing-french-gel',
@@ -10,31 +9,38 @@ const COVER: Record<string, string> = {
   makeup: 'lipstick-lip-gloss-moisturizing-lip-gloss-lipstick',
   hair: 'light-golden-long-straight-lace-wig',
 };
-// break-ui: an empty category is left out instead of showing "From CHF Infinity".
-const cards = CATEGORIES.map((c) => {
+const rows = CATEGORIES.map((c) => {
   const items = inCategory(c.slug);
   const cover = byHandle(COVER[c.slug]) ?? items.find((p) => p.images.length);
   return { ...c, count: items.length, from: Math.min(...items.map((p) => p.priceMin)), image: cover?.images[0] };
 }).filter((c) => c.count > 0);
 ---
 
-<section class="section wrap cats" aria-labelledby="cats-title" style="padding-top: var(--s6)">
-  <div class="section-head">
-    <h2 class="t-l" id="cats-title">Shop by category</h2>
+<section class="cats wrap" data-theme="dark" aria-labelledby="cats-title">
+  <div class="cats__head">
+    <h2 class="t-l" id="cats-title">Shop by category.</h2>
+    <p class="mono slash">{products.length} products in 4 categories</p>
   </div>
-  <ul class="cats__grid" role="list">
+  <ul class="cats__list" role="list">
     {
-      cards.map((c) => (
+      rows.map((c) => (
         <li>
-          <a class="tile" href={`/shop/${c.slug}`}>
-            <Field image={c.image} sizes="(min-width: 1024px) 25vw, 50vw" />
-            <span class="tile__meta">
-              <span class="cats__name">{c.name}</span>
-              <span class="tile__price">
-                {plural(c.count, 'product')}, from {money(c.from)}
-              </span>
-              <span class="tile__line">{c.line}</span>
+          <a class="cats__row" href={`/shop/${c.slug}`}>
+            <span class="cats__name">
+              <span class="mark" aria-hidden="true" />
+              {c.name[0].toUpperCase() + c.name.slice(1)}
             </span>
+            <span class="cats__line t-s muted">{c.line}</span>
+            <span class="cats__meta mono num">
+              {plural(c.count, 'product')}
+              <br />
+              from {money(c.from)}
+            </span>
+            {c.image && (
+              <span class="cats__img" style={`background:${c.image.e1}`} aria-hidden="true">
+                <img src={c.image.src['480']} alt="" width="480" height="480" loading="lazy" decoding="async" />
+              </span>
+            )}
           </a>
         </li>
       ))
@@ -43,21 +49,89 @@ const cards = CATEGORIES.map((c) => {
 </section>
 
 <style>
-  .cats__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s6) var(--gap);
-    margin: 0;
+  .cats {
+    padding-block: var(--s6) var(--s9);
   }
-  @media (min-width: 1024px) {
-    .cats__grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+  .cats__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s4);
+    margin-bottom: var(--s6);
+  }
+  .cats__list {
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+  .cats__row {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 2fr) 96px;
+    align-items: center;
+    gap: var(--s5);
+    padding-block: var(--s4);
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
   }
   .cats__name {
-    font-size: var(--t-l);
+    display: inline-flex;
+    align-items: center;
+    font-size: clamp(2.25rem, 1.4rem + 3vw, 4.5rem);
     font-weight: 500;
-    letter-spacing: -0.025em;
-    line-height: 1.05;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    transition: color 220ms ease;
+  }
+  .cats__name .mark {
+    width: 0;
+    height: 0.42em;
+    margin-right: 0;
+    transition:
+      width 360ms var(--ease-out),
+      margin-right 360ms var(--ease-out);
+  }
+  .cats__meta {
+    color: var(--muted);
+    text-align: right;
+  }
+  .cats__img {
+    display: block;
+    width: 96px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    clip-path: inset(0 0 0 100%);
+    transition: clip-path 420ms var(--ease-out);
+  }
+  .cats__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .cats__row:hover .cats__name {
+      color: var(--signal);
+    }
+    .cats__row:hover .cats__name .mark {
+      width: 0.42em;
+      margin-right: 0.25em;
+    }
+    .cats__row:hover .cats__img {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  .cats__row:focus-visible .cats__img {
+    clip-path: inset(0 0 0 0);
+  }
+  @media (max-width: 899px) {
+    .cats__row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--s2) var(--s4);
+    }
+    .cats__line {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .cats__img {
+      display: none;
+    }
   }
 </style>

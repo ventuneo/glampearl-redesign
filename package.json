@@ -13,7 +13,8 @@
     "export": "astro build && node scripts/export-offline.mjs"
   },
   "dependencies": {
-    "astro": "^7.4.7"
+    "astro": "^7.4.7",
+    "gsap": "^3.13.0"
   },
   "devDependencies": {
     "axe-core": "^4.14.0",

@@ -1,188 +1,148 @@
 ---
-// Announcement line and header. Shopify port: sections/announcement-bar.liquid + sections/header.liquid.
-import { CATEGORIES } from '../lib/catalog';
-interface Props {
-  current?: string;
-}
-const { current = '' } = Astro.props;
+// The floating bar: wordmark, menu, search and the bag. It takes the colour of the section under it.
+// Shopify port: sections/header.liquid (+ the announcement moves into the menu and the footer).
+import Wordmark from './Wordmark.astro';
 ---
 
-<p class="announce t-xs">
-  <a class="u-grow" href="#newsletter">Sign up for 10% off your first order</a>
-</p>
-<header class="header">
-  <div class="header__bar wrap">
-    <a class="wordmark" href="/" aria-label="GlamPearl, home">glampearl</a>
-    <nav class="header__nav" aria-label="Main">
-      <ul role="list">
-        <li><a href="/shop" aria-current={current === 'shop' ? 'page' : undefined}>shop all</a></li>
-        {
-          CATEGORIES.map((c) => (
-            <li>
-              <a href={`/shop/${c.slug}`} aria-current={current === c.slug ? 'page' : undefined}>
-                {c.name}
-              </a>
-            </li>
-          ))
-        }
-        <li><a href="/help" aria-current={current === 'help' ? 'page' : undefined}>help</a></li>
-      </ul>
-    </nav>
-    <div class="header__actions">
-      <button class="header__btn" type="button" data-open-search aria-haspopup="dialog">
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.5"></circle><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
-        <span class="header__label">search</span>
+<header class="bar">
+  <div class="bar__inner">
+    <a class="bar__mark" href="/" aria-label="GlamPearl, home">
+      <Wordmark />
+    </a>
+    <button class="bar__menu mono" type="button" data-open-menu aria-haspopup="dialog" aria-controls="menu">
+      <span data-scramble>Menu</span>
+      <svg aria-hidden="true" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M0 2.5h14M0 7.5h14" stroke="currentColor" stroke-width="1.4"></path></svg>
+    </button>
+    <div class="bar__actions">
+      <button class="bar__search mono" type="button" data-open-search aria-haspopup="dialog">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.8"></circle><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="1.8"></path></svg>
+        <span class="bar__search-label" data-scramble>Search</span>
       </button>
-      <button class="header__btn" type="button" data-open-bag aria-haspopup="dialog">
-        <span class="header__label header__label--always">bag</span>
-        <span class="bag-count num" data-bag-count aria-label="0 items">0</span>
-      </button>
-      <button class="header__btn header__menu" type="button" data-open-menu aria-haspopup="dialog">
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 7h14M3 13h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
-        <span class="visually-hidden">Menu</span>
+      <button class="cta bar__bag" type="button" data-open-bag aria-haspopup="dialog">
+        <span class="cta__label" data-scramble>Bag</span>
+        <span class="cta__sq bar__count num" data-bag-count aria-label="0 items">0</span>
       </button>
     </div>
   </div>
 </header>
 
-<style>
-  .announce {
-    margin: 0;
-    padding: 8px var(--m);
-    background: var(--nacre);
-    text-align: center;
-  }
-  .announce a {
-    text-decoration: none;
-  }
-
-  .header {
-    position: sticky;
-    top: 0;
+<style is:global>
+  .bar {
+    position: fixed;
     z-index: 40;
-    background: var(--ground);
-    border-bottom: 1px solid var(--line);
+    top: var(--bar-top);
+    left: var(--m);
+    right: var(--m);
+    height: var(--bar-h);
+    pointer-events: none;
   }
-  .header__bar {
+  .bar__inner {
+    --bar-bg: rgb(38 38 38 / 0.86);
+    --bar-fg: #ededed;
+    pointer-events: auto;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: var(--s5);
-    height: var(--header-h);
+    height: 100%;
+    padding: 0 4px 0 16px;
+    background: var(--bar-bg);
+    color: var(--bar-fg);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+    transition:
+      background-color 320ms var(--ease-out),
+      color 320ms var(--ease-out);
   }
-  .wordmark {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 1;
-    text-decoration: none;
-    padding-block: 8px;    transition: opacity var(--d-ui) ease;
+  .bar :focus-visible,
+  .menu__bar :focus-visible {
+    outline-color: var(--bar-fg, #ededed);
   }
-  @media (hover: hover) and (pointer: fine) {
-    .wordmark:hover {
-      opacity: 0.6;
-    }
+  :root[data-bar='light'] .bar__inner {
+    --bar-bg: rgb(214 214 214 / 0.82);
+    --bar-fg: #141414;
   }
-  .header__nav ul {
-    display: flex;
-    gap: var(--s5);
-    justify-content: center;
-    margin: 0;
-  }
-  .header__nav a {
-    position: relative;
-    display: inline-block;
-    padding: 10px 2px;
-    text-decoration: none;
-    font-size: var(--t-s);
-  }
-  /* Underline drawn with transform (composite only), see animation-performance. */
-  .header__nav a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 6px;
-    height: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--d-ui) var(--ease-out);
-  }
-  .header__nav a[aria-current='page']::after {
-    transform: scaleX(1);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .header__nav a[aria-current='page']:hover::after {
-      transform: scaleY(2);
-    }
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .header__nav a:hover::after {
-      transform: scaleX(1);
-    }
-  }
-  .header__actions {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    justify-self: end;
-  }
-  .header__btn {
+  .bar__mark {
+    justify-self: start;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
     min-height: 44px;
-    min-width: 44px;
-    justify-content: center;
-    padding: 0 10px;
-    border-radius: 999px;
-    font-size: var(--t-s);
-    transition: background-color var(--d-ui) ease, transform var(--d-press) var(--ease-out);
-  }
-  .header__btn:active {
-    transform: scale(0.96);
+    font-size: 15px;
+    color: inherit;
   }
   @media (hover: hover) and (pointer: fine) {
-    .header__btn:hover {
-      background: var(--nacre);
+    .bar__mark:hover .wordmark-dots circle {
+      scale: 0.45;
     }
   }
-  .bag-count {
-    display: inline-grid;
-    place-items: center;
-    min-width: 22px;
-    height: 22px;
-    padding: 0 6px;
-    border-radius: 999px;
-    background: var(--ink);
-    color: var(--ground);
-    font-size: 0.75rem;
-    font-weight: 500;
+  .bar__menu,
+  .bar__search {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 12px;
+    color: inherit;
+    transition: transform var(--d-press) var(--ease-out);
   }
-  .bag-count[data-empty] {
-    background: var(--nacre);
-    color: var(--muted);
+  .bar__menu:active,
+  .bar__search:active {
+    transform: scale(0.96);
   }
-  .header__menu {
-    display: none;
+  .bar__menu svg {
+    transition: scale 220ms var(--ease-out);
   }
-  @media (max-width: 899px) {
-    .header__nav {
-      display: none;
+  @media (hover: hover) and (pointer: fine) {
+    .bar__menu:hover svg {
+      scale: 1 0.4;
     }
-    .header__menu {
-      display: inline-flex;
+    .bar__search:hover svg {
+      scale: 1.25;
+      rotate: -12deg;
     }
-    .header__label:not(.header__label--always) {
+    .bar__search:hover .bar__search-label {
+      text-decoration: underline;
+      text-underline-offset: 0.35em;
+    }
+  }
+  .bar__search svg {
+    transition: scale 260ms var(--ease-out), rotate 260ms var(--ease-out);
+  }
+  .bar__actions {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .bar__bag {
+    min-height: 44px;
+  }
+  .bar__count {
+    font-family: var(--mono);
+  }
+  .bar__count[data-empty] {
+    background: color-mix(in srgb, var(--signal) 70%, var(--bar-bg));
+  }
+  @media (max-width: 599px) {
+    .bar__inner {
+      padding-left: 12px;
+    }
+    .bar__mark {
+      font-size: 12px;
+    }
+    .bar__search-label {
       position: absolute;
       width: 1px;
       height: 1px;
       overflow: hidden;
       clip: rect(0 0 0 0);
     }
-    .header__bar {
-      grid-template-columns: 1fr auto;
+    .bar__search {
+      padding: 0 10px;
+      min-width: 44px;
+      justify-content: center;
+    }
+    .bar__menu {
+      padding: 0 8px;
     }
   }
 </style>

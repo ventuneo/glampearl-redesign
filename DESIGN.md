@@ -1,106 +1,84 @@
-# GlamPearl redesign: design record
+# GlamPearl redesign: design record (studio version)
 
 Prototype outside Shopify. Every component maps to a future Shopify section.
-Reference for attitude (not for copying): rhodeskin.com.
+Direction (06.11.2026): the owner asked for the style of a screen recording of the Good Fella studio site,
+adapted to GlamPearl. We take its *style* (grounds, accent, type pairing, layout families, interactions),
+never its content, logo, copy or artwork. The earlier "shade card" version stays on branch `main`.
 
 ## Brief
 
-- **Subject:** GlamPearl, a Swiss online beauty shop (CHF, ships from CH storefront). 39 products from
-  third-party makers: gel nails and nail tools, skin care, makeup, wigs, a few grooming tools.
-- **Audience:** women in Switzerland, roughly 18 to 40, who want salon-looking nails, skin and hair
-  at home without salon prices (CHF 11.90 to 99).
-- **Job:** sell. Primary action: **Add to bag**. Secondary: browse a category.
-- **Real material:** product photographs (clean studio shots, mixed backgrounds), real prices and
-  variants, Judge.me ratings, Klaviyo signup (10% off first order), 30-day returns.
-- **Language:** English, as the live shop.
-- **Kind (taste skill):** product (physical goods sold online, nothing happens at a door).
-  Consequence: photographs lead, flat grounds, no shader effects, no scroll reveals, no violet.
-- **Theatre (awwwards):** a shop earns the craft in type, layout and motion, but no loader and no
-  WebGL. Speed is part of the luxury. Page transitions only as a short crossfade (see Motion).
+- **Subject:** GlamPearl, a Swiss online beauty shop (CHF). 39 products from third-party makers: gel nails
+  and tools, skin care, makeup, wigs, a few grooming tools.
+- **Audience:** women in Switzerland, roughly 18 to 40, who want salon-looking nails, skin and hair at home.
+- **Job:** sell. Primary action: add to bag. Secondary: browse a category.
+- **Real material only:** product photographs, prices, variants, Judge.me ratings, the live FAQ and policies.
+- **Theatre:** a shop. No loader, no WebGL, no smooth-scroll library. The craft is in type, layout, the glyph
+  fields and the small answers to every hover and tap.
 
-## Concepts
+## Concept card
 
-| | A. Shade card (material) | B. Nacre (name) | C. Salon menu (process) |
-|---|---|---|---|
-| Idea | The shop is a shade card: every product sits in its own colour field, and choosing a shade changes the field | A pearl is built layer on layer; so is a gel manicure and a skin routine. Products are shown as the layer they add | The range is set like a salon's treatment menu: what you would book, and what you need to do it at home |
-| Anchor | The catalogue is shade-heavy: 50 gel shades, 16 strip styles, 9 lip liners, 8 eye shadows, wigs in 10+ colours; and the photographs already sit on colour grounds | the name *pearl* and the layered routines (base, colour, top coat) | the live shop's promise "salon results at home" |
-| Layout rule | grid of colour fields, one product per field, field colour = the photograph's own ground | stacked bands, each band a layer, numbered only where it is a real sequence | text-led lists, prices on the right like a menu |
-| Motion verb | settle: colour eases into place, nothing bounces | build up: thin layers slide over each other | none to speak of, menu stays still |
-| Type voice | quiet lowercase names, sentence-case descriptors | same, plus step numbers | serif menu voice |
-| Signature | pick a shade, and the field and photograph change together | a routine builder that stacks layers | price list with hover photographs |
-| Screenshot | a wall of fields, one shade chip pressed, the whole field turned that colour | three translucent layers over a hand | the menu |
-| O / F / Fe / P | 4 / 5 / 5 / 3 | 4 / 3 / 3 / 3 | 3 / 3 / 5 / 4 |
+```
+Idea:        A beauty shop set like a studio site: dark and light grounds in turn, one coral-red signal,
+             and the products drawn in glyphs.
+Metaphor:    a print shop's proof sheet: photographs turned into type, labels in a typewriter voice.
+Signature:   the hero portrait (the lace front wig in profile) as a glyph field that flickers at rest,
+             scans once when it appears and scrambles under the pointer (scripts/ascii.ts).
+Emotion:     confident and quick; a studio, not a pharmacy shelf.
+Motion verb: snap like a shutter: things trade places, clip open and settle; nothing bounces.
+Screenshot:  the first screen: headline left, the glyph profile right, the orange block button.
+```
 
-**Pick A, the shade card.** It is the best fit and solves the real problem: the photographs have
-mixed grounds. When each tile takes its photograph's own edge colour, the differences read as a
-deliberate palette instead of an accident. Steal from B for one detail: the gel kit section may
-show base, colour and top coat as a real sequence.
+Anchors that make it GlamPearl's and not the reference's: the hero and footer art are the shop's own
+photographs (lace front wig, heart press-on nails); the wordmark is a dot matrix where every pixel is a pearl;
+the numbers are the shop's (4.9 from 440 reviews, 50 shades, 30 days); the steps are the real gel routine.
 
 ## System
 
-### Colour (page; the fields bring the rest)
+### Colour
 
 | Role | Hex | Use |
 |---|---|---|
-| ground | `#FFFFFF` | page |
-| ink | `#34302D` | text, buttons (a soft oyster charcoal, chosen, not a stand-in for black) |
-| muted | `#716A65` | descriptors, meta (AA on white and on nacre) |
-| line | `#E6E1DD` | hairlines, input borders |
-| nacre | `#F1EDEA` | default field, panels, footer |
-| rose | `#8F5B56` | sale price, focus ring, the one accent; never a whole surface |
+| day | `#EFEFEF` | light ground |
+| card | `#F8F8F8` | cards on day |
+| night | `#141414` | dark ground |
+| night-2 | `#222222` | inputs, panels on night |
+| signal | `#FF4D2E` | fills, squares, small text on night (5.6:1); a coral-red lacquer |
+| signal-ink | `#C0331A` | the accent as text on day (4.8:1) |
+| ink / muted | `#141414` / `#626262` on day, `#EDEDED` / `#8F8F8F` on night | text |
 
-Product fields: sampled per photograph at build time (`scripts/tile-colors.mjs`), stored on the
-product, so the photograph bleeds into its tile with no visible edge.
+Sections declare `data-theme="dark|light"`; role tokens swap there. The floating bar takes the theme of the
+section under it (scripts/ui.ts).
 
 ### Type
 
-- One family: **Familjen Grotesk** (Google, OFL), variable 400 to 700. Its single-story g and
-  open a carry the name *glampearl*; no second family needed.
-- Product names: lowercase, 500. Descriptors: sentence case, 400, muted.
-- Scale (fluid): display `clamp(2.75rem, 1.6rem + 4.6vw, 6.5rem)`, l `clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem)`,
-  m `clamp(1.125rem, 1rem + 0.4vw, 1.375rem)`, body 1rem to 1.0625rem, s 0.875rem, xs 0.8125rem.
-- Display tracking -0.035em, leading 0.95. Body leading 1.5, measure under 65ch.
-- No uppercase labels, no eyebrows, no middle-dot meta strings, no arrows appended to links.
+- **Geist** (Google, OFL) for headings and text; **Geist Mono** for labels, buttons, meta and the glyph fields.
+- Headings sentence case and end with a full stop, tracking -0.04 to -0.05 em, weight 500.
+- Mono labels uppercase, 12 px, +0.01 em. They carry facts (prices, counts), never decoration.
+- Slash labels (`// CHF 50.80 for all three`) only beside a heading and only with a fact.
 
-### Layout
+### Layout and shape
 
-- 12-column grid, outer margin `clamp(16px, 3vw, 40px)`, gutter 12px (tight, like Rhode's fields).
-- Radius: 0 on photographs and fields (they are printed swatches), 999px on chips and buttons.
-- Product tiles are square, always. Changed from 4:5 after the first screenshots: 234 of 254 photographs
-  are square, so a square tile needs no band at all, and the 20 portrait wig shots get side bands in their
-  own sampled wall colour. The hero photograph and swatch keep 4:5 and crop the photograph to fill.
-- Shade products (the gel polish) show the studio photograph and the chosen shade as a colour field side by
-  side, on the home page and on the product page. The maker's swatch photograph is a thumbnail.
-- Every section starts with its heading on the left edge; nothing centred except the empty bag.
+- 12 columns, margin `clamp(16px, 2.2vw, 32px)`, gutter 12 px.
+- Radius 0 everywhere except the gel shade swatches (they are round, like pearls).
+- Buttons: a signal block with a mono label plus a square block (`.cta`). On hover the two trade places.
+- Section families, one each: hero (text over glyph field), numbers (photo + three cards), sequence (sticky
+  photo + numbered steps), index (sticky thumbnails + large photos), list (category rows), ruled grid
+  (promises), accordion (FAQ), split (contact), footer (form + nav + glyph field + dot wordmark).
 
 ### Motion
 
-- One ease: `cubic-bezier(0.23, 1, 0.32, 1)` (strong ease-out). 160 to 240ms for UI, 420ms for
-  field colour.
-- Hover: photograph scales 1.03 inside its frame; buttons darken and press to 0.97 on active.
-- Bag drawer slides from the right (clip of 100% to 0), scrim fades; Esc and scrim close it.
-- Shade change: field colour and photograph crossfade together (the signature).
-- Under reduced motion: no scale, no slide, instant colour.
-- **Still at rest, by decision.** Nothing moves while the visitor does nothing: a shop is read and compared,
-  Rhode is still, and the taste rules forbid loops and scroll reveals on a product site. The life is in the
-  answers: the shade field, hover inversion, press, drawers, the image crossfade and the accordions.
-- Primary buttons flood with the rose accent on hover and keep their weight; utility links draw an underline.
-- Page transitions (added after critic passes 1 and 2, both ranked the hard cut first): 160 ms crossfade
-  between pages, and the product photograph moves from its tile into the product page (280 ms, shared
-  `view-transition-name: p-<handle>`). Never blocks a click; off under reduced motion.
-
-## Principles
-
-1. The product is the picture. Big, whole, in its own colour.
-2. Words are short. A name, one line of what it is, a price.
-3. One loud thing per screen; everything else is quiet.
-4. Nothing invented: ratings, prices and claims come from the live shop.
+- One ease: `cubic-bezier(0.23, 1, 0.32, 1)`. One clock for frame work: `gsap.ticker`.
+- Hover answers: label scramble (mono), block swap (.cta), orange square slides in (lists, menu), image
+  scale 1.035, view tag trails the pointer (best sellers).
+- Glyph fields: idle flicker (5 glyphs every 90 ms), one scan when first visible, pointer scramble. Paused off
+  screen, off under reduced motion.
+- Steps and best sellers: the item crossing the middle of the screen becomes current (IntersectionObserver).
+- Page transitions: 160 ms crossfade, product photograph shared into the product page.
+- Reduced motion: no flicker, no scan, no swaps, everything visible.
 
 ## Genericness test
 
-- Generic beauty default would be cream ground, serif display, terracotta accent. Changed to: pure
-  white ground, one grotesk, colour only from the products' own fields.
-- Generic shop default would be identical rounded cards with soft shadows. Changed to: square
-  colour fields edge to edge, no shadows, no card borders.
-- A copy of Rhode would be their type, their beige panels and their campaign layout. Changed to:
-  our own family, colour fields sampled from our photographs, and a shade mechanic Rhode does not have.
+- A generic "studio" copy would reuse the reference's portrait, logo and words. Changed to: our own photographs
+  as glyphs, a pearl dot wordmark, GlamPearl's real numbers and FAQ.
+- A generic beauty shop would be cream and serif. Kept the reference's night and day grounds and the signal
+  accent, tuned the accent towards a nail lacquer red.

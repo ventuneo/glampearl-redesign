@@ -1,0 +1,117 @@
+---
+// A photograph and three numbers from the live shop (Judge.me totals, the gel range, the returns policy).
+// Shopify port: sections/numbers.liquid (reviews from the Judge.me metafields).
+import { byHandle, money, reviewTotals } from '../lib/catalog';
+const { count, average } = reviewTotals();
+const gel = byHandle('nail-polish-nude-neutrals-soak-off-gel-polish')!;
+const shades = gel.variants.filter((v) => v.swatch).length;
+const wig = byHandle('long-straight-wig')!;
+const photo = wig.images[2] ?? wig.images[0];
+const stats = [
+  { n: average.toFixed(1), label: `Average rating from ${count} reviews` },
+  { n: String(shades), label: `Gel shades at ${money(gel.priceMin)} each` },
+  { n: '30', label: 'Days to send back unused items' },
+];
+---
+
+<section class="stats wrap" data-theme="light" aria-labelledby="stats-title">
+  <h2 class="visually-hidden" id="stats-title">GlamPearl in numbers</h2>
+  <a class="stats__photo" href={`/products/${wig.handle}`} style={`background:${photo.e1}`}>
+    <img src={photo.src['960']} srcset={`${photo.src['480']} 480w, ${photo.src['960']} 960w`} sizes="(min-width: 900px) 24vw, 100vw" width="960" height="960" alt={`${wig.name}, ${wig.line}`} loading="lazy" decoding="async" />
+    <span class="stats__tag mono">{wig.name}</span>
+  </a>
+  <dl class="stats__list">
+    {
+      stats.map((s, i) => (
+        <div class="stats__card">
+          <dt class="stats__n num">{s.n}</dt>
+          <dd class="mono">
+            {i === 0 && <span class="mark" aria-hidden="true" />}
+            {s.label}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</section>
+
+<style>
+  .stats {
+    display: grid;
+    gap: var(--gap);
+    padding-block: var(--s9) var(--s7);
+  }
+  @media (min-width: 900px) {
+    .stats {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    }
+  }
+  .stats__photo {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .stats__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 700ms var(--ease-out);
+  }
+  .stats__tag {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    padding: 4px 8px;
+    background: var(--signal);
+    color: #141414;
+    opacity: 0;
+    translate: 0 6px;
+    transition: opacity 200ms ease, translate 300ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .stats__photo:hover img {
+      scale: 1.04;
+    }
+    .stats__photo:hover .stats__tag {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+  .stats__list {
+    display: grid;
+    gap: var(--gap);
+    margin: 0;
+  }
+  @media (min-width: 640px) {
+    .stats__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .stats__card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--s7);
+    min-height: 12rem;
+    padding: var(--s5);
+    background: var(--card);
+  }
+  .stats__n {
+    font-size: clamp(3.25rem, 2rem + 3.6vw, 6rem);
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    margin-left: -0.04em;
+  }
+  .stats__card dd {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    max-width: 13rem;
+  }
+  .stats__card .mark {
+    width: 7px;
+    height: 7px;
+  }
+</style>

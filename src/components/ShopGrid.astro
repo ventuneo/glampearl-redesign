@@ -89,7 +89,7 @@ const { title, line, list, current = 'all' } = Astro.props;
 
 <style>
   .shop {
-    padding-block: var(--s7) var(--s9);
+    padding-block: calc(var(--header-h) + var(--s7)) var(--s9);
   }
   .shop__head {
     display: grid;
@@ -138,7 +138,7 @@ const { title, line, list, current = 'all' } = Astro.props;
   .shop__sort select {
     min-height: 44px;
     padding: 0 36px 0 14px;
-    border-radius: 999px;
+    border-radius: 0;
     border: 1px solid var(--line);
     background: var(--ground)
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='m1 1 4 4 4-4' stroke='%2334302d' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")

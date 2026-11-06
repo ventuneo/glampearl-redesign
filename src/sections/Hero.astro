@@ -1,0 +1,211 @@
+---
+// Hero on the dark ground: the promise, two ways in, and a wig photograph from the shop as a glyph field.
+// Shopify port: sections/hero-glyphs.liquid (heading, text, two links, the glyph snippet, a featured product).
+import Ascii from '../components/Ascii.astro';
+import Cta from '../components/Cta.astro';
+import { CATEGORIES, inCategory, products, byHandle, money } from '../lib/catalog';
+
+const lowest = Math.min(...products.map((p) => p.priceMin));
+const gel = byHandle('nail-polish-nude-neutrals-soak-off-gel-polish')!;
+// The newest product in the live shop (published 12.09.2026).
+const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nails-soak-off-uv-gel')!;
+---
+
+<section class="hero" data-theme="dark" aria-labelledby="hero-title">
+  <Ascii name="hero" class="hero__art" />
+  <div class="hero__text wrap">
+    <h1 class="t-display" id="hero-title">Salon results, done at home.</h1>
+    <p class="hero__sub">
+      Gel nails, skin care, makeup and wigs from {money(lowest)}. Fifty gel shades at {money(gel.priceMin)} each, cured under a USB lamp that fits in a pocket.
+    </p>
+    <div class="hero__actions">
+      <Cta href={`/products/${gel.handle}`}>Shop the 50 shades</Cta>
+      <a class="hero__link link" href="/shop">See all {products.length} products</a>
+    </div>
+  </div>
+  <div class="hero__foot wrap">
+    <ul class="hero__cats" role="list" aria-label="Categories">
+      {
+        CATEGORIES.map((c) => (
+          <li>
+            <a href={`/shop/${c.slug}`}>
+              <span class="hero__cat">{c.name}</span>
+              <span class="mono num muted">{inCategory(c.slug).length}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="hero__new" href={`/products/${newest.handle}`}>
+      <span class="hero__new-img" style={`background:${newest.images[0].e1}`}>
+        <img src={newest.images[0].src['480']} alt="" width="480" height="480" decoding="async" />
+      </span>
+      <span class="hero__new-text">
+        <span class="mono muted">Newest in the shop</span>
+        <span class="t-s">{newest.name}</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: max(40rem, 100svh);
+    padding-top: calc(var(--header-h) + var(--s7));
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero :global(.hero__art) {
+    position: absolute;
+    z-index: -1;
+    right: max(var(--m), 2vw);
+    top: calc(var(--header-h) + 8px);
+    /* the field is 66 x 78 em: keep it inside one screen */
+    width: min(50vw, calc((100svh - var(--header-h) - 24px) * 66 / 78));
+  }
+  .hero__text {
+    align-self: center;
+    display: grid;
+    gap: var(--s5);
+    max-width: 44rem;
+    padding-block: var(--s6);
+  }
+  .hero__text h1 {
+    margin-left: -0.05em;
+    max-width: 11ch;
+  }
+  .hero__sub {
+    max-width: 31rem;
+    color: #b8b8b8;
+    font-size: var(--t-body);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s4) var(--s5);
+  }
+  .hero__link {
+    position: relative;
+    display: inline-block;
+    padding-block: 6px;
+    font-size: var(--t-s);
+    transition: color var(--d-ui) ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hero__link:hover {
+      color: var(--signal);
+    }
+  }
+  .hero__foot {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--s5);
+    padding-bottom: var(--s5);
+  }
+  .hero__cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s5);
+    margin: 0;
+  }
+  .hero__cats a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    transition: translate 320ms var(--ease-out);
+    padding-block: 6px;
+    text-decoration: none;
+  }
+  .hero__cat {
+    font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: #9c9c9c;
+    transition: color 200ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hero__cats a:hover .hero__cat {
+      color: var(--ink);
+    }
+    .hero__cats a:hover {
+      translate: 0 -3px;
+    }
+  }
+  .hero__new {
+    display: flex;
+    align-items: end;
+    gap: var(--s3);
+    text-decoration: none;
+  }
+  .hero__new-img {
+    display: block;
+    width: 88px;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+  .hero__new-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 500ms var(--ease-out);
+  }
+  .hero__new-text {
+    display: grid;
+    gap: 2px;
+    max-width: 10rem;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hero__new:hover img {
+      scale: 1.08;
+    }
+  }
+
+  /* intro: the text comes up line by line; the glyph field runs its own scan */
+  .hero__text > * {
+    animation: gp-rise 640ms var(--ease-out) both;
+  }
+  .hero__text > :nth-child(2) {
+    animation-delay: 80ms;
+  }
+  .hero__text > :nth-child(3) {
+    animation-delay: 160ms;
+  }
+
+  @media (max-width: 899px) {
+    .hero {
+      min-height: auto;
+      padding-top: calc(var(--header-h) + var(--s4));
+    }
+    .hero :global(.hero__art) {
+      position: relative;
+      z-index: 0;
+      right: auto;
+      top: auto;
+      width: calc(100% - 2 * var(--m));
+      margin: 0 var(--m);
+      order: -1;
+      max-width: 30rem;
+      justify-self: end;
+    }
+    .hero__text {
+      padding-block: var(--s5) var(--s6);
+    }
+    .hero__foot {
+      flex-direction: column;
+      align-items: start;
+    }
+    .hero__new {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__text > * {
+      animation: none;
+    }
+  }
+</style>

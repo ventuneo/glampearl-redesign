@@ -1,26 +1,263 @@
 ---
-// Best sellers grid. Shopify port: sections/featured-collection.liquid.
-import ProductTile from '../components/ProductTile.astro';
-import { bestsellers, products } from '../lib/catalog';
-const list = bestsellers(8);
+// Best sellers on the dark ground: a sticky index on the left, the photographs large on the right.
+// Shopify port: sections/featured-collection-index.liquid.
+import Cta from '../components/Cta.astro';
+import { bestsellers, products, priceLabel, CATEGORIES } from '../lib/catalog';
+const list = bestsellers(6);
+const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name ?? slug;
 ---
 
-<section class="section wrap best" aria-labelledby="best-title">
-  <div class="section-head">
-    <div>
-      <h2 class="t-l" id="best-title">Best sellers</h2>
-      <p class="muted">The products with the most reviews right now.</p>
+<section class="best wrap" data-theme="dark" aria-labelledby="best-title">
+  <div class="best__side">
+    <div class="best__intro">
+      <h2 class="t-l" id="best-title">Best sellers.</h2>
+      <p class="muted t-s">The six products with the most reviews in the shop right now.</p>
     </div>
-    <a class="link t-s" href="/shop">See all {products.length} products</a>
+    <ol class="best__index" role="list" aria-label="Jump to a product" data-best-index>
+      {
+        list.map((p, i) => (
+          <li>
+            <a href={`#best-${i}`} data-best-thumb={i} aria-current={i === 0 ? 'true' : undefined}>
+              <span class="best__thumb" style={`background:${p.images[0].e1}`}>
+                <img src={p.images[0].src['480']} alt="" width="480" height="480" loading="lazy" decoding="async" />
+              </span>
+              <span class="visually-hidden">{p.name}</span>
+              <span class="mark" aria-hidden="true" />
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <Cta href="/shop" class="best__all">Shop all {products.length}</Cta>
   </div>
-  <ul class="grid grid--4" role="list">
-    {list.map((p) => <li><ProductTile product={p} /></li>)}
-  </ul>
+  <ol class="best__list" role="list">
+    {
+      list.map((p, i) => {
+        const img = p.images[0];
+        return (
+          <li id={`best-${i}`} data-best-item={i}>
+            <a class="best__card" href={`/products/${p.handle}`} data-follow>
+              <span class="best__frame" style={`background:${img.e1}`}>
+                <img
+                  src={img.src['960']}
+                  srcset={`${img.src['480']} 480w, ${img.src['960']} 960w`}
+                  sizes="(min-width: 900px) 62vw, 100vw"
+                  width="960"
+                  height="960"
+                  alt={img.alt || p.name}
+                  loading="lazy"
+                  decoding="async"
+                  style={`view-transition-name: p-${p.handle}`}
+                />
+                <span class="best__tag mono" aria-hidden="true" data-follow-tag>
+                  View product
+                </span>
+              </span>
+              <span class="best__meta">
+                <span class="best__name mono">{p.name}</span>
+                <span class="best__facts mono muted">
+                  [{catName(p.category)}] [{priceLabel(p)}]{p.rating && ` [${p.rating.average.toFixed(1)} from ${p.rating.count}]`}
+                </span>
+              </span>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ol>
 </section>
 
+<script>
+  import { gsap } from 'gsap';
+  // Index follows the product crossing the middle of the screen.
+  const thumbs = [...document.querySelectorAll<HTMLElement>('[data-best-thumb]')];
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) continue;
+        const i = (en.target as HTMLElement).dataset.bestItem;
+        thumbs.forEach((t) => (t.dataset.bestThumb === i ? t.setAttribute('aria-current', 'true') : t.removeAttribute('aria-current')));
+      }
+    },
+    { rootMargin: '-50% 0px -50% 0px' },
+  );
+  document.querySelectorAll('[data-best-item]').forEach((el) => io.observe(el));
+
+  // The "view product" tag trails the pointer inside each photograph.
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-follow]').forEach((card) => {
+      const tag = card.querySelector<HTMLElement>('[data-follow-tag]');
+      const frame = tag?.parentElement;
+      if (!tag || !frame) return;
+      const x = gsap.quickTo(tag, 'x', { duration: 0.5, ease: 'power3' });
+      const y = gsap.quickTo(tag, 'y', { duration: 0.5, ease: 'power3' });
+      frame.addEventListener('pointermove', (e) => {
+        const r = frame.getBoundingClientRect();
+        x(e.clientX - r.left - r.width / 2);
+        y(e.clientY - r.top - r.height / 2);
+      });
+      frame.addEventListener('pointerleave', () => {
+        x(0);
+        y(0);
+      });
+    });
+  }
+</script>
+
 <style>
-  /* Best sellers and categories read as one shop block: tight between them. */
   .best {
-    padding-bottom: var(--s6);
+    display: grid;
+    gap: var(--s6);
+    padding-block: var(--s9);
+  }
+  @media (min-width: 900px) {
+    .best {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+    }
+    .best__side {
+      grid-column: 1 / 4;
+      position: sticky;
+      top: calc(var(--header-h) + var(--s5));
+      align-self: start;
+      max-height: calc(100svh - var(--header-h) - var(--s6));
+    }
+    .best__list {
+      grid-column: 4 / 13;
+    }
+  }
+  .best__side {
+    display: grid;
+    align-content: start;
+    gap: var(--s5);
+  }
+  .best__intro {
+    display: grid;
+    gap: var(--s3);
+    max-width: 18rem;
+  }
+  .best__index {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+  }
+  .best__index a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: max-content;
+  }
+  .best__thumb {
+    display: block;
+    width: 64px;
+    aspect-ratio: 5 / 4;
+    overflow: hidden;
+    opacity: 0.45;
+    transition: opacity 260ms ease;
+  }
+  .best__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .best__index .mark {
+    width: 7px;
+    height: 7px;
+    scale: 0;
+    transition: scale 300ms var(--ease-out);
+  }
+  .best__index a[aria-current] .best__thumb {
+    opacity: 1;
+  }
+  .best__index a[aria-current] .mark {
+    scale: 1;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .best__index a:hover .best__thumb {
+      opacity: 1;
+    }
+  }
+  @media (max-height: 760px) and (min-width: 900px) {
+    .best__thumb {
+      width: 52px;
+    }
+  }
+  .best__list {
+    display: grid;
+    gap: var(--s7);
+    margin: 0;
+  }
+  .best__card {
+    display: grid;
+    gap: var(--s3);
+    text-decoration: none;
+  }
+  .best__frame {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  /* The square photograph sits whole in a frame of its own studio colour; its side edges fade into it. */
+  .best__frame img {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    transition: scale 900ms var(--ease-out);
+  }
+  .best__tag {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -14px 0 0 -52px;
+    padding: 6px 10px;
+    background: var(--signal);
+    color: #141414;
+    opacity: 0;
+    scale: 0.9;
+    pointer-events: none;
+    transition:
+      opacity 200ms ease,
+      scale 260ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .best__card:hover img {
+      scale: 1.035;
+    }
+    .best__card:hover .best__tag {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+  .best__card:focus-visible .best__tag {
+    opacity: 1;
+    scale: 1;
+  }
+  .best__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px var(--s4);
+  }
+  .best__name {
+    font-size: var(--t-s);
+  }
+  @media (max-width: 899px) {
+    .best__index {
+      display: none;
+    }
+    .best :global(.best__all) {
+      justify-self: start;
+    }
+    .best__side {
+      gap: var(--s4);
+    }
+    .best__frame {
+      aspect-ratio: 1;
+    }
   }
 </style>

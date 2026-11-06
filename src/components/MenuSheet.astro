@@ -1,88 +1,282 @@
 ---
-// Full-screen menu for phones. Shopify port: part of sections/header.liquid (menu drawer).
-import { CATEGORIES, inCategory } from '../lib/catalog';
+// The menu: a dark panel under its own bar, the page blurred behind it. Same on every screen size.
+// Shopify port: part of sections/header.liquid (menu drawer, two featured product settings).
+import Wordmark from './Wordmark.astro';
+import { CATEGORIES, inCategory, products, bestsellers, byHandle } from '../lib/catalog';
 interface Props {
   current?: string;
 }
 const { current = '' } = Astro.props;
+const links = [
+  { href: '/', label: 'Home', key: 'home' },
+  { href: '/shop', label: 'Shop all', key: 'shop', count: products.length },
+  ...CATEGORIES.map((c) => ({ href: `/shop/${c.slug}`, label: c.name[0].toUpperCase() + c.name.slice(1), key: c.slug, count: inCategory(c.slug).length })),
+  { href: '/help', label: 'Help', key: 'help' },
+];
+// Newest product in the live shop (published 12.09.2026) and the product with the most reviews.
+const newest = byHandle('fiber-bulider-nail-gel-quick-building-repair-broken-nails-soak-off-uv-gel')!;
+const top = bestsellers(1)[0];
+const features = [
+  { p: newest, caption: 'Newest in the shop' },
+  { p: top, caption: 'Most reviewed' },
+];
 ---
 
-<dialog class="sheet sheet--full" id="menu" aria-label="Menu">
-  <div class="sheet__inner">
-    <div class="sheet__head">
-      <a class="wordmark-sm" href="/">glampearl</a>
-      <button class="sheet__close" type="button" data-close aria-label="Close menu">
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+<dialog class="menu" id="menu" aria-label="Menu" data-theme="dark">
+  <div class="menu__inner">
+    <div class="menu__bar">
+      <a class="bar__mark" href="/" aria-label="GlamPearl, home"><Wordmark /></a>
+      <button class="bar__menu mono" type="button" data-close>
+        <span data-scramble>Close</span>
+        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="m1 1 10 10M11 1 1 11" stroke="currentColor" stroke-width="1.4"></path></svg>
       </button>
+      <div class="bar__actions">
+        <button class="cta bar__bag" type="button" data-open-bag aria-haspopup="dialog">
+          <span class="cta__label" data-scramble>Bag</span>
+          <span class="cta__sq bar__count num" data-bag-count aria-label="0 items">0</span>
+        </button>
+      </div>
     </div>
-    <nav class="menu__nav sheet__body" aria-label="Main">
-      <ul role="list">
-        <li style="--i:0"><a href="/shop" aria-current={current === 'shop' ? 'page' : undefined}>shop all</a></li>
+    <div class="menu__panel">
+      <nav class="menu__nav" aria-label="Main">
+        <ul role="list">
+          {
+            links.map((l, i) => (
+              <li style={`--i:${i}`}>
+                <a href={l.href} aria-current={current === l.key ? 'page' : undefined}>
+                  <span class="mark" aria-hidden="true" />
+                  <span class="menu__label">{l.label}</span>
+                  {l.count && <span class="menu__count mono num">{l.count}</span>}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div class="menu__info mono">
+        <p class="muted">Contact</p>
+        <p><a class="u-grow menu__mail" href="mailto:support@glampearl.store">support@glampearl.store</a></p>
+        <p>A person answers every email.</p>
+        <button class="menu__search u-grow" type="button" data-open-search>Search the shop</button>
+        <ul role="list" class="menu__facts">
+          <li><span class="mark" aria-hidden="true"></span><a class="u-grow" href="#newsletter">10% off your first order</a></li>
+          <li><span class="mark" aria-hidden="true"></span>Returns within 30 days</li>
+          <li><span class="mark" aria-hidden="true"></span>Prices in CHF, taxes included</li>
+        </ul>
+      </div>
+      <ul class="menu__features" role="list">
         {
-          CATEGORIES.map((c, i) => (
-            <li style={`--i:${i + 1}`}>
-              <a href={`/shop/${c.slug}`} aria-current={current === c.slug ? 'page' : undefined}>
-                {c.name} <span class="muted t-s num">{inCategory(c.slug).length}</span>
+          features.map(({ p, caption }) => (
+            <li>
+              <a href={`/products/${p.handle}`} class="menu__feature">
+                <span class="menu__img" style={`background:${p.images[0].e1}`}>
+                  <img src={p.images[0].src['480']} alt="" width="480" height="480" loading="lazy" decoding="async" />
+                </span>
+                <span class="mono">
+                  {caption}
+                  <span class="muted"> {p.name}</span>
+                </span>
               </a>
             </li>
           ))
         }
-        <li style={`--i:${CATEGORIES.length + 1}`}><a href="/help" aria-current={current === 'help' ? 'page' : undefined}>help</a></li>
       </ul>
-    </nav>
-    <div class="sheet__foot">
-      <a class="t-s" href="mailto:support@glampearl.store">support@glampearl.store</a>
     </div>
   </div>
 </dialog>
 
 <style is:global>
-  .sheet--full {
+  .menu {
+    position: fixed;
     inset: 0;
     width: 100%;
+    max-width: none;
     height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: var(--bar-top) var(--m) 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    overflow: auto;
     opacity: 0;
     transition:
-      opacity 160ms ease,
-      overlay 160ms allow-discrete,
-      display 160ms allow-discrete;
+      opacity 180ms ease,
+      overlay 220ms allow-discrete,
+      display 220ms allow-discrete;
   }
-  .sheet--full[open] {
+  .menu[open] {
     opacity: 1;
-    transition-duration: 220ms;
   }
   @starting-style {
-    .sheet--full[open] {
+    .menu[open] {
       opacity: 0;
     }
   }
-  .wordmark-sm {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    text-decoration: none;
+  .menu::backdrop {
+    background: rgb(20 20 20 / 0.35);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .menu__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    min-height: 0;
+  }
+  .menu__bar {
+    --bar-bg: #262626;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: var(--bar-h);
+    padding: 0 4px 0 16px;
+    background: #262626;
+    color: #ededed;
+  }
+  .menu__panel {
+    display: grid;
+    gap: var(--s7) var(--s6);
+    padding: var(--s7) var(--s6) var(--s6);
+    background: #262626;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 520ms var(--ease-out);
+  }
+  @starting-style {
+    .menu[open] .menu__panel {
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+  @media (min-width: 900px) {
+    .menu__panel {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 3fr) minmax(0, 5fr);
+    }
   }
   .menu__nav ul {
     display: grid;
     margin: 0;
   }
   .menu__nav a {
-    display: flex;
-    align-items: baseline;
-    gap: var(--s3);
-    padding-block: 10px;
-    font-size: var(--t-l);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    padding-block: 2px;
+    font-size: clamp(2rem, 1.5rem + 1.6vw, 3rem);
     font-weight: 500;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
     text-decoration: none;
-    transition: transform var(--d-press) var(--ease-out);
+    transition: color 200ms ease;
   }
-  .menu__nav a:active {
-    transform: translateX(4px);
+  .menu__nav a .mark {
+    width: 0;
+    height: 0.5em;
+    margin-right: 0;
+    transition:
+      width 320ms var(--ease-out),
+      margin-right 320ms var(--ease-out);
   }
   .menu__nav a[aria-current='page'] {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.15em;
+    color: var(--signal);
+  }
+  .menu__nav a[aria-current='page'] .mark,
+  .menu__nav a:focus-visible .mark {
+    width: 0.5em;
+    margin-right: 0.3em;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .menu__nav a:hover {
+      color: var(--signal);
+    }
+    .menu__nav a:hover .mark {
+      width: 0.5em;
+      margin-right: 0.3em;
+    }
+  }
+  .menu__count {
+    align-self: flex-start;
+    margin-left: 6px;
+    margin-top: 0.4em;
+    color: var(--muted);
+  }
+  .menu__info {
+    overflow-wrap: anywhere;
+    display: grid;
+    align-content: start;
+    gap: var(--s2);
+  }
+  .menu__info p:first-child {
+    margin-bottom: var(--s1);
+  }
+  .menu__mail {
+    text-transform: none;
+  }
+  .menu__search {
+    justify-self: start;
+    text-transform: uppercase;
+    font: inherit;
+    padding-block: 4px;
+  }
+  .menu__facts {
+    display: grid;
+    gap: var(--s2);
+    margin: var(--s5) 0 0;
+  }
+  .menu__facts li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .menu__facts .mark {
+    width: 7px;
+    height: 7px;
+  }
+  .menu__features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    margin: 0;
+  }
+  .menu__feature {
+    display: grid;
+    gap: var(--s2);
+    text-decoration: none;
+  }
+  .menu__img {
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+  .menu__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 600ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .menu__feature:hover img {
+      scale: 1.04;
+    }
+  }
+  .menu[open] .menu__nav li {
+    animation: gp-rise 420ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 35ms + 80ms);
+  }
+  @media (max-width: 899px) {
+    .menu__panel {
+      padding: var(--s6) var(--s4) var(--s5);
+    }
+    .menu__features {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .menu__panel {
+      transition: none;
+    }
+    .menu[open] .menu__nav li {
+      animation: none;
+    }
   }
 </style>

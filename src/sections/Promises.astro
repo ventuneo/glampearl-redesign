@@ -1,0 +1,80 @@
+---
+// What every order comes with: six facts from the live shop's policies and checkout, in a ruled grid.
+// Shopify port: sections/promises.liquid (six blocks: title + text).
+const items = [
+  { t: 'Returns within 30 days', d: 'Unused items in their original packaging can go back within 30 days of delivery.' },
+  { t: 'Prices in CHF', d: 'Taxes are included in every price. The shipping fee shows at checkout, before you pay.' },
+  { t: 'Secure checkout', d: 'Pay by card or Apple Pay on the Shopify checkout of glampearl.store.' },
+  { t: 'Tracked delivery', d: 'Orders leave within 2 to 5 working days and arrive in about 7 to 20, with a tracking link.' },
+  { t: 'Welcome offer', d: 'Leave your email at the bottom of this page and your first order is 10% cheaper.' },
+  { t: 'A person replies', d: 'Write to support@glampearl.store about an order, a return or the right shade.' },
+];
+---
+
+<section class="prom wrap" data-theme="light" aria-labelledby="prom-title">
+  <div class="prom__head">
+    <h2 class="t-l" id="prom-title">With every order.</h2>
+    <p class="mono slash">Same for all 39 products</p>
+  </div>
+  <ul class="prom__grid" role="list">
+    {
+      items.map((it, i) => (
+        <li>
+          <h3 class="prom__t mono">
+            {i === 0 && <span class="mark" aria-hidden="true" />}
+            {it.t}
+          </h3>
+          <p class="t-s muted">{it.d}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .prom {
+    padding-block: var(--s9);
+  }
+  .prom__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s4);
+    margin-bottom: var(--s7);
+  }
+  .prom__grid {
+    display: grid;
+    gap: var(--s7) var(--s6);
+    margin: 0;
+  }
+  @media (min-width: 640px) {
+    .prom__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .prom__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .prom__grid li {
+    display: grid;
+    gap: var(--s4);
+    align-content: start;
+  }
+  .prom__t {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding-bottom: var(--s3);
+    border-bottom: 1px solid var(--line);
+    font-weight: 500;
+  }
+  .prom__t .mark {
+    width: 7px;
+    height: 7px;
+  }
+  .prom__grid p {
+    max-width: 22rem;
+  }
+</style>

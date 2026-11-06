@@ -1,64 +1,70 @@
 ---
-// Newsletter and footer. Shopify port: sections/newsletter.liquid + sections/footer.liquid.
+// Newsletter, navigation and legal on the dark ground, the press-on nails as a glyph field, the wordmark in pearls.
+// Shopify port: sections/footer.liquid (newsletter form + menus + the two decorative snippets).
 import { CATEGORIES, STORE } from '../lib/catalog';
+import Wordmark from './Wordmark.astro';
+import Ascii from './Ascii.astro';
+import Cta from './Cta.astro';
 const year = new Date().getFullYear();
+const nav = [
+  { href: '/', label: 'Home' },
+  { href: '/shop', label: 'Shop all' },
+  ...CATEGORIES.map((c) => ({ href: `/shop/${c.slug}`, label: c.name })),
+  { href: '/help', label: 'Help' },
+];
 ---
 
-<section class="signup wrap" id="newsletter" aria-labelledby="signup-title">
-  <div class="signup__text">
-    <h2 class="t-l" id="signup-title">10% off your first order</h2>
-    <p class="muted measure">New shades, restocks and beauty tips by email. No spam, and you can unsubscribe any time.</p>
-  </div>
-  <!-- Posts to the live store's standard Shopify customer form (newsletter tag), as the theme does today. -->
-  <form class="signup__form" data-signup method="post" action={`${STORE}/contact#newsletter`} accept-charset="UTF-8" novalidate>
-    <input type="hidden" name="form_type" value="customer" />
-    <input type="hidden" name="utf8" value="✓" />
-    <input type="hidden" name="contact[tags]" value="newsletter" />
-    <label class="signup__label t-s" for="signup-email">Email address</label>
-    <input id="signup-email" name="contact[email]" type="email" autocomplete="email" inputmode="email" placeholder="name@example.com" required />
-    <button class="btn" type="submit">Sign up</button>
-    <p class="signup__msg t-s" data-signup-msg role="status" aria-live="polite"></p>
-  </form>
-</section>
-
-<footer class="footer">
-  <div class="footer__grid wrap">
-    <nav aria-label="Shop">
-      <h2 class="footer__h">shop</h2>
+<footer class="foot" data-theme="dark">
+  <div class="foot__top wrap">
+    <section class="foot__signup" id="newsletter" aria-labelledby="signup-title">
+      <h2 class="foot__h" id="signup-title">10% off your first order, and new shades by email.</h2>
+      <!-- Posts to the live store's standard Shopify customer form (newsletter tag), as the theme does today. -->
+      <form class="signup__form" data-signup method="post" action={`${STORE}/contact#newsletter`} accept-charset="UTF-8" novalidate>
+        <input type="hidden" name="form_type" value="customer" />
+        <input type="hidden" name="utf8" value="✓" />
+        <input type="hidden" name="contact[tags]" value="newsletter" />
+        <label class="visually-hidden" for="signup-email">Email address</label>
+        <input id="signup-email" name="contact[email]" type="email" autocomplete="email" inputmode="email" placeholder="Email address" required />
+        <Cta type="submit" variant="light">Sign up</Cta>
+        <p class="signup__msg mono muted" data-signup-msg role="status" aria-live="polite">No spam. Unsubscribe any time.</p>
+      </form>
+    </section>
+    <nav class="foot__nav" aria-label="Footer">
       <ul role="list">
-        <li><a href="/shop">shop all</a></li>
         {
-          CATEGORIES.map((c) => (
+          nav.map((l) => (
             <li>
-              <a href={`/shop/${c.slug}`}>{c.name}</a>
+              <a class="mono" href={l.href} data-scramble>
+                {l.label}
+              </a>
             </li>
           ))
         }
       </ul>
     </nav>
-    <nav aria-label="Help">
-      <h2 class="footer__h">help</h2>
-      <ul role="list">
-        <li><a href="/help#delivery">delivery</a></li>
-        <li><a href="/help#returns">returns</a></li>
-        <li><a href="/help#payment">payment</a></li>
-        <li><a href="/help#contact">contact</a></li>
+    <div class="foot__contact">
+      <p><a class="u-grow" href="mailto:support@glampearl.store">support@glampearl.store</a></p>
+      <p class="muted">Orders, returns and shades.</p>
+      <ul role="list" class="foot__legal">
+        <li><a class="u-grow" href={`${STORE}/policies/privacy-policy`}>Privacy policy</a></li>
+        <li><a class="u-grow" href={`${STORE}/policies/terms-of-service`}>Terms of service</a></li>
+        <li><a class="u-grow" href={`${STORE}/policies/refund-policy`}>Refund policy</a></li>
       </ul>
-    </nav>
-    <div>
-      <h2 class="footer__h">write to us</h2>
-      <p class="t-s"><a class="link" href="mailto:support@glampearl.store">support@glampearl.store</a></p>
-      <p class="t-s muted">A person reads and answers every email.</p>
     </div>
   </div>
-  <p class="footer__mark wrap" aria-hidden="true">glampearl</p>
-  <div class="footer__legal wrap t-xs muted">
-    <span>© {year} GlamPearl</span>
-    <a class="u-grow" href={`${STORE}/policies/privacy-policy`}>Privacy</a>
-    <a class="u-grow" href={`${STORE}/policies/terms-of-service`}>Terms</a>
-    <a class="u-grow" href={`${STORE}/policies/refund-policy`}>Refunds</a>
-    <span>Product names and logos are trademarks of their owners.</span>
+
+  <div class="foot__art">
+    <Ascii name="footer" class="foot__ascii" />
+    <div class="foot__status mono">
+      <p><span class="mark" aria-hidden="true"></span> Tracked delivery</p>
+      <p><span class="mark" aria-hidden="true"></span> Card and Apple Pay at checkout</p>
+    </div>
+    <p class="foot__copy t-s">
+      © {year} GlamPearl.<br />
+      <span class="muted">Product names and logos are trademarks of their owners.</span>
+    </p>
   </div>
+  <div class="foot__mark wrap"><Wordmark r={0.46} /></div>
 </footer>
 
 <script>
@@ -78,108 +84,162 @@ const year = new Date().getFullYear();
 </script>
 
 <style>
-  .signup {
+  .foot {
+    position: relative;
+    overflow: hidden;
+    padding-top: var(--s8);
+  }
+  .foot__top {
+    position: relative;
+    z-index: 1;
     display: grid;
-    gap: var(--s5);
-    padding-block: var(--s8);
-    border-top: 1px solid var(--line);
+    gap: var(--s7) var(--s6);
   }
   @media (min-width: 900px) {
-    .signup {
-      grid-template-columns: 1fr 1fr;
-      align-items: end;
+    .foot__top {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr);
     }
   }
-  .signup__text {
-    display: grid;
-    gap: var(--s3);
+  .foot__h {
+    font-size: var(--t-m);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    max-width: 22rem;
+    margin-bottom: var(--s4);
   }
   .signup__form {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--s2);
+    gap: 4px;
+    max-width: 30rem;
   }
-  .signup__form input {
-    min-height: 52px;
-    padding: 0 20px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--ground);
-    font-size: 1rem;
-    transition: border-color var(--d-ui) ease;
+  .signup__form input[type='email'] {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 0;
+    background: var(--night-2);
+    color: var(--ink);
+    transition: box-shadow var(--d-ui) ease;
+  }
+  .signup__form input::placeholder {
+    color: #8f8f8f;
   }
   .signup__form input:focus-visible {
     outline: none;
-    border-color: var(--ink);
-    box-shadow: 0 0 0 2px var(--rose);
+    box-shadow: inset 0 0 0 1px var(--signal);
   }
   .signup__form input[aria-invalid='true'] {
-    border-color: var(--rose);
-  }
-  .signup__label {
-    grid-column: 1 / -1;
+    box-shadow: inset 0 0 0 1px var(--signal);
   }
   .signup__msg {
     grid-column: 1 / -1;
     min-height: 1.5em;
+    margin-top: var(--s2);
   }
-  @media (max-width: 480px) {
-    .signup__form {
-      grid-template-columns: 1fr;
-    }
-  }
-  .footer {
-    background: var(--nacre);
-    padding-top: var(--s8);
-    overflow: hidden;
-  }
-  .footer__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: var(--s6);
-  }
-  .footer__h {
-    font-size: var(--t-s);
-    font-weight: 500;
-    margin-bottom: var(--s3);
-  }
-  .footer ul {
+  .foot__nav ul {
     display: grid;
     gap: 2px;
     margin: 0;
   }
-  .footer ul a {
-    display: inline-block;
-    padding-block: 6px;
-    text-decoration: none;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .footer ul a:hover {
-      text-decoration: underline;
+  @media (min-width: 900px) {
+    .foot__nav ul {
+      justify-items: center;
     }
   }
-  .footer__mark {
-    margin-top: var(--s8);
-    padding-bottom: 0.2em;
-    /* Critic pass 1: the wordmark spans the full container (its advance is about 4 em). */
-    font-size: calc((100vw - 2 * var(--m)) / 3.993);
-    font-weight: 600;
-    letter-spacing: -0.06em;
-    line-height: 0.78;
-    margin-left: -0.029em; /* ink of the g starts on the margin line */
-    color: var(--ink);
-    user-select: none;
-    white-space: nowrap;
-  }
-  .footer__legal {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--s2) var(--s5);
-    padding-block: var(--s5) calc(var(--s5) + env(safe-area-inset-bottom));
-  }
-  .footer__legal a {
+  .foot__nav a {
+    display: inline-block;
+    padding-block: 5px;
     text-decoration: none;
+    transition: color 160ms ease;
   }
-
+  @media (hover: hover) and (pointer: fine) {
+    .foot__nav a:hover {
+      color: var(--signal);
+    }
+  }
+  .foot__contact {
+    display: grid;
+    align-content: start;
+    gap: var(--s1);
+    font-size: var(--t-s);
+  }
+  @media (min-width: 900px) {
+    .foot__contact {
+      justify-items: end;
+      text-align: right;
+    }
+  }
+  .foot__legal {
+    display: grid;
+    gap: 0;
+    margin: var(--s4) 0 0;
+  }
+  @media (min-width: 900px) {
+    .foot__legal {
+      justify-items: end;
+    }
+  }
+  .foot__art {
+    position: relative;
+    margin-top: var(--s6);
+    min-height: 20rem;
+  }
+  .foot :global(.foot__ascii) {
+    position: relative;
+    width: 100%;
+    opacity: 0.9;
+  }
+  .foot__status {
+    position: absolute;
+    left: var(--m);
+    top: 0;
+    display: grid;
+    gap: 4px;
+  }
+  .foot__status p {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .foot__status .mark {
+    width: 7px;
+    height: 7px;
+  }
+  .foot__copy {
+    position: absolute;
+    left: 50%;
+    bottom: var(--s6);
+    translate: -50% 0;
+    width: max-content;
+    max-width: calc(100% - 2 * var(--m));
+    text-align: center;
+    padding: 8px 12px;
+    background: rgb(20 20 20 / 0.7);
+  }
+  .foot__mark {
+    color: #262626;
+    padding-bottom: calc(var(--s4) + env(safe-area-inset-bottom, 0px));
+  }
+  .foot__mark :global(.wordmark-dots) {
+    width: 100%;
+    height: auto;
+  }
+  @media (max-width: 899px) {
+    .foot__art {
+      min-height: 0;
+      padding-top: 4.5rem;
+    }
+    .foot__copy {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      translate: none;
+      margin: var(--s4) var(--m) 0;
+      text-align: left;
+      padding: 0;
+      background: none;
+    }
+  }
 </style>

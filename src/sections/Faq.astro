@@ -1,0 +1,91 @@
+---
+// Common questions on the dark ground, answered with the live shop's own FAQ text.
+// Shopify port: sections/faq.liquid (blocks: question + answer).
+import { groups } from '../data/faq';
+const items = groups.flatMap((g) => g.items);
+---
+
+<section class="faq wrap" data-theme="dark" aria-labelledby="faq-title">
+  <h2 class="t-l faq__title" id="faq-title">Common questions.</h2>
+  <div class="faq__list">
+    {
+      items.map((it) => (
+        <details>
+          <summary>
+            <span class="mono" data-scramble>{it.q}</span>
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.3" />
+            </svg>
+          </summary>
+          <p class="t-s muted">{it.a}</p>
+        </details>
+      ))
+    }
+    <a class="faq__more mono" href="/help">All delivery, return and payment answers</a>
+  </div>
+</section>
+
+<style>
+  .faq {
+    display: grid;
+    gap: var(--s6);
+    padding-block: var(--s9);
+  }
+  @media (min-width: 900px) {
+    .faq {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+    }
+    .faq__title {
+      grid-column: 1 / 5;
+    }
+    .faq__list {
+      grid-column: 6 / 13;
+    }
+  }
+  .faq__list details {
+    border-bottom: 1px solid var(--line);
+  }
+  .faq__list summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s5);
+    min-height: 64px;
+    padding-block: 14px;
+    list-style: none;
+    cursor: pointer;
+  }
+  .faq__list summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq__list summary svg {
+    flex: 0 0 auto;
+    transition: rotate 360ms var(--ease-out), color 200ms ease;
+  }
+  .faq__list details[open] summary svg {
+    rotate: 45deg;
+    color: var(--signal);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .faq__list summary:hover {
+      color: var(--signal);
+    }
+  }
+  .faq__list details p {
+    max-width: 36rem;
+    padding-bottom: var(--s5);
+  }
+  .faq__more {
+    display: inline-block;
+    margin-top: var(--s5);
+    padding-block: 4px;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .faq__more:hover {
+      color: var(--signal);
+    }
+  }
+</style>

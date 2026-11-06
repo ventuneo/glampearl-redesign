@@ -1,0 +1,247 @@
+---
+// Gel nails at home: a real sequence, so it is numbered. The photograph on the right follows the step in view.
+// Shopify port: sections/product-bundle.liquid (three product settings, one add-all button posting to /cart/add.js).
+import Cta from '../components/Cta.astro';
+import { byHandle, money } from '../lib/catalog';
+
+const steps = [
+  { handle: 'fiber-bulider-nail-gel-quick-building-repair-broken-nails-soak-off-uv-gel', verb: 'Build.', text: 'Shape your nails, then strengthen or repair them with builder gel. It soaks off when you are done.' },
+  { handle: 'nail-polish-nude-neutrals-soak-off-gel-polish', verb: 'Colour.', text: 'Paint a thin layer of your shade, then a second one. Nudes, pinks, deep reds, blues, greens and glitter.' },
+  { handle: 'portable-6w-usb-led-nail-light', verb: 'Cure.', text: 'Set each layer under the 6 W lamp. It runs from any USB port, so the salon comes with you.' },
+].map((s) => {
+  const p = byHandle(s.handle)!;
+  const v = p.variants.find((x) => x.title === 'Dusty Rose') ?? p.variants[0];
+  return { ...s, p, v, img: p.images[0] };
+});
+const total = steps.reduce((sum, s) => sum + s.v.price, 0);
+const client = steps.map((s) => ({
+  id: s.v.id,
+  handle: s.p.handle,
+  name: s.p.name,
+  variant: s.v.title,
+  price: s.v.price,
+  img: s.img.src['480'],
+  e1: s.img.e1,
+  e2: s.img.e2,
+  bands: s.img.bands,
+  band: s.img.band,
+}));
+---
+
+<section class="steps wrap" data-theme="light" aria-labelledby="steps-title">
+  <div class="steps__head">
+    <h2 class="t-l" id="steps-title">Gel nails in three steps.</h2>
+    <p class="mono slash">{money(total)} for all three</p>
+  </div>
+  <div class="steps__body">
+    <ol class="steps__list" role="list" data-steps>
+      {
+        steps.map((s, i) => (
+          <li class="steps__item" data-step={i} aria-current={i === 0 ? 'step' : undefined}>
+            <span class="steps__n mono num">
+              <span class="mark" aria-hidden="true" />
+              0{i + 1}
+            </span>
+            <div class="steps__copy">
+              <h3 class="steps__verb">{s.verb}</h3>
+              <p>{s.text}</p>
+              <a class="steps__product mono" href={`/products/${s.p.handle}`}>
+                {s.p.name}
+                {s.v.title !== 'Default Title' && s.p.variants.length > 1 ? `, ${s.v.title}` : ''}, {money(s.v.price)}
+              </a>
+            </div>
+          </li>
+        ))
+      }
+      <li class="steps__add">
+        <Cta data-kit-add>Add all three to bag</Cta>
+      </li>
+    </ol>
+    <div class="steps__stage" aria-hidden="true">
+      {
+        steps.map((s, i) => (
+          <span class="steps__img" data-step-img={i} data-active={i === 0 ? '' : undefined} style={`background:${s.img.e1}`}>
+            <img src={s.img.src['960']} srcset={`${s.img.src['480']} 480w, ${s.img.src['960']} 960w`} sizes="(min-width: 900px) 30vw, 80vw" width="960" height="960" alt="" loading="lazy" decoding="async" />
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</section>
+<script type="application/json" id="kit-data" set:html={JSON.stringify(client)} />
+
+<script>
+  import { addToBag, confirmAdded } from '../scripts/bag';
+  const items = JSON.parse(document.getElementById('kit-data')!.textContent!);
+  document.querySelector('[data-kit-add]')?.addEventListener('click', (e) => {
+    for (const item of items) addToBag(item);
+    confirmAdded((e.currentTarget as HTMLElement).querySelector('.cta__label') as HTMLElement);
+  });
+
+  // The step crossing the middle of the screen is the current one; its photograph shows on the right.
+  const list = document.querySelector<HTMLElement>('[data-steps]');
+  const imgs = [...document.querySelectorAll<HTMLElement>('[data-step-img]')];
+  const set = (i: number) => {
+    list?.querySelectorAll<HTMLElement>('[data-step]').forEach((el) => el.toggleAttribute('aria-current', Number(el.dataset.step) === i));
+    list?.querySelectorAll<HTMLElement>('[data-step][aria-current]').forEach((el) => el.setAttribute('aria-current', 'step'));
+    imgs.forEach((el) => el.toggleAttribute('data-active', Number(el.dataset.stepImg) === i));
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const en of entries) if (en.isIntersecting) set(Number((en.target as HTMLElement).dataset.step));
+    },
+    { rootMargin: '-45% 0px -45% 0px' },
+  );
+  list?.querySelectorAll('[data-step]').forEach((el) => io.observe(el));
+</script>
+
+<style>
+  .steps {
+    padding-block: var(--s8) var(--s9);
+  }
+  .steps__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s4);
+    margin-bottom: var(--s7);
+  }
+  @media (min-width: 900px) {
+    .steps__head {
+      padding-left: calc((100% - 0px) / 12);
+    }
+  }
+  .steps__body {
+    display: grid;
+    gap: var(--s6);
+  }
+  @media (min-width: 900px) {
+    .steps__body {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+    }
+    .steps__list {
+      grid-column: 2 / 7;
+    }
+    .steps__stage {
+      grid-column: 7 / 11;
+    }
+  }
+  .steps__list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+  }
+  .steps__item {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    gap: var(--s3);
+    padding-block: var(--s6) var(--s7);
+    color: var(--muted);
+    transition: color 320ms var(--ease-out);
+  }
+  @media (min-width: 900px) {
+    .steps__item {
+      min-height: 46svh;
+      align-content: start;
+    }
+  }
+  .steps__item[aria-current] {
+    color: var(--ink);
+  }
+  .steps__n {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 0.55em;
+  }
+  .steps__n .mark {
+    width: 8px;
+    height: 8px;
+    scale: 0;
+    transition: scale 320ms var(--ease-out);
+  }
+  .steps__item[aria-current] .steps__n .mark {
+    scale: 1;
+  }
+  .steps__copy {
+    display: grid;
+    gap: var(--s3);
+    max-width: 26rem;
+  }
+  .steps__verb {
+    font-size: var(--t-m);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem);
+    line-height: 1.1;
+  }
+  .steps__copy p {
+    font-size: var(--t-s);
+  }
+  .steps__product {
+    justify-self: start;
+    padding-block: 4px;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .steps__product:hover {
+      color: var(--signal-ink);
+    }
+  }
+  .steps__add {
+    padding-left: calc(3.25rem + var(--s3));
+  }
+  .steps__stage {
+    position: sticky;
+    top: calc(var(--header-h) + var(--s5));
+    align-self: start;
+    display: grid;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .steps__img {
+    grid-area: 1 / 1;
+    display: block;
+    overflow: hidden;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 640ms var(--ease-out);
+  }
+  .steps__img[data-active] {
+    clip-path: inset(0 0 0 0);
+    z-index: 1;
+  }
+  .steps__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    scale: 1.08;
+    transition: scale 900ms var(--ease-out);
+  }
+  .steps__img[data-active] img {
+    scale: 1;
+  }
+  @media (max-width: 899px) {
+    .steps__stage {
+      display: none;
+    }
+    .steps__item {
+      color: var(--ink);
+      padding-block: var(--s5);
+      border-top: 1px solid var(--line);
+    }
+    .steps__n .mark {
+      scale: 1;
+    }
+    .steps__add {
+      padding: var(--s5) 0 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .steps__img,
+    .steps__img img {
+      transition: none;
+    }
+  }
+</style>

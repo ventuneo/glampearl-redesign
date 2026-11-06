@@ -1,0 +1,55 @@
+---
+// The wordmark as a dot matrix: every pixel is a pearl. 5x7 cells per letter, one empty column between.
+// Shopify port: snippets/wordmark.liquid (the same SVG, generated once).
+interface Props {
+  class?: string;
+  /** Dot radius in cells (0.5 touches its neighbours). */
+  r?: number;
+}
+const { class: cls = '', r = 0.4 } = Astro.props;
+
+const GLYPHS: Record<string, string[]> = {
+  G: ['.###.', '#...#', '#....', '#.###', '#...#', '#...#', '.###.'],
+  L: ['#....', '#....', '#....', '#....', '#....', '#....', '#####'],
+  A: ['.###.', '#...#', '#...#', '#####', '#...#', '#...#', '#...#'],
+  M: ['#...#', '##.##', '#.#.#', '#.#.#', '#...#', '#...#', '#...#'],
+  P: ['####.', '#...#', '#...#', '####.', '#....', '#....', '#....'],
+  E: ['#####', '#....', '#....', '####.', '#....', '#....', '#####'],
+  R: ['####.', '#...#', '#...#', '####.', '#.#..', '#..#.', '#...#'],
+};
+const word = 'GLAMPEARL';
+const dots: { x: number; y: number }[] = [];
+[...word].forEach((ch, i) => {
+  GLYPHS[ch].forEach((row, y) => {
+    [...row].forEach((c, x) => {
+      if (c === '#') dots.push({ x: i * 6 + x, y });
+    });
+  });
+});
+const W = word.length * 6 - 1;
+---
+
+<svg class:list={['wordmark-dots', cls]} viewBox={`0 0 ${W} 7`} aria-hidden="true" focusable="false">
+  {dots.map((d) => <circle cx={d.x + 0.5} cy={d.y + 0.5} r={r} style={`--x:${d.x}`} />)}
+</svg>
+
+<style is:global>
+  .wordmark-dots {
+    display: block;
+    height: 1em;
+    width: auto;
+    overflow: visible;
+    fill: currentColor;
+  }
+  .wordmark-dots circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: scale 360ms var(--ease-out);
+    transition-delay: calc(var(--x) * 5ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wordmark-dots circle {
+      transition: none;
+    }
+  }
+</style>
