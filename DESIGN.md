@@ -3,7 +3,7 @@
 Prototype outside Shopify. Every component maps to a future Shopify section.
 Direction (06.11.2026): the owner asked for the style of a screen recording of the Good Fella studio site,
 adapted to GlamPearl. We take its *style* (grounds, accent, type pairing, layout families, interactions),
-never its content, logo, copy or artwork. The earlier "shade card" version stays on branch `main`.
+never its content, logo, copy or artwork. The earlier "shade card" version stays on branch `shade-card`.
 
 ## Brief
 
